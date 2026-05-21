@@ -1,1 +1,1 @@
-NeuroLoop AI Learning Tracker
+NeuroLoop AI Learning Tracker and smart revision
