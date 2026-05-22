@@ -1,7 +1,7 @@
-import Dashboard from "./pages/Dashboard"
+import Journal from "./pages/Journal"
 
 function App() {
-  return <Dashboard />
+  return <Journal />
 }
 
 export default App
