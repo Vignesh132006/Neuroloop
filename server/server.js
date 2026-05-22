@@ -1,3 +1,4 @@
+const journalRoutes = require("./routes/journalRoutes")
 require("dotenv").config()
 
 const express = require("express")
@@ -10,6 +11,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use("/api/journal", journalRoutes)
 
 app.use("/api", testRoutes)
 
