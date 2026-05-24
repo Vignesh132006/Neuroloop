@@ -5,20 +5,42 @@ function Journal() {
     const [notes, setNotes] = useState("")
     const [journals, setJournals] = useState([])
     const [summary, setSummary] = useState("")
-
+    const [editId, setEditId] = useState(null)
     const handleSave = async () => {
 
         try {
 
-            await axios.post(
-                "http://localhost:5000/api/journal/add",
-                {
-                    topic,
-                    notes,
-                }
-            )
+            if (editId) {
 
-            alert("Journal Saved Successfully")
+                await axios.put(
+                    `http://localhost:5000/api/journal/${editId}`,
+                    {
+                        topic,
+                        notes,
+                    }
+                )
+
+                alert("Journal Updated Successfully")
+
+                setEditId(null)
+
+            } else {
+
+                await axios.post(
+                    "http://localhost:5000/api/journal/add",
+                    {
+                        topic,
+                        notes,
+                    }
+                )
+
+                alert("Journal Saved Successfully")
+
+            }
+
+            setTopic("")
+            setNotes("")
+
             fetchJournals()
 
         } catch (error) {
@@ -44,6 +66,14 @@ function Journal() {
             console.log(error)
 
         }
+
+    }
+    const handleEdit = (journal) => {
+
+        setTopic(journal.topic)
+        setNotes(journal.notes)
+
+        setEditId(journal._id)
 
     }
     const generateSummary = () => {
@@ -167,6 +197,12 @@ function Journal() {
                                 <p className="mt-2 text-gray-700">
                                     {journal.notes}
                                 </p>
+                                <button
+  onClick={() => handleEdit(journal)}
+  className="mt-4 mr-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+>
+  Edit
+</button>
 
                                 <button
                                     onClick={() => handleDelete(journal._id)}
