@@ -5,7 +5,9 @@ function Journal() {
     const [notes, setNotes] = useState("")
     const [journals, setJournals] = useState([])
     const [summary, setSummary] = useState("")
+    const [quiz, setQuiz] = useState([])
     const [editId, setEditId] = useState(null)
+
     const handleSave = async () => {
 
         try {
@@ -89,6 +91,27 @@ function Journal() {
         setSummary(shortSummary)
 
     }
+    const generateQuiz = () => {
+
+        if (!notes) {
+            alert("Please write notes first")
+            return
+        }
+
+
+        const sampleQuiz = [
+
+            "What is the main topic discussed?",
+
+            "Explain one important concept from your notes.",
+
+            "Why is this topic important?",
+
+        ]
+
+        setQuiz(sampleQuiz)
+
+    }
     const fetchJournals = async () => {
 
         try {
@@ -161,6 +184,12 @@ function Journal() {
                 >
                     Generate Summary
                 </button>
+                <button
+                    onClick={generateQuiz}
+                    className="bg-green-600 text-white px-6 py-3 rounded-xl ml-4"
+                >
+                    Generate Quiz
+                </button>
                 <div className="mt-10">
                     {summary && (
 
@@ -173,6 +202,36 @@ function Journal() {
                             <p className="text-gray-700">
                                 {summary}
                             </p>
+
+                        </div>
+
+                    )}
+                    {quiz.length > 0 && (
+
+                        <div className="bg-green-100 p-5 rounded-xl mt-8 mb-8">
+
+                            <h2 className="text-2xl font-bold mb-4">
+                                AI Quiz 🧠
+                            </h2>
+
+                            <div className="space-y-3">
+
+                                {quiz.map((question, index) => (
+
+                                    <div
+                                        key={index}
+                                        className="bg-white p-4 rounded-lg"
+                                    >
+
+                                        <p className="font-medium">
+                                            {index + 1}. {question}
+                                        </p>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
 
                         </div>
 
@@ -198,11 +257,11 @@ function Journal() {
                                     {journal.notes}
                                 </p>
                                 <button
-  onClick={() => handleEdit(journal)}
-  className="mt-4 mr-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
->
-  Edit
-</button>
+                                    onClick={() => handleEdit(journal)}
+                                    className="mt-4 mr-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Edit
+                                </button>
 
                                 <button
                                     onClick={() => handleDelete(journal._id)}
