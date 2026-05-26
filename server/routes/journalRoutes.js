@@ -48,3 +48,49 @@ router.get("/", async (req, res) => {
     }
 
 })
+router.delete("/:id", async (req, res) => {
+
+  try {
+
+    await Journal.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({
+      message: "Journal deleted successfully",
+    })
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message,
+    })
+
+  }
+
+})
+router.put("/:id", async (req, res) => {
+
+  try {
+
+    const { topic, notes } = req.body
+
+    await Journal.findByIdAndUpdate(
+      req.params.id,
+      {
+        topic,
+        notes,
+      }
+    )
+
+    res.status(200).json({
+      message: "Journal updated successfully",
+    })
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message,
+    })
+
+  }
+
+})

@@ -78,19 +78,42 @@ function Journal() {
         setEditId(journal._id)
 
     }
-    const generateSummary = () => {
+    const generateSummary = async () => {
 
-        if (!notes) {
-            alert("Please write notes first")
-            return
-        }
+  if (!notes) {
+    alert("Please write notes first")
+    return
+  }
 
-        const shortSummary =
-            notes.split(" ").slice(0, 15).join(" ") + "..."
+  try {
 
-        setSummary(shortSummary)
+    const response = await axios.post(
+      "http://localhost:5000/api/ai/summary",
+      {
+        notes,
+      }
+    )
 
-    }
+    setSummary(response.data.summary)
+
+  } catch (error) {
+
+    console.log(error)
+
+    // FALLBACK SUMMARY
+    const shortSummary =
+      notes.split(" ").slice(0, 20).join(" ") + "..."
+
+    setSummary(shortSummary)
+
+    alert("AI quota exceeded — using local summary")
+
+  }
+
+}
+   
+
+
     const generateQuiz = () => {
 
         if (!notes) {
