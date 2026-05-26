@@ -1,7 +1,7 @@
-import Journal from "./pages/Journal"
+import Signup from "./pages/Signup"
 
 function App() {
-  return <Journal />
+  return <Signup />
 }
 
 export default App
