@@ -12,11 +12,15 @@ const journalSchema = new mongoose.Schema({
     required: true,
   },
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
 
 })
 
-module.exports = mongoose.model("Journal", journalSchema)
+module.exports = mongoose.model(
+  "Journal",
+  journalSchema
+)

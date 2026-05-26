@@ -1,7 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
 
-function Login() {
+function Login({ setIsLoggedIn }) {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -24,6 +24,8 @@ function Login() {
       )
 
       alert(response.data.message)
+
+      setIsLoggedIn(true)
 
     } catch (error) {
 
