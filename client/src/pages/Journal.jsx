@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
 function Journal({ setIsLoggedIn }) {
-
+  const navigate = useNavigate()
   const token = localStorage.getItem("token")
 
   const handleLogout = () => {
 
-    localStorage.removeItem("token")
+  localStorage.removeItem("token")
 
-    setIsLoggedIn(false)
+  navigate("/login")
 
-  }
+}
 
   const [topic, setTopic] = useState("")
   const [notes, setNotes] = useState("")

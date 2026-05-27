@@ -1,7 +1,11 @@
 import { useState } from "react"
 import axios from "axios"
 
-function Login({ setIsLoggedIn }) {
+import { useNavigate } from "react-router-dom"
+
+function Login() {
+
+  const navigate = useNavigate()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -25,7 +29,7 @@ function Login({ setIsLoggedIn }) {
 
       alert(response.data.message)
 
-      setIsLoggedIn(true)
+      navigate("/journal")
 
     } catch (error) {
 
@@ -70,6 +74,13 @@ function Login({ setIsLoggedIn }) {
             className="w-full bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700 transition-all"
           >
             Login
+          </button>
+
+          <button
+            onClick={() => navigate("/signup")}
+            className="w-full bg-gray-200 p-4 rounded-xl"
+          >
+            Create New Account
           </button>
 
         </div>

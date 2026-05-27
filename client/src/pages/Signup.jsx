@@ -1,7 +1,11 @@
 import { useState } from "react"
 import axios from "axios"
 
+import { useNavigate } from "react-router-dom"
+
 function Signup() {
+
+  const navigate = useNavigate()
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -25,6 +29,8 @@ function Signup() {
       setName("")
       setEmail("")
       setPassword("")
+
+      navigate("/login")
 
     } catch (error) {
 
@@ -77,6 +83,13 @@ function Signup() {
             className="w-full bg-purple-600 text-white p-4 rounded-xl hover:bg-purple-700 transition-all"
           >
             Create Account
+          </button>
+
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full bg-gray-200 p-4 rounded-xl"
+          >
+            Back To Login
           </button>
 
         </div>
