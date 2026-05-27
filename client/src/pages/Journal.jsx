@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import Sidebar from "../components/Sidebar"
 import axios from "axios"
 
 function Journal({ setIsLoggedIn }) {
@@ -208,12 +209,11 @@ function Journal({ setIsLoggedIn }) {
   }, [])
 
   return (
-
-    <div className="p-10 min-h-screen bg-gradient-to-br from-purple-100 to-blue-100">
+      <div className="flex min-h-screen bg-gray-100">
 
       {/* HEADER */}
-
-      <div className="flex justify-between items-center mb-8">
+      <Sidebar />
+      <div className="flex-1 p-10">
 
         <h1 className="text-4xl font-bold">
           Daily Learning Journal ✍️

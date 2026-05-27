@@ -7,6 +7,7 @@ import {
 import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import Journal from "./pages/Journal"
+import Dashboard from "./pages/Dashboard"
 
 function App() {
 
@@ -24,6 +25,17 @@ function App() {
       <Route
         path="/login"
         element={<Login />}
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          token ? (
+            <Dashboard />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
       />
 
       <Route

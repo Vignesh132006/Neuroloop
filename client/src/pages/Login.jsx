@@ -29,7 +29,7 @@ function Login() {
 
       alert(response.data.message)
 
-      navigate("/journal")
+      navigate("/dashboard")
 
     } catch (error) {
 
