@@ -13,6 +13,7 @@ function Dashboard() {
 
   const [journals, setJournals] = useState([])
   const [loading, setLoading] = useState(true)
+  const [streak, setStreak] = useState(0)
 
   useEffect(() => {
 
@@ -20,6 +21,7 @@ function Dashboard() {
 
   }, [token])
 
+  // FETCH JOURNALS
   const fetchJournals = async () => {
 
     try {
@@ -37,6 +39,10 @@ function Dashboard() {
 
       setJournals(response.data)
 
+      setStreak(
+        calculateStreak(response.data)
+      )
+
       setLoading(false)
 
     } catch (error) {
@@ -49,6 +55,27 @@ function Dashboard() {
 
   }
 
+  // CALCULATE STREAK
+  const calculateStreak = (journals) => {
+
+    if (journals.length === 0) {
+      return 0
+    }
+
+    const dates = journals.map((journal) => {
+
+      return new Date(journal.createdAt)
+        .toDateString()
+
+    })
+
+    const uniqueDates = [...new Set(dates)]
+
+    return uniqueDates.length
+
+  }
+
+  // LOADING SCREEN
   if (loading) {
 
     return (
@@ -114,7 +141,7 @@ function Dashboard() {
             </h2>
 
             <p className="text-4xl font-bold mt-3 text-orange-500">
-              14 Days 🔥
+              {streak} Days 🔥
             </p>
 
           </div>
