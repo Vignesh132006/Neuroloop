@@ -18,6 +18,16 @@ const journalSchema = new mongoose.Schema({
     required: true,
   },
 
+  revisionCount: {
+    type: Number,
+    default: 0,
+  },
+
+  lastRevised: {
+    type: Date,
+    default: Date.now,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
