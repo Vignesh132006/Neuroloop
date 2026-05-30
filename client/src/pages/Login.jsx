@@ -1,96 +1,91 @@
 import { useState } from "react"
-import axios from "axios"
+import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
+import api from "../api/axios"
 
-import { useNavigate } from "react-router-dom"
-
-function Login() {
-
-  const navigate = useNavigate()
-
+export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
-
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
-      )
-
-      localStorage.setItem(
-        "token",
-        response.data.token
-      )
-
-      alert(response.data.message)
-
+      const res = await api.post("/auth/login", { email, password })
+      login(res.data.token, res.data.user)
       navigate("/dashboard")
-
-    } catch (error) {
-
-      console.log(error)
-
-      alert("Login Failed")
-
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed. Please try again.")
+    } finally {
+      setLoading(false)
     }
-
   }
 
   return (
-
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-200 to-purple-200">
-
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-[400px]">
-
-        <h1 className="text-4xl font-bold mb-8 text-center">
-          Login 🔐
-        </h1>
-
-        <div className="space-y-5">
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-4 border rounded-xl outline-none"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-4 border rounded-xl outline-none"
-          />
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700 transition-all"
-          >
-            Login
-          </button>
-
-          <button
-            onClick={() => navigate("/signup")}
-            className="w-full bg-gray-200 p-4 rounded-xl"
-          >
-            Create New Account
-          </button>
-
+    <div className="auth-container">
+      <div className="auth-card fade-in">
+        <div className="auth-logo">
+          <h1>🧠 NeuroLoop</h1>
+          <p>Your AI-powered learning companion</p>
         </div>
 
+        <h2 style={{ fontWeight: 700, marginBottom: "1.5rem", fontSize: "1.25rem" }}>
+          Welcome back
+        </h2>
+
+        {error && <div className="alert alert-error">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              className="form-input"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              className="form-input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            id="login-submit"
+            type="submit"
+            className="btn btn-primary w-full"
+            style={{ justifyContent: "center", padding: "0.875rem", marginTop: "0.5rem" }}
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign In →"}
+          </button>
+        </form>
+
+        <p style={{ textAlign: "center", marginTop: "1.5rem", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+          Don't have an account?{" "}
+          <Link to="/signup" style={{ color: "var(--accent-purple)", fontWeight: 600 }}>
+            Create one
+          </Link>
+        </p>
       </div>
-
     </div>
-
   )
-
 }
-
-export default Login
