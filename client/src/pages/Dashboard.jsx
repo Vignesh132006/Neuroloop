@@ -14,6 +14,7 @@ function Dashboard() {
   const [journals, setJournals] = useState([])
   const [loading, setLoading] = useState(true)
   const [streak, setStreak] = useState(0)
+  const [productivity, setProductivity] = useState(0)
 
   useEffect(() => {
 
@@ -42,6 +43,9 @@ function Dashboard() {
       setStreak(
         calculateStreak(response.data)
       )
+      setProductivity(
+  calculateProductivity(response.data)
+)
 
       setLoading(false)
 
@@ -57,6 +61,7 @@ function Dashboard() {
 
   // CALCULATE STREAK
   const calculateStreak = (journals) => {
+    
 
     if (journals.length === 0) {
       return 0
@@ -74,6 +79,21 @@ function Dashboard() {
     return uniqueDates.length
 
   }
+  const calculateProductivity = (journals) => {
+
+  if (journals.length === 0) {
+    return 0
+  }
+
+  const revisedTopics = journals.filter(
+    journal => journal.revisionCount > 0
+  )
+
+  return Math.round(
+    (revisedTopics.length / journals.length) * 100
+  )
+
+}
 
   // LOADING SCREEN
   if (loading) {
@@ -169,7 +189,7 @@ function Dashboard() {
             </h2>
 
             <p className="text-4xl font-bold mt-3 text-green-500">
-              92%
+              {productivity}%
             </p>
 
           </div>
