@@ -1,36 +1,24 @@
 const jwt = require("jsonwebtoken")
 
 const authMiddleware = (req, res, next) => {
-
   try {
+    const authHeader = req.header("Authorization")
 
-    const token = req.header("Authorization")
-
-    if (!token) {
-
-      return res.status(401).json({
-        message: "No token provided",
-      })
-
+    if (!authHeader) {
+      return res.status(401).json({ message: "No token provided" })
     }
 
-    const verified = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    )
+    // Support both "Bearer <token>" and raw token
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : authHeader
 
+    const verified = jwt.verify(token, process.env.JWT_SECRET)
     req.user = verified
-
     next()
-
   } catch (error) {
-
-    res.status(401).json({
-      message: "Invalid token",
-    })
-
+    res.status(401).json({ message: "Invalid or expired token" })
   }
-
 }
 
 module.exports = authMiddleware
