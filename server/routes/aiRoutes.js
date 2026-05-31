@@ -9,6 +9,25 @@ function getModel() {
   return genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
 }
 
+// Unified error handler for Gemini AI rate limits & general failures
+function handleAIError(error, res, contextMessage) {
+  console.error(`${contextMessage} error:`, error.message)
+
+  const isQuotaExceeded =
+    error.status === 429 ||
+    error.message?.includes("429") ||
+    error.message?.toLowerCase().includes("quota") ||
+    error.message?.toLowerCase().includes("limit")
+
+  if (isQuotaExceeded) {
+    return res.status(429).json({
+      error: "Gemini API quota exceeded. Please upgrade to a pay-as-you-go plan in Google AI Studio or configure a new API key in server/.env."
+    })
+  }
+
+  res.status(500).json({ error: `${contextMessage} failed` })
+}
+
 // POST /api/ai/summary — Summarise notes
 router.post("/summary", authMiddleware, async (req, res) => {
   try {
@@ -20,8 +39,7 @@ router.post("/summary", authMiddleware, async (req, res) => {
     const result = await model.generateContent(prompt)
     res.json({ summary: result.response.text() })
   } catch (error) {
-    console.error("AI summary error:", error.message)
-    res.status(500).json({ error: "AI generation failed" })
+    handleAIError(error, res, "AI summarisation")
   }
 })
 
@@ -56,8 +74,7 @@ ${notes}`
     const questions = JSON.parse(text)
     res.json({ questions })
   } catch (error) {
-    console.error("MCQ error:", error.message)
-    res.status(500).json({ error: "MCQ generation failed" })
+    handleAIError(error, res, "MCQ generation")
   }
 })
 
@@ -90,8 +107,7 @@ ${notes}`
     const questions = JSON.parse(text)
     res.json({ questions })
   } catch (error) {
-    console.error("Interview Q error:", error.message)
-    res.status(500).json({ error: "Interview question generation failed" })
+    handleAIError(error, res, "Interview question generation")
   }
 })
 
@@ -130,8 +146,7 @@ Return ONLY valid JSON in this format:
     const plan = JSON.parse(text)
     res.json({ plan })
   } catch (error) {
-    console.error("Study plan error:", error.message)
-    res.status(500).json({ error: "Study plan generation failed" })
+    handleAIError(error, res, "Study plan generation")
   }
 })
 
@@ -174,8 +189,7 @@ Keep responses concise (2-4 paragraphs max). Use bullet points for lists. Ask on
 
     res.json({ reply })
   } catch (error) {
-    console.error("Chat error:", error.message)
-    res.status(500).json({ error: "Chat failed" })
+    handleAIError(error, res, "AI Socratic chat")
   }
 })
 
