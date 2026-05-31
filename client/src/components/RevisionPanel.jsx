@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
+import api from "../api/axios"
 
 function RevisionPanel() {
-
-  const token = localStorage.getItem("token")
 
   const [revisions, setRevisions] = useState([])
 
@@ -17,14 +15,7 @@ function RevisionPanel() {
 
     try {
 
-      const response = await axios.get(
-        "http://localhost:5000/api/revision",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      )
+      const response = await api.get("/revision")
 
       setRevisions(response.data)
 
@@ -40,15 +31,7 @@ function RevisionPanel() {
 
     try {
 
-      await axios.put(
-        `http://localhost:5000/api/revision/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      )
+      await api.put(`/revision/${id}`)
 
       fetchRevisions()
 
