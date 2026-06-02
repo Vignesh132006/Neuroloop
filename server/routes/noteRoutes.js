@@ -6,7 +6,7 @@ const User = require("../models/User")
 const QuizResult = require("../models/QuizResult")
 const RevisionLog = require("../models/RevisionLog")
 const multer = require("multer")
-const pdfParse = require("pdf-parse")
+const { PDFParse } = require("pdf-parse")
 const Groq = require("groq-sdk")
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
@@ -200,7 +200,8 @@ router.post("/upload-pdf", authMiddleware, upload.single("pdf"), async (req, res
       return res.status(400).json({ error: "No PDF file uploaded" })
     }
 
-    const data = await pdfParse(req.file.buffer)
+    const parser = new PDFParse(new Uint8Array(req.file.buffer))
+    const data = await parser.getText()
     const extractedText = data.text.trim()
 
     if (!extractedText) {
