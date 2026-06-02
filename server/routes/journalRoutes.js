@@ -87,11 +87,10 @@ router.put("/:id", authMiddleware, async (req, res) => {
     const { topic, notes } = req.body
 
     await Journal.findOneAndUpdate(
-  {
-    _id: req.params.id,
-    user: req.user.id,
-  },
-      req.params.id,
+      {
+        _id: req.params.id,
+        user: req.user.id,
+      },
       {
         topic,
         notes,

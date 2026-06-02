@@ -102,4 +102,42 @@ router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
   }
 })
 
+// PUT /api/auth/profile — Update user profile settings
+router.put("/profile", require("../middleware/authMiddleware"), async (req, res) => {
+  try {
+    const { githubUsername, emailNotifications } = req.body
+    const updateData = {}
+    
+    if (githubUsername !== undefined) updateData.githubUsername = githubUsername.trim()
+    if (emailNotifications !== undefined) updateData.emailNotifications = emailNotifications
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: updateData },
+      { new: true }
+    ).select("-password")
+
+    if (!updatedUser) return res.status(404).json({ message: "User not found" })
+
+    res.json({ message: "Profile updated successfully", user: updatedUser })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Failed to update profile" })
+  }
+})
+
+// GET /api/auth/leaderboard — Get user leaderboard based on streak
+router.get("/leaderboard", require("../middleware/authMiddleware"), async (req, res) => {
+  try {
+    const users = await User.find()
+      .select("name streak emailNotifications githubUsername")
+      .sort({ streak: -1 })
+      .limit(20)
+    res.json(users)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Failed to fetch leaderboard" })
+  }
+})
+
 module.exports = router

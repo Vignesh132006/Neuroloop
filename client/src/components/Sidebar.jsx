@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const navItems = [
   { to: "/dashboard", icon: "⚡", label: "Dashboard" },
@@ -9,12 +9,23 @@ const navItems = [
   { to: "/quiz",      icon: "🧠", label: "Quiz" },
   { to: "/revision",  icon: "🔁", label: "Revision" },
   { to: "/chat",      icon: "💬", label: "Neuro Chat" },
+  { to: "/leaderboard", icon: "🏆", label: "Leaderboard" },
 ]
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark")
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme)
+    localStorage.setItem("theme", theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   const handleLogout = () => {
     logout()
@@ -117,11 +128,20 @@ export default function Sidebar() {
           ))}
         </div>
 
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="btn btn-secondary w-full"
+          style={{ marginTop: "1rem", justifyContent: "center", gap: "0.5rem" }}
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+
         {/* Logout */}
         <button
           onClick={handleLogout}
           className="btn btn-danger w-full"
-          style={{ marginTop: "1rem", justifyContent: "center" }}
+          style={{ marginTop: "0.5rem", justifyContent: "center" }}
         >
           🚪 Logout
         </button>

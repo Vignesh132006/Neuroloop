@@ -12,6 +12,7 @@ export default function Journal() {
   const [editId, setEditId] = useState(null)
   const [loading, setLoading] = useState(false)
   const [summaryLoading, setSummaryLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
   const [toast, setToast] = useState(null)
 
   const showToast = (msg, type = "success") => {
@@ -93,6 +94,35 @@ export default function Journal() {
     }
   }
 
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.type !== "application/pdf") {
+      showToast("Please upload a valid PDF file", "error")
+      return
+    }
+    
+    const formData = new FormData()
+    formData.append("pdf", file)
+    
+    setPdfLoading(true)
+    showToast("Parsing PDF and generating summary... ⏳", "info")
+    try {
+      const res = await api.post("/notes/upload-pdf", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      
+      setTopic(res.data.topic || "")
+      setNotes(res.data.text || "")
+      setSummary(res.data.summary || "")
+      showToast("PDF parsed and summarized successfully! 📑")
+    } catch (err) {
+      showToast(err.response?.data?.error || "PDF upload failed", "error")
+    } finally {
+      setPdfLoading(false)
+    }
+  }
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -109,6 +139,39 @@ export default function Journal() {
           <h2 style={{ fontWeight: 700, marginBottom: "1.5rem" }}>
             {editId ? "✏️ Edit Entry" : "📝 New Entry"}
           </h2>
+
+          {/* PDF Upload Section */}
+          {!editId && (
+            <div style={{
+              border: "2px dashed var(--border)",
+              borderRadius: "var(--radius-sm)",
+              padding: "1.5rem",
+              textAlign: "center",
+              marginBottom: "1.5rem",
+              background: "rgba(139, 92, 246, 0.03)"
+            }}>
+              <div style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>📁</div>
+              <h4 style={{ fontWeight: 700, marginBottom: "0.25rem" }}>PDF Note Upload</h4>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "1rem" }}>
+                Upload a PDF note and let AI automatically extract the topic, notes, and summary.
+              </p>
+              <input
+                type="file"
+                accept="application/pdf"
+                id="pdf-file-upload"
+                onChange={handlePdfUpload}
+                disabled={pdfLoading}
+                style={{ display: "none" }}
+              />
+              <label 
+                htmlFor="pdf-file-upload" 
+                className={`btn ${pdfLoading ? "btn-secondary" : "btn-primary"}`}
+                style={{ cursor: "pointer", display: "inline-flex", margin: "0 auto" }}
+              >
+                {pdfLoading ? "Extracting..." : "📂 Select PDF Note"}
+              </label>
+            </div>
+          )}
 
           <div className="grid-2" style={{ gap: "1rem", marginBottom: "1rem" }}>
             <div className="form-group" style={{ marginBottom: 0 }}>

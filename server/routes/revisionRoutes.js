@@ -3,6 +3,8 @@ const router = express.Router()
 const Note = require("../models/Note")
 const RevisionLog = require("../models/RevisionLog")
 const authMiddleware = require("../middleware/authMiddleware")
+const User = require("../models/User")
+const { sendRevisionReminder } = require("../utils/sendgrid")
 
 // Spaced repetition intervals in days: [1, 3, 7, 14, 30]
 const INTERVALS = [1, 3, 7, 14, 30]
@@ -83,6 +85,43 @@ router.put("/:id", authMiddleware, async (req, res) => {
       masteryScore: note.masteryScore,
     })
   } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /api/revision/send-reminders — Scan and send email reminders for due revisions today
+router.post("/send-reminders", authMiddleware, async (req, res) => {
+  try {
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    // Find all users who want email notifications
+    const users = await User.find({ emailNotifications: { $ne: false } })
+    let emailsSent = 0
+    let skipped = 0
+
+    for (const user of users) {
+      // Find notes due for revision today for this user
+      const dueNotes = await Note.find({
+        user: user._id,
+        nextRevision: { $lte: today },
+      })
+
+      if (dueNotes.length > 0) {
+        await sendRevisionReminder(user.email, user.name, dueNotes)
+        emailsSent++
+      } else {
+        skipped++
+      }
+    }
+
+    res.json({
+      message: "Email reminder scan complete",
+      emailsSent,
+      skipped,
+    })
+  } catch (error) {
+    console.error("Reminder job failed:", error)
     res.status(500).json({ error: error.message })
   }
 })

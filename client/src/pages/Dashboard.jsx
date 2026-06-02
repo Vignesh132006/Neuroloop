@@ -20,7 +20,7 @@ function StatCard({ label, value, color, icon }) {
   )
 }
 
-function ActivityHeatmap({ notes }) {
+function ActivityHeatmap({ heatmapData }) {
   const today = new Date()
   const days = []
 
@@ -31,16 +31,17 @@ function ActivityHeatmap({ notes }) {
   }
 
   const countMap = {}
-  notes.forEach((n) => {
-    const date = new Date(n.createdAt).toISOString().split("T")[0]
-    countMap[date] = (countMap[date] || 0) + 1
-  })
+  if (Array.isArray(heatmapData)) {
+    heatmapData.forEach((item) => {
+      countMap[item.date] = item.count
+    })
+  }
 
   const getLevel = (count) => {
     if (!count) return ""
     if (count === 1) return "level-1"
-    if (count === 2) return "level-2"
-    if (count === 3) return "level-3"
+    if (count === 2 || count === 3) return "level-2"
+    if (count === 4 || count === 5) return "level-3"
     return "level-4"
   }
 
@@ -55,7 +56,7 @@ function ActivityHeatmap({ notes }) {
           <div
             key={date}
             className={`heatmap-cell ${getLevel(countMap[date])}`}
-            title={`${date}: ${countMap[date] || 0} note${countMap[date] !== 1 ? "s" : ""}`}
+            title={`${date}: ${countMap[date] || 0} contribution${countMap[date] !== 1 ? "s" : ""}`}
           />
         ))}
       </div>
@@ -75,27 +76,70 @@ export default function Dashboard() {
   const [notes, setNotes] = useState([])
   const [dueRevisions, setDueRevisions] = useState([])
   const [quizHistory, setQuizHistory] = useState([])
+  const [weeklyStats, setWeeklyStats] = useState(null)
+  const [heatmapData, setHeatmapData] = useState([])
+  const [githubUsername, setGithubUsername] = useState("")
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [settingsLoading, setSettingsLoading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [toast, setToast] = useState(null)
+
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type })
+    setTimeout(() => setToast(null), 3000)
+  }
 
   useEffect(() => {
-    async function load() {
-      try {
-        const [notesRes, revRes, quizRes] = await Promise.all([
-          api.get("/notes"),
-          api.get("/revision"),
-          api.get("/quiz/history"),
-        ])
-        setNotes(notesRes.data)
-        setDueRevisions(revRes.data)
-        setQuizHistory(quizRes.data)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoading(false)
-      }
+    if (user) {
+      setGithubUsername(user.githubUsername || "")
+      setEmailNotifications(user.emailNotifications !== false)
     }
-    load()
+  }, [user])
+
+  const loadData = async () => {
+    try {
+      const [notesRes, revRes, quizRes, weeklyRes, heatmapRes] = await Promise.all([
+        api.get("/notes"),
+        api.get("/revision"),
+        api.get("/quiz/history"),
+        api.get("/notes/stats/weekly"),
+        api.get("/notes/stats/heatmap"),
+      ])
+      setNotes(notesRes.data)
+      setDueRevisions(revRes.data)
+      setQuizHistory(quizRes.data)
+      setWeeklyStats(weeklyRes.data)
+      setHeatmapData(heatmapRes.data)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
   }, [])
+
+  const handleSaveSettings = async () => {
+    setSettingsLoading(true)
+    try {
+      await api.put("/auth/profile", {
+        githubUsername,
+        emailNotifications
+      })
+      
+      // Refresh heatmap data in case github account changed
+      const heatmapRes = await api.get("/notes/stats/heatmap")
+      setHeatmapData(heatmapRes.data)
+      
+      showToast("Profile settings saved successfully! ✅")
+    } catch (err) {
+      showToast("Failed to update profile settings", "error")
+    } finally {
+      setSettingsLoading(false)
+    }
+  }
 
   const calcStreak = () => {
     if (!notes.length) return 0
@@ -112,7 +156,7 @@ export default function Dashboard() {
       <div className="app-layout">
         <Sidebar />
         <main className="main-content">
-          <div className="loading-screen"><div className="spinner" /><p>Loading...</p></div>
+          <div className="loading-screen"><div className="spinner" /><p>Loading dashboard...</p></div>
         </main>
       </div>
     )
@@ -122,6 +166,8 @@ export default function Dashboard() {
     <div className="app-layout">
       <Sidebar />
       <main className="main-content fade-in">
+        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+
         {/* Header */}
         <div className="page-header">
           <h1 className="page-title">
@@ -142,7 +188,107 @@ export default function Dashboard() {
 
         {/* Heatmap */}
         <div className="mb-6">
-          <ActivityHeatmap notes={notes} />
+          <ActivityHeatmap heatmapData={heatmapData} />
+        </div>
+
+        {/* Weekly Report Card */}
+        {weeklyStats && (
+          <div className="card mb-6">
+            <div className="flex-between mb-4">
+              <h3 style={{ fontWeight: 700 }}>📋 Weekly Progress Report</h3>
+              <span className="badge badge-green">Last 7 Days</span>
+            </div>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+              Weekly summary: You wrote <strong>{weeklyStats.notesCount}</strong> notes, finished <strong>{weeklyStats.revisionsCount}</strong> revisions, and took <strong>{weeklyStats.quizzesCount}</strong> quizzes with an average score of <strong>{weeklyStats.averagePercentage}%</strong>.
+            </p>
+            
+            {/* Styled Bar Chart */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <h4 style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text-secondary)" }}>Daily Activity (Notes vs Quizzes)</h4>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "140px", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem" }}>
+                {weeklyStats.dailyStats.map((day, idx) => {
+                  const maxVal = Math.max(...weeklyStats.dailyStats.map(d => d.notes + d.quizzes)) || 1
+                  const notesHeight = (day.notes / maxVal) * 100
+                  const quizzesHeight = (day.quizzes / maxVal) * 100
+                  
+                  return (
+                    <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "12%", gap: "0.25rem" }}>
+                      <div style={{ display: "flex", gap: "3px", width: "100%", height: "100px", alignItems: "flex-end", justifyContent: "center" }}>
+                        {/* Notes bar */}
+                        <div 
+                          style={{ 
+                            width: "8px", 
+                            height: `${notesHeight}%`, 
+                            background: "var(--gradient-primary)", 
+                            borderRadius: "3px 3px 0 0",
+                            transition: "height 0.3s ease"
+                          }} 
+                          title={`Notes: ${day.notes}`}
+                        />
+                        {/* Quizzes bar */}
+                        <div 
+                          style={{ 
+                            width: "8px", 
+                            height: `${quizzesHeight}%`, 
+                            background: "var(--gradient-blue)", 
+                            borderRadius: "3px 3px 0 0",
+                            transition: "height 0.3s ease"
+                          }} 
+                          title={`Quizzes: ${day.quizzes}`}
+                        />
+                      </div>
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{day.day}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              <div style={{ display: "flex", gap: "1rem", fontSize: "0.75rem", color: "var(--text-muted)", justifyContent: "center" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                  <div style={{ width: "8px", height: "8px", background: "var(--accent-purple)", borderRadius: "50%" }} /> Notes Written
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                  <div style={{ width: "8px", height: "8px", background: "var(--accent-blue)", borderRadius: "50%" }} /> Quizzes Taken
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Profile & Integrations Settings Card */}
+        <div className="card mb-6">
+          <h3 style={{ fontWeight: 700, marginBottom: "1rem" }}>⚙️ Settings & Social Sync</h3>
+          <div className="grid-2">
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Link GitHub Username</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Vignesh132006"
+                value={githubUsername}
+                onChange={(e) => setGithubUsername(e.target.value)}
+              />
+              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+                Overlay your public GitHub commits directly on your activity heatmap.
+              </p>
+            </div>
+            <div className="form-group" style={{ display: "flex", flexDirection: "column", justifyContent: "center", marginBottom: 0 }}>
+              <label className="form-label" style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", textTransform: "none" }}>
+                <input
+                  type="checkbox"
+                  checked={emailNotifications}
+                  onChange={(e) => setEmailNotifications(e.target.checked)}
+                  style={{ width: "18px", height: "18px", accentColor: "var(--accent-purple)" }}
+                />
+                <span>Receive SendGrid Email Reminders</span>
+              </label>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", paddingLeft: "1.7rem" }}>
+                Get notified when you have notes due for spaced-repetition revisions.
+              </p>
+            </div>
+          </div>
+          <button className="btn btn-primary mt-4" onClick={handleSaveSettings} disabled={settingsLoading}>
+            {settingsLoading ? "Saving..." : "💾 Save Settings"}
+          </button>
         </div>
 
         {/* Recent Notes + Due Revisions */}

@@ -2,6 +2,52 @@ const express = require("express")
 const router = express.Router()
 const Note = require("../models/Note")
 const authMiddleware = require("../middleware/authMiddleware")
+const User = require("../models/User")
+const QuizResult = require("../models/QuizResult")
+const RevisionLog = require("../models/RevisionLog")
+const multer = require("multer")
+const pdfParse = require("pdf-parse")
+const Groq = require("groq-sdk")
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
+const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }) // 5MB limit
+
+// Cache for GitHub event API calls (15 mins)
+// NOTE: Defined at top so it can be used by /stats/heatmap route
+const githubCache = {}
+
+async function fetchGitHubCommits(username) {
+  const now = Date.now()
+  if (githubCache[username] && githubCache[username].expiry > now) {
+    return githubCache[username].data
+  }
+
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}/events`, {
+      headers: { "User-Agent": "NeuroLoop-App" }
+    })
+    if (!response.ok) return {}
+    const events = await response.json()
+
+    const commitCounts = {}
+    events.forEach((event) => {
+      if (event.type === "PushEvent" && event.created_at) {
+        const date = event.created_at.split("T")[0]
+        const count = event.payload?.commits?.length || 1
+        commitCounts[date] = (commitCounts[date] || 0) + count
+      }
+    })
+
+    githubCache[username] = {
+      data: commitCounts,
+      expiry: now + 15 * 60 * 1000
+    }
+    return commitCounts
+  } catch (err) {
+    console.error("Failed to fetch github activity:", err.message)
+    return {}
+  }
+}
 
 // POST /api/notes/add — Create a note
 router.post("/add", authMiddleware, async (req, res) => {
@@ -45,6 +91,150 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 })
 
+// ─── IMPORTANT: /stats/* routes MUST come before /:id ────────────────────────
+// Otherwise Express matches the literal string "stats" as the :id param value.
+
+// GET /api/notes/stats/heatmap — Activity heatmap data (merged with GitHub activity)
+router.get("/stats/heatmap", authMiddleware, async (req, res) => {
+  try {
+    const notes = await Note.find({ user: req.user.id }, "createdAt")
+    const heatmap = {}
+
+    // Add study note activity
+    notes.forEach((note) => {
+      const date = new Date(note.createdAt).toISOString().split("T")[0]
+      heatmap[date] = (heatmap[date] || 0) + 1
+    })
+
+    // Fetch user profile and merge GitHub activity if username is linked
+    const user = await User.findById(req.user.id)
+    if (user && user.githubUsername) {
+      const gitCommits = await fetchGitHubCommits(user.githubUsername)
+      Object.entries(gitCommits).forEach(([date, count]) => {
+        heatmap[date] = (heatmap[date] || 0) + count
+      })
+    }
+
+    const result = Object.entries(heatmap).map(([date, count]) => ({ date, count }))
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// GET /api/notes/stats/weekly — Get weekly progress statistics
+router.get("/stats/weekly", authMiddleware, async (req, res) => {
+  try {
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    const notesCount = await Note.countDocuments({
+      user: req.user.id,
+      createdAt: { $gte: sevenDaysAgo }
+    })
+
+    const quizResults = await QuizResult.find({
+      user: req.user.id,
+      createdAt: { $gte: sevenDaysAgo }
+    })
+
+    const revisionsCount = await RevisionLog.countDocuments({
+      user: req.user.id,
+      createdAt: { $gte: sevenDaysAgo }
+    })
+
+    let totalScore = 0
+    let totalQuizzes = quizResults.length
+    let averagePercentage = 0
+
+    if (totalQuizzes > 0) {
+      quizResults.forEach(q => totalScore += q.percentage)
+      averagePercentage = Math.round(totalScore / totalQuizzes)
+    }
+
+    const dailyStats = []
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date()
+      d.setDate(d.getDate() - i)
+
+      const startOfDay = new Date(d)
+      startOfDay.setHours(0, 0, 0, 0)
+      const endOfDay = new Date(d)
+      endOfDay.setHours(23, 59, 59, 999)
+
+      const dayNotes = await Note.countDocuments({
+        user: req.user.id,
+        createdAt: { $gte: startOfDay, $lte: endOfDay }
+      })
+
+      const dayQuizzes = await QuizResult.countDocuments({
+        user: req.user.id,
+        createdAt: { $gte: startOfDay, $lte: endOfDay }
+      })
+
+      dailyStats.push({
+        day: d.toLocaleDateString("en-US", { weekday: "short" }),
+        notes: dayNotes,
+        quizzes: dayQuizzes
+      })
+    }
+
+    res.json({
+      notesCount,
+      revisionsCount,
+      quizzesCount: totalQuizzes,
+      averagePercentage,
+      dailyStats
+    })
+  } catch (error) {
+    console.error("Weekly stats error:", error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /api/notes/upload-pdf — Parse PDF and summarize text via AI
+// NOTE: Must also be before /:id to avoid route shadowing
+router.post("/upload-pdf", authMiddleware, upload.single("pdf"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No PDF file uploaded" })
+    }
+
+    const data = await pdfParse(req.file.buffer)
+    const extractedText = data.text.trim()
+
+    if (!extractedText) {
+      return res.status(400).json({ error: "Could not extract text from PDF (it might be scanned or empty)" })
+    }
+
+    // Call Groq to generate a summary and extract the main topic
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful study assistant. Extract the main topic and generate a clear 3-5 bullet point summary of the text provided. Return JSON ONLY in this format: { \"topic\": \"extracted topic\", \"summary\": \"bullet points summary here\" }."
+        },
+        { role: "user", content: extractedText.slice(0, 8000) } // Truncate to fit context safely
+      ],
+      temperature: 0.5,
+      response_format: { type: "json_object" }
+    })
+
+    const result = JSON.parse(completion.choices[0].message.content)
+    res.json({
+      topic: result.topic || "PDF Uploaded Notes",
+      summary: result.summary,
+      text: extractedText
+    })
+  } catch (error) {
+    console.error("PDF upload error:", error)
+    res.status(500).json({ error: "Failed to parse PDF and generate summary: " + error.message })
+  }
+})
+
+// ─── Wildcard /:id routes LAST ────────────────────────────────────────────────
+
 // GET /api/notes/:id — Get single note
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
@@ -81,22 +271,6 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     const deleted = await Note.findOneAndDelete({ _id: req.params.id, user: req.user.id })
     if (!deleted) return res.status(404).json({ message: "Note not found" })
     res.status(200).json({ message: "Note deleted successfully" })
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-// GET /api/notes/stats/heatmap — Activity heatmap data
-router.get("/stats/heatmap", authMiddleware, async (req, res) => {
-  try {
-    const notes = await Note.find({ user: req.user.id }, "createdAt")
-    const heatmap = {}
-    notes.forEach((note) => {
-      const date = new Date(note.createdAt).toISOString().split("T")[0]
-      heatmap[date] = (heatmap[date] || 0) + 1
-    })
-    const result = Object.entries(heatmap).map(([date, count]) => ({ date, count }))
-    res.json(result)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }

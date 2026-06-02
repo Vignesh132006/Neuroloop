@@ -202,7 +202,7 @@ export default function Chat() {
         </div>
 
         <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.5rem" }}>
-          Neuro uses the Socratic method to guide deep understanding • Powered by Gemini AI
+          Neuro uses the Socratic method to guide deep understanding • Powered by Groq LLaMA
         </p>
       </main>
     </div>

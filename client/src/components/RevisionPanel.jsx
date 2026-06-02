@@ -2,103 +2,70 @@ import { useEffect, useState } from "react"
 import api from "../api/axios"
 
 function RevisionPanel() {
-
   const [revisions, setRevisions] = useState([])
 
   useEffect(() => {
-
     fetchRevisions()
-
   }, [])
 
   const fetchRevisions = async () => {
-
     try {
-
       const response = await api.get("/revision")
-
       setRevisions(response.data)
-
     } catch (error) {
-
       console.log(error)
-
     }
-
   }
 
   const markRevised = async (id) => {
-
     try {
-
       await api.put(`/revision/${id}`)
-
       fetchRevisions()
-
     } catch (error) {
-
       console.log(error)
-
     }
-
   }
 
   return (
-
-    <div className="bg-white p-6 rounded-2xl shadow-md mt-8">
-
-      <h2 className="text-2xl font-bold mb-5">
+    <div className="card" style={{ marginTop: "2rem" }}>
+      <h2 style={{ fontWeight: 800, fontSize: "1.25rem", marginBottom: "1.25rem" }}>
         Topics To Revise Today 📚
       </h2>
 
       {revisions.length === 0 ? (
-
-        <p className="text-gray-500">
-          No topics need revision 🎉
-        </p>
-
+        <div className="empty-state" style={{ padding: "2rem" }}>
+          <div className="empty-state-icon">🎉</div>
+          <p>No topics need revision today!</p>
+        </div>
       ) : (
-
-        <div className="space-y-4">
-
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {revisions.map((journal) => (
-
             <div
               key={journal._id}
-              className="flex justify-between items-center bg-gray-100 p-4 rounded-xl"
+              className="revision-card"
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
             >
-
               <div>
-
-                <h3 className="font-semibold">
+                <h3 style={{ fontWeight: 600, marginBottom: "0.25rem" }}>
                   {journal.topic}
                 </h3>
-
-                <p className="text-sm text-gray-600">
+                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                   Revisions: {journal.revisionCount}
                 </p>
-
               </div>
 
               <button
                 onClick={() => markRevised(journal._id)}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                className="btn btn-success"
               >
-                Mark Revised
+                ✅ Mark Revised
               </button>
-
             </div>
-
           ))}
-
         </div>
-
       )}
-
     </div>
-
   )
-
 }
 
 export default RevisionPanel

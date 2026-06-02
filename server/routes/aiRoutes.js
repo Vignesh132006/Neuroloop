@@ -3,7 +3,7 @@ const router = express.Router()
 const Groq = require("groq-sdk")
 const authMiddleware = require("../middleware/authMiddleware")
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
 
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 

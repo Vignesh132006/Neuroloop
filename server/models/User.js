@@ -41,6 +41,16 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     ],
+
+    githubUsername: {
+      type: String,
+      default: "",
+    },
+
+    emailNotifications: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
