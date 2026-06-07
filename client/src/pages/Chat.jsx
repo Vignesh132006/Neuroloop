@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiTrash2, FiSend } from "react-icons/fi"
 
 export default function Chat() {
   const { user } = useAuth()
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `Hello ${user?.name?.split(" ")[0] || ""}! 👋 I'm **Neuro**, your AI study companion.\n\nI use the Socratic method to help you *truly understand* concepts, not just memorise them. Ask me anything — a topic you're struggling with, want to explore deeper, or need explained differently.\n\nWhat are we diving into today? 🚀`,
+      content: `Hello ${user?.name?.split(" ")[0] || ""}. I am Neuro, your AI study companion.\n\nI use the Socratic method to help you understand concepts deeply rather than simply memorising them. Ask me anything — a topic you are struggling with, want to explore deeper, or need explained differently.\n\nWhat would you like to discuss today?`,
     },
   ])
   const [input, setInput] = useState("")
@@ -51,7 +52,7 @@ export default function Chat() {
     } catch (e) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "I'm having trouble connecting right now. Please try again in a moment. 🔄" },
+        { role: "assistant", content: "I am having trouble connecting right now. Please try again in a moment." },
       ])
     } finally {
       setLoading(false)
@@ -68,7 +69,7 @@ export default function Chat() {
   const clearChat = () => {
     setMessages([{
       role: "assistant",
-      content: `Chat cleared! I'm still here ${user?.name?.split(" ")[0] || ""}. What would you like to explore? 🧠`,
+      content: `Chat cleared. I am ready to explore new topics with you. What would you like to cover?`,
     }])
   }
 
@@ -77,18 +78,18 @@ export default function Chat() {
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:rgba(139,92,246,0.15);padding:0.1em 0.3em;border-radius:4px;font-family:monospace">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:var(--bg-secondary);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--border)">$1</code>')
       .replace(/\n/g, "<br/>")
   }
 
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 0px)", padding: "1.5rem 2.5rem" }}>
+      <main className="main-content fade-in" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 0px)", padding: "2rem 3rem" }}>
         {/* Header */}
         <div className="flex-between mb-4">
           <div>
-            <h1 className="page-title">💬 Neuro — AI Tutor</h1>
+            <h1 className="page-title">Neuro AI Tutor</h1>
             <p className="page-subtitle">Socratic learning assistant • Ask anything</p>
           </div>
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
@@ -101,12 +102,12 @@ export default function Chat() {
               <option value="">No context</option>
               {notes.map((n) => (
                 <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>
-                  📝 {n.topic}
+                  {n.topic}
                 </option>
               ))}
             </select>
-            <button className="btn btn-secondary" onClick={clearChat} title="Clear chat">
-              🗑️ Clear
+            <button className="btn btn-secondary" onClick={clearChat} title="Clear chat" style={{ gap: "0.35rem" }}>
+              <FiTrash2 /> Clear
             </button>
           </div>
         </div>
@@ -130,12 +131,13 @@ export default function Chat() {
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
                   <div style={{
                     width: "28px", height: "28px",
-                    background: "var(--gradient-primary)",
+                    background: "var(--accent-blue)",
+                    color: "#ffffff",
                     borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: "0.8rem", fontWeight: 700,
                   }}>N</div>
-                  <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--accent-purple)" }}>Neuro</span>
+                  <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--accent-blue)" }}>Neuro</span>
                 </div>
               )}
               <div
@@ -149,7 +151,8 @@ export default function Chat() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <div style={{
                 width: "28px", height: "28px",
-                background: "var(--gradient-primary)",
+                background: "var(--accent-blue)",
+                color: "#ffffff",
                 borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.8rem", fontWeight: 700,
@@ -158,10 +161,10 @@ export default function Chat() {
                 <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
                   {[0, 0.15, 0.3].map((delay, i) => (
                     <div key={i} style={{
-                      width: "8px", height: "8px",
+                      width: "6px", height: "6px",
                       borderRadius: "50%",
-                      background: "var(--accent-purple)",
-                      animation: `pulse-glow 1.2s ease-in-out ${delay}s infinite`,
+                      background: "var(--text-muted)",
+                      animation: `spin 1.2s ease-in-out ${delay}s infinite`,
                     }} />
                   ))}
                 </div>
@@ -195,14 +198,14 @@ export default function Chat() {
             className="btn btn-primary"
             onClick={sendMessage}
             disabled={loading || !input.trim()}
-            style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem" }}
+            style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem", gap: "0.35rem" }}
           >
-            {loading ? "..." : "Send →"}
+            <FiSend /> Send
           </button>
         </div>
 
         <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.5rem" }}>
-          Neuro uses the Socratic method to guide deep understanding • Powered by Groq LLaMA
+          Neuro uses the Socratic method to guide deep understanding
         </p>
       </main>
     </div>
