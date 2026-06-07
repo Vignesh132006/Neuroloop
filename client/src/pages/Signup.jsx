@@ -37,11 +37,11 @@ export default function Signup() {
     <div className="auth-container">
       <div className="auth-card fade-in">
         <div className="auth-logo">
-          <h1>🧠 NeuroLoop</h1>
+          <h1>NeuroLoop</h1>
           <p>Start your learning journey today</p>
         </div>
 
-        <h2 style={{ fontWeight: 700, marginBottom: "1.5rem", fontSize: "1.25rem" }}>
+        <h2 style={{ fontWeight: 600, marginBottom: "1.5rem", fontSize: "1.15rem", color: "var(--text-primary)" }}>
           Create your account
         </h2>
 
@@ -91,16 +91,16 @@ export default function Signup() {
             id="signup-submit"
             type="submit"
             className="btn btn-primary w-full"
-            style={{ justifyContent: "center", padding: "0.875rem", marginTop: "0.5rem" }}
+            style={{ justifyContent: "center", padding: "0.75rem", marginTop: "0.5rem" }}
             disabled={loading}
           >
-            {loading ? "Creating account..." : "Get Started →"}
+            {loading ? "Creating account..." : "Get Started"}
           </button>
         </form>
 
-        <p style={{ textAlign: "center", marginTop: "1.5rem", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+        <p style={{ textAlign: "center", marginTop: "1.5rem", color: "var(--text-secondary)", fontSize: "0.875rem" }}>
           Already have an account?{" "}
-          <Link to="/login" style={{ color: "var(--accent-purple)", fontWeight: 600 }}>
+          <Link to="/login" style={{ color: "var(--accent-blue)", fontWeight: 500 }}>
             Sign in
           </Link>
         </p>
