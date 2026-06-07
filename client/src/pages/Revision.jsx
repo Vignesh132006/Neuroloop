@@ -2,6 +2,16 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { 
+  FiRefreshCw, 
+  FiAlertTriangle, 
+  FiCalendar, 
+  FiCheckCircle, 
+  FiTarget, 
+  FiBookOpen, 
+  FiCpu, 
+  FiInfo 
+} from "react-icons/fi"
 
 export default function Revision() {
   const { user } = useAuth()
@@ -43,7 +53,7 @@ export default function Revision() {
     setCompleting((p) => ({ ...p, [noteId]: true }))
     try {
       const res = await api.put(`/revision/${noteId}`, { confidenceRating: conf })
-      showToast(`Revised! Next revision in ${res.data.daysUntilNext} days 📅`)
+      showToast(`Revised! Next revision in ${res.data.daysUntilNext} days`)
       fetchData()
     } catch (e) {
       showToast("Failed to mark as revised", "error")
@@ -62,7 +72,7 @@ export default function Revision() {
       })
       setStudyPlan(res.data.plan)
       setActiveTab("plan")
-      showToast("Study plan generated! 📋")
+      showToast("Study plan generated!")
     } catch (e) {
       showToast("Study plan generation failed", "error")
     } finally {
@@ -77,32 +87,38 @@ export default function Revision() {
     <div className="app-layout">
       <Sidebar />
       <main className="main-content fade-in">
-        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
 
         <div className="page-header flex-between">
           <div>
-            <h1 className="page-title">🔁 Smart Revision</h1>
+            <h1 className="page-title">Smart Revision</h1>
             <p className="page-subtitle">Spaced repetition powered by science</p>
           </div>
-          <button className="btn btn-primary" onClick={generateStudyPlan} disabled={planLoading}>
-            {planLoading ? "Generating..." : "📋 AI Study Plan"}
+          <button className="btn btn-primary" onClick={generateStudyPlan} disabled={planLoading} style={{ gap: "0.4rem" }}>
+            <FiCpu /> {planLoading ? "Generating..." : "AI Study Plan"}
           </button>
         </div>
 
         {/* Stats Row */}
         <div className="grid-3 mb-6">
           <div className="stat-card orange">
-            <div style={{ fontSize: "1.5rem" }}>🔁</div>
+            <div style={{ fontSize: "1.25rem", color: "var(--accent-orange)", display: "flex", alignItems: "center" }}>
+              <FiRefreshCw />
+            </div>
             <div className="stat-label mt-2">Due Today</div>
             <div className="stat-number" style={{ color: "var(--accent-orange)" }}>{dueNotes.length}</div>
           </div>
           <div className="stat-card pink">
-            <div style={{ fontSize: "1.5rem" }}>⚠️</div>
+            <div style={{ fontSize: "1.25rem", color: "var(--accent-pink)", display: "flex", alignItems: "center" }}>
+              <FiAlertTriangle />
+            </div>
             <div className="stat-label mt-2">Weak Topics</div>
             <div className="stat-number" style={{ color: "var(--accent-pink)" }}>{weakTopics.length}</div>
           </div>
           <div className="stat-card green">
-            <div style={{ fontSize: "1.5rem" }}>📅</div>
+            <div style={{ fontSize: "1.25rem", color: "var(--accent-green)", display: "flex", alignItems: "center" }}>
+              <FiCalendar />
+            </div>
             <div className="stat-label mt-2">Intervals</div>
             <div className="stat-number" style={{ color: "var(--accent-green)", fontSize: "1rem" }}>1·3·7·14·30d</div>
           </div>
@@ -116,7 +132,7 @@ export default function Revision() {
               className={`btn ${activeTab === tab ? "btn-primary" : "btn-secondary"}`}
               onClick={() => setActiveTab(tab)}
             >
-              {tab === "due" ? `🔁 Due (${dueNotes.length})` : tab === "weak" ? `⚠️ Weak Topics` : `📋 Study Plan`}
+              {tab === "due" ? `Due (${dueNotes.length})` : tab === "weak" ? `Weak Topics` : `Study Plan`}
             </button>
           ))}
         </div>
@@ -128,9 +144,9 @@ export default function Revision() {
             {dueNotes.length === 0 ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-state-icon">✅</div>
+                  <div className="empty-state-icon"><FiCheckCircle size={32} /></div>
                   <h3>All caught up!</h3>
-                  <p>No revisions due today. Keep studying to build new notes!</p>
+                  <p>No revisions due today. Keep studying to build new notes.</p>
                 </div>
               </div>
             ) : (
@@ -138,16 +154,17 @@ export default function Revision() {
                 {dueNotes.map((note) => (
                   <div key={note._id} className="revision-card">
                     <div className="flex-between mb-2">
-                      <h3 style={{ fontWeight: 700 }}>{note.topic}</h3>
+                      <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{note.topic}</h3>
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <span className="badge badge-orange">Rev #{note.revisionCount + 1}</span>
-                        <span className={`badge badge-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"}`}>
+                        <span className={`badge badge-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                          <span className={`dot dot-${note.difficulty}`}></span>
                           {note.difficulty}
                         </span>
                       </div>
                     </div>
 
-                    <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "0.75rem" }}>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "0.75rem", lineHeight: 1.6 }}>
                       {note.notes.slice(0, 200)}...
                     </p>
 
@@ -161,28 +178,32 @@ export default function Revision() {
                     </div>
 
                     {/* Confidence Rating */}
-                    <div style={{ marginBottom: "0.75rem" }}>
-                      <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: "0.4rem" }}>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: "0.5rem" }}>
                         How confident are you? (1 = struggling, 5 = mastered)
                       </p>
                       <div style={{ display: "flex", gap: "0.4rem" }}>
-                        {[1, 2, 3, 4, 5].map((v) => (
-                          <button
-                            key={v}
-                            onClick={() => setConfidence((p) => ({ ...p, [note._id]: v }))}
-                            style={{
-                              width: "36px", height: "36px",
-                              borderRadius: "8px",
-                              border: `1px solid ${(confidence[note._id] || 3) >= v ? "var(--accent-purple)" : "var(--border)"}`,
-                              background: (confidence[note._id] || 3) >= v ? "rgba(139,92,246,0.2)" : "var(--bg-secondary)",
-                              color: "var(--text-primary)",
-                              cursor: "pointer",
-                              fontWeight: 700,
-                              fontSize: "0.875rem",
-                              transition: "all 0.15s",
-                            }}
-                          >{v}</button>
-                        ))}
+                        {[1, 2, 3, 4, 5].map((v) => {
+                          const currentVal = confidence[note._id] || 3
+                          const isSelected = currentVal === v
+                          return (
+                            <button
+                              key={v}
+                              onClick={() => setConfidence((p) => ({ ...p, [note._id]: v }))}
+                              style={{
+                                width: "36px", height: "36px",
+                                borderRadius: "8px",
+                                border: `1px solid ${isSelected ? "var(--accent-blue)" : "var(--border)"}`,
+                                background: isSelected ? "var(--accent-blue)" : "var(--bg-secondary)",
+                                color: isSelected ? "#ffffff" : "var(--text-primary)",
+                                cursor: "pointer",
+                                fontWeight: 700,
+                                fontSize: "0.875rem",
+                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                              }}
+                            >{v}</button>
+                          )
+                        })}
                       </div>
                     </div>
 
@@ -195,7 +216,7 @@ export default function Revision() {
                         onClick={() => markRevised(note._id)}
                         disabled={completing[note._id]}
                       >
-                        {completing[note._id] ? "Saving..." : "✅ Mark Revised"}
+                        {completing[note._id] ? "Saving..." : "Mark Revised"}
                       </button>
                     </div>
                   </div>
@@ -208,7 +229,7 @@ export default function Revision() {
             {weakTopics.length === 0 ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-state-icon">🎯</div>
+                  <div className="empty-state-icon"><FiTarget size={32} /></div>
                   <h3>No weak spots detected</h3>
                   <p>Take more quizzes to identify areas to improve</p>
                 </div>
@@ -219,17 +240,17 @@ export default function Revision() {
                   <div key={i} className="card" style={{ borderLeft: "3px solid var(--accent-pink)" }}>
                     <div className="flex-between">
                       <div>
-                        <h3 style={{ fontWeight: 700 }}>{t.topic}</h3>
-                        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                        <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{t.topic}</h3>
+                        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.15rem" }}>
                           Failed {t.failCount} time{t.failCount !== 1 ? "s" : ""} (scored below 60%)
                         </p>
                       </div>
-                      <span className="badge badge-pink">⚠️ Weak</span>
+                      <span className="badge badge-pink">Weak</span>
                     </div>
-                    <div className="progress-bar mt-2">
+                    <div className="progress-bar mt-3">
                       <div className="progress-fill" style={{
                         width: `${Math.max(10, 100 - t.failCount * 20)}%`,
-                        background: "linear-gradient(135deg,#ef4444,#f97316)",
+                        background: "var(--accent-pink)",
                       }} />
                     </div>
                   </div>
@@ -242,7 +263,7 @@ export default function Revision() {
             {!studyPlan ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-state-icon">📋</div>
+                  <div className="empty-state-icon"><FiBookOpen size={32} /></div>
                   <h3>No study plan yet</h3>
                   <p>Click "AI Study Plan" to generate a personalised 7-day plan based on your weak topics</p>
                 </div>
@@ -250,18 +271,18 @@ export default function Revision() {
             ) : (
               <div>
                 <div className="card mb-4">
-                  <div className="ai-output">{studyPlan.overview}</div>
+                  <div className="ai-output" style={{ lineHeight: 1.6 }}>{studyPlan.overview}</div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                   {(studyPlan.days || []).map((day) => (
                     <div key={day.day} className="card">
                       <div className="flex-between mb-2">
-                        <h3 style={{ fontWeight: 700 }}>Day {day.day}: {day.focus}</h3>
-                        <span className="badge badge-purple">⏱️ {day.estimatedTime}</span>
+                        <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--text-primary)" }}>Day {day.day}: {day.focus}</h3>
+                        <span className="badge badge-purple">Time: {day.estimatedTime}</span>
                       </div>
                       <ul style={{ paddingLeft: "1.25rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                         {(day.tasks || []).map((task, i) => (
-                          <li key={i} style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{task}</li>
+                          <li key={i} style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>{task}</li>
                         ))}
                       </ul>
                     </div>
@@ -269,10 +290,12 @@ export default function Revision() {
                 </div>
                 {studyPlan.tips && (
                   <div className="card mt-4">
-                    <h3 style={{ fontWeight: 700, marginBottom: "0.75rem" }}>💡 Tips</h3>
+                    <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                      <FiInfo style={{ color: "var(--accent-blue)" }} /> Tips
+                    </h3>
                     <ul style={{ paddingLeft: "1.25rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                       {studyPlan.tips.map((tip, i) => (
-                        <li key={i} style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{tip}</li>
+                        <li key={i} style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>{tip}</li>
                       ))}
                     </ul>
                   </div>
