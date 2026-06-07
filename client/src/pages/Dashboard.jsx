@@ -2,18 +2,24 @@ import { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { 
+  FiFileText, 
+  FiActivity, 
+  FiRefreshCw, 
+  FiHelpCircle, 
+  FiCheckCircle, 
+  FiSettings, 
+  FiCalendar 
+} from "react-icons/fi"
 
 function StatCard({ label, value, color, icon }) {
   return (
     <div className={`stat-card ${color}`}>
-      <div style={{ fontSize: "1.5rem" }}>{icon}</div>
-      <div className="stat-label" style={{ marginTop: "0.5rem" }}>{label}</div>
-      <div className="stat-number" style={{
-        color: color === "purple" ? "var(--accent-purple)"
-             : color === "blue" ? "var(--accent-blue)"
-             : color === "green" ? "var(--accent-green)"
-             : "var(--accent-orange)"
-      }}>
+      <div style={{ fontSize: "1.25rem", color: `var(--accent-${color})`, display: "flex", alignItems: "center" }}>
+        {icon}
+      </div>
+      <div className="stat-label" style={{ marginTop: "0.75rem" }}>{label}</div>
+      <div className="stat-number">
         {value}
       </div>
     </div>
@@ -48,8 +54,10 @@ function ActivityHeatmap({ heatmapData }) {
   return (
     <div className="card">
       <div className="flex-between mb-4">
-        <h3 style={{ fontWeight: 700 }}>📅 Activity Heatmap</h3>
-        <span className="badge badge-purple">Last 90 Days</span>
+        <h3 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem" }}>
+          <FiCalendar style={{ color: "var(--accent-blue)" }} /> Activity Heatmap
+        </h3>
+        <span className="badge badge-blue">Last 90 Days</span>
       </div>
       <div className="heatmap-grid">
         {days.map((date) => (
@@ -133,7 +141,7 @@ export default function Dashboard() {
       const heatmapRes = await api.get("/notes/stats/heatmap")
       setHeatmapData(heatmapRes.data)
       
-      showToast("Profile settings saved successfully! ✅")
+      showToast("Profile settings saved successfully!")
     } catch (err) {
       showToast("Failed to update profile settings", "error")
     } finally {
@@ -166,12 +174,12 @@ export default function Dashboard() {
     <div className="app-layout">
       <Sidebar />
       <main className="main-content fade-in">
-        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+        {toast && <div className="alert alert-success" style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
 
         {/* Header */}
         <div className="page-header">
           <h1 className="page-title">
-            Welcome back, {user?.name?.split(" ")[0]} 👋
+            Welcome back, {user?.name?.split(" ")[0]}
           </h1>
           <p className="page-subtitle">
             {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
@@ -180,10 +188,10 @@ export default function Dashboard() {
 
         {/* Stats */}
         <div className="grid-4 mb-6">
-          <StatCard label="Total Notes" value={notes.length} color="purple" icon="📝" />
-          <StatCard label="Study Streak" value={`${calcStreak()}d 🔥`} color="orange" icon="⚡" />
-          <StatCard label="Due Revisions" value={dueRevisions.length} color="blue" icon="🔁" />
-          <StatCard label="Avg Quiz Score" value={`${avgQuizScore}%`} color="green" icon="🧠" />
+          <StatCard label="Total Notes" value={notes.length} color="blue" icon={<FiFileText />} />
+          <StatCard label="Study Streak" value={`${calcStreak()}d`} color="orange" icon={<FiActivity />} />
+          <StatCard label="Due Revisions" value={dueRevisions.length} color="pink" icon={<FiRefreshCw />} />
+          <StatCard label="Avg Quiz Score" value={`${avgQuizScore}%`} color="green" icon={<FiHelpCircle />} />
         </div>
 
         {/* Heatmap */}
@@ -195,16 +203,18 @@ export default function Dashboard() {
         {weeklyStats && (
           <div className="card mb-6">
             <div className="flex-between mb-4">
-              <h3 style={{ fontWeight: 700 }}>📋 Weekly Progress Report</h3>
+              <h3 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem" }}>
+                <FiFileText style={{ color: "var(--accent-blue)" }} /> Weekly Progress Report
+              </h3>
               <span className="badge badge-green">Last 7 Days</span>
             </div>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "1.5rem" }}>
               Weekly summary: You wrote <strong>{weeklyStats.notesCount}</strong> notes, finished <strong>{weeklyStats.revisionsCount}</strong> revisions, and took <strong>{weeklyStats.quizzesCount}</strong> quizzes with an average score of <strong>{weeklyStats.averagePercentage}%</strong>.
             </p>
             
             {/* Styled Bar Chart */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <h4 style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text-secondary)" }}>Daily Activity (Notes vs Quizzes)</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <h4 style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-secondary)" }}>Daily Activity (Notes vs Quizzes)</h4>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "140px", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem" }}>
                 {weeklyStats.dailyStats.map((day, idx) => {
                   const maxVal = Math.max(...weeklyStats.dailyStats.map(d => d.notes + d.quizzes)) || 1
@@ -213,14 +223,14 @@ export default function Dashboard() {
                   
                   return (
                     <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "12%", gap: "0.25rem" }}>
-                      <div style={{ display: "flex", gap: "3px", width: "100%", height: "100px", alignItems: "flex-end", justifyContent: "center" }}>
+                      <div style={{ display: "flex", gap: "4px", width: "100%", height: "100px", alignItems: "flex-end", justifyContent: "center" }}>
                         {/* Notes bar */}
                         <div 
                           style={{ 
                             width: "8px", 
                             height: `${notesHeight}%`, 
-                            background: "var(--gradient-primary)", 
-                            borderRadius: "3px 3px 0 0",
+                            background: "var(--accent-blue)", 
+                            borderRadius: "2px 2px 0 0",
                             transition: "height 0.3s ease"
                           }} 
                           title={`Notes: ${day.notes}`}
@@ -230,8 +240,8 @@ export default function Dashboard() {
                           style={{ 
                             width: "8px", 
                             height: `${quizzesHeight}%`, 
-                            background: "var(--gradient-blue)", 
-                            borderRadius: "3px 3px 0 0",
+                            background: "var(--accent-purple)", 
+                            borderRadius: "2px 2px 0 0",
                             transition: "height 0.3s ease"
                           }} 
                           title={`Quizzes: ${day.quizzes}`}
@@ -242,12 +252,12 @@ export default function Dashboard() {
                   )
                 })}
               </div>
-              <div style={{ display: "flex", gap: "1rem", fontSize: "0.75rem", color: "var(--text-muted)", justifyContent: "center" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                  <div style={{ width: "8px", height: "8px", background: "var(--accent-purple)", borderRadius: "50%" }} /> Notes Written
+              <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.75rem", color: "var(--text-muted)", justifyContent: "center" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                  <div style={{ width: "8px", height: "8px", background: "var(--accent-blue)", borderRadius: "50%" }} /> Notes Written
                 </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                  <div style={{ width: "8px", height: "8px", background: "var(--accent-blue)", borderRadius: "50%" }} /> Quizzes Taken
+                <span style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                  <div style={{ width: "8px", height: "8px", background: "var(--accent-purple)", borderRadius: "50%" }} /> Quizzes Taken
                 </span>
               </div>
             </div>
@@ -256,7 +266,9 @@ export default function Dashboard() {
 
         {/* Profile & Integrations Settings Card */}
         <div className="card mb-6">
-          <h3 style={{ fontWeight: 700, marginBottom: "1rem" }}>⚙️ Settings & Social Sync</h3>
+          <h3 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem", marginBottom: "1.25rem" }}>
+            <FiSettings style={{ color: "var(--accent-blue)" }} /> Settings & Social Sync
+          </h3>
           <div className="grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Link GitHub Username</label>
@@ -267,7 +279,7 @@ export default function Dashboard() {
                 value={githubUsername}
                 onChange={(e) => setGithubUsername(e.target.value)}
               />
-              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.35rem" }}>
                 Overlay your public GitHub commits directly on your activity heatmap.
               </p>
             </div>
@@ -277,17 +289,17 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={emailNotifications}
                   onChange={(e) => setEmailNotifications(e.target.checked)}
-                  style={{ width: "18px", height: "18px", accentColor: "var(--accent-purple)" }}
+                  style={{ width: "16px", height: "16px", accentColor: "var(--accent-blue)" }}
                 />
                 <span>Receive SendGrid Email Reminders</span>
               </label>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", paddingLeft: "1.7rem" }}>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.35rem", paddingLeft: "1.5rem" }}>
                 Get notified when you have notes due for spaced-repetition revisions.
               </p>
             </div>
           </div>
           <button className="btn btn-primary mt-4" onClick={handleSaveSettings} disabled={settingsLoading}>
-            {settingsLoading ? "Saving..." : "💾 Save Settings"}
+            {settingsLoading ? "Saving..." : "Save Settings"}
           </button>
         </div>
 
@@ -296,12 +308,12 @@ export default function Dashboard() {
           {/* Recent Notes */}
           <div className="card">
             <div className="flex-between mb-4">
-              <h3 style={{ fontWeight: 700 }}>📖 Recent Notes</h3>
-              <span className="badge badge-purple">{notes.length} total</span>
+              <h3 style={{ fontWeight: 600, fontSize: "1.05rem" }}>Recent Notes</h3>
+              <span className="badge badge-blue">{notes.length} total</span>
             </div>
             {notes.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-state-icon">📝</div>
+                <div className="empty-state-icon"><FiFileText size={32} /></div>
                 <h3>No notes yet</h3>
                 <p>Start writing in your Journal</p>
               </div>
@@ -309,18 +321,18 @@ export default function Dashboard() {
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                 {notes.slice(0, 5).map((n) => (
                   <div key={n._id} style={{
-                    padding: "0.875rem",
+                    padding: "0.875rem 1rem",
                     background: "var(--bg-secondary)",
-                    borderRadius: "10px",
-                    borderLeft: "3px solid var(--accent-purple)",
+                    borderRadius: "8px",
+                    borderLeft: "3px solid var(--accent-blue)",
                   }}>
                     <div className="flex-between">
-                      <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>{n.topic}</span>
+                      <span style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text-primary)" }}>{n.topic}</span>
                       <span className={`badge badge-${n.difficulty === "easy" ? "green" : n.difficulty === "hard" ? "pink" : "blue"}`}>
                         {n.difficulty}
                       </span>
                     </div>
-                    <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", marginTop: "0.25rem" }}>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
                       {new Date(n.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -332,27 +344,27 @@ export default function Dashboard() {
           {/* Due Revisions */}
           <div className="card">
             <div className="flex-between mb-4">
-              <h3 style={{ fontWeight: 700 }}>🔁 Due for Revision</h3>
+              <h3 style={{ fontWeight: 600, fontSize: "1.05rem" }}>Due for Revision</h3>
               <span className="badge badge-orange">{dueRevisions.length} due</span>
             </div>
             {dueRevisions.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-state-icon">✅</div>
+                <div className="empty-state-icon"><FiCheckCircle size={32} /></div>
                 <h3>All caught up!</h3>
                 <p>No revisions due today</p>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                 {dueRevisions.slice(0, 5).map((n) => (
-                  <div key={n._id} className="revision-card">
+                  <div key={n._id} className="revision-card" style={{ padding: "0.875rem 1rem", borderRadius: "8px" }}>
                     <div className="flex-between">
-                      <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>{n.topic}</span>
+                      <span style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text-primary)" }}>{n.topic}</span>
                       <span className="badge badge-orange">Rev #{n.revisionCount + 1}</span>
                     </div>
                     <div className="progress-bar mt-2">
                       <div className="progress-fill" style={{ width: `${n.masteryScore}%` }} />
                     </div>
-                    <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
                       Mastery: {n.masteryScore}%
                     </p>
                   </div>
@@ -365,26 +377,26 @@ export default function Dashboard() {
         {/* Quiz History */}
         {quizHistory.length > 0 && (
           <div className="card mt-4">
-            <h3 style={{ fontWeight: 700, marginBottom: "1rem" }}>📊 Recent Quiz Performance</h3>
+            <h3 style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: "1rem" }}>Recent Quiz Performance</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {quizHistory.slice(0, 5).map((q) => (
                 <div key={q._id} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <span style={{ flex: 1, fontWeight: 600, fontSize: "0.9rem" }}>{q.topic}</span>
+                  <span style={{ flex: 1, fontWeight: 600, fontSize: "0.875rem", color: "var(--text-primary)" }}>{q.topic}</span>
                   <div className="progress-bar" style={{ flex: 2 }}>
                     <div
                       className="progress-fill"
                       style={{
                         width: `${q.percentage}%`,
-                        background: q.percentage >= 80 ? "var(--gradient-green)"
-                          : q.percentage >= 60 ? "var(--gradient-blue)"
-                          : "linear-gradient(135deg, #ef4444, #f97316)",
+                        background: q.percentage >= 80 ? "var(--accent-green)"
+                          : q.percentage >= 60 ? "var(--accent-blue)"
+                          : "var(--accent-pink)",
                       }}
                     />
                   </div>
                   <span style={{
-                    fontWeight: 700, fontSize: "0.9rem", minWidth: "45px", textAlign: "right",
+                    fontWeight: 700, fontSize: "0.875rem", minWidth: "45px", textAlign: "right",
                     color: q.percentage >= 80 ? "var(--accent-green)"
-                      : q.percentage >= 60 ? "var(--accent-blue)" : "#f87171",
+                      : q.percentage >= 60 ? "var(--accent-blue)" : "var(--accent-pink)",
                   }}>
                     {q.percentage}%
                   </span>
