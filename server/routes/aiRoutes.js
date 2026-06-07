@@ -52,7 +52,7 @@ router.post("/summary", authMiddleware, async (req, res) => {
     const text = await groqComplete([
       {
         role: "system",
-        content: "You are a helpful study assistant. Summarise the learning notes clearly and concisely in 3-5 bullet points. Focus on key concepts. Respond only with the bullet points, no extra text.",
+        content: "You are a helpful study assistant. Summarise the learning notes clearly and concisely in 3-5 bullet points. Focus on key concepts. Respond only with the bullet points, no extra text. Do not include any emojis in your response. Keep the tone completely professional, informative, and precise.",
       },
       { role: "user", content: notes },
     ])
@@ -87,7 +87,7 @@ ${notes}`
     let text = await groqComplete([
       {
         role: "system",
-        content: "You are an expert teacher. Return ONLY valid JSON with no markdown or code fences.",
+        content: "You are an expert teacher. Return ONLY valid JSON with no markdown or code fences. Do not include any emojis in any fields of the JSON response.",
       },
       { role: "user", content: prompt },
     ])
@@ -125,7 +125,7 @@ ${notes}`
     let text = await groqComplete([
       {
         role: "system",
-        content: "You are a senior technical interviewer. Return ONLY valid JSON with no markdown or code fences.",
+        content: "You are a senior technical interviewer. Return ONLY valid JSON with no markdown or code fences. Do not include any emojis in any fields of the JSON response.",
       },
       { role: "user", content: prompt },
     ])
@@ -168,7 +168,7 @@ Return ONLY valid JSON (no markdown, no code fences) in this format:
     let text = await groqComplete([
       {
         role: "system",
-        content: "You are a personalized learning coach. Return ONLY valid JSON with no markdown or code fences.",
+        content: "You are a personalized learning coach. Return ONLY valid JSON with no markdown or code fences. Do not include any emojis in any fields of the JSON response.",
       },
       { role: "user", content: prompt },
     ])
@@ -195,6 +195,7 @@ Your personality:
 - Warm but precise: encouraging without being vague
 - Expert tutor: deeply knowledgeable across all subjects
 - You use the Socratic method: ask follow-up questions, challenge assumptions, guide to deeper understanding
+- Do not use any emojis in your response. Keep the tone completely professional, informative, and precise.
 
 ${context ? `Current study context: ${context}` : ""}
 
