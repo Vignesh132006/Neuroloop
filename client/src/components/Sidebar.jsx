@@ -1,15 +1,28 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useState, useEffect } from "react"
+import { 
+  FiActivity, 
+  FiBookOpen, 
+  FiFileText, 
+  FiHelpCircle, 
+  FiRefreshCw, 
+  FiMessageSquare, 
+  FiAward, 
+  FiSun, 
+  FiMoon, 
+  FiLogOut, 
+  FiMenu 
+} from "react-icons/fi"
 
 const navItems = [
-  { to: "/dashboard", icon: "⚡", label: "Dashboard" },
-  { to: "/journal",   icon: "📖", label: "Journal" },
-  { to: "/notes",     icon: "📝", label: "Notes" },
-  { to: "/quiz",      icon: "🧠", label: "Quiz" },
-  { to: "/revision",  icon: "🔁", label: "Revision" },
-  { to: "/chat",      icon: "💬", label: "Neuro Chat" },
-  { to: "/leaderboard", icon: "🏆", label: "Leaderboard" },
+  { to: "/dashboard", icon: <FiActivity />, label: "Dashboard" },
+  { to: "/journal",   icon: <FiBookOpen />, label: "Journal" },
+  { to: "/notes",     icon: <FiFileText />, label: "Notes" },
+  { to: "/quiz",      icon: <FiHelpCircle />, label: "Quiz" },
+  { to: "/revision",  icon: <FiRefreshCw />, label: "Revision" },
+  { to: "/chat",      icon: <FiMessageSquare />, label: "Neuro Chat" },
+  { to: "/leaderboard", icon: <FiAward />, label: "Leaderboard" },
 ]
 
 export default function Sidebar() {
@@ -40,11 +53,17 @@ export default function Sidebar() {
         style={{
           position: "fixed", top: "1rem", left: "1rem",
           zIndex: 1000, display: "none",
+          padding: "0.5rem",
+          borderRadius: "50%",
+          width: "40px",
+          height: "40px",
+          alignItems: "center",
+          justifyContent: "center",
         }}
         id="mobile-menu-toggle"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
-        ☰
+        <FiMenu size={20} />
       </button>
 
       <nav
@@ -55,25 +74,22 @@ export default function Sidebar() {
           background: "var(--bg-secondary)",
           borderRight: "1px solid var(--border)",
           display: "flex", flexDirection: "column",
-          padding: "1.5rem 1rem",
+          padding: "2rem 1.25rem",
           zIndex: 900,
           overflowY: "auto",
           transform: mobileOpen ? "translateX(0)" : undefined,
         }}
       >
         {/* Logo */}
-        <div style={{ marginBottom: "2rem", padding: "0 0.5rem" }}>
+        <div style={{ marginBottom: "2.5rem", padding: "0 0.5rem" }}>
           <h1 style={{
-            fontSize: "1.5rem", fontWeight: 900,
-            fontFamily: "'Space Grotesk', sans-serif",
-            background: "var(--gradient-primary)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            fontSize: "1.35rem", fontWeight: 700,
+            letterSpacing: "-0.03em",
+            color: "var(--text-primary)",
           }}>
-            🧠 NeuroLoop
+            NeuroLoop
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", fontWeight: 500 }}>
             Learn · Remember · Master
           </p>
         </div>
@@ -84,26 +100,27 @@ export default function Sidebar() {
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
             borderRadius: "12px",
-            padding: "0.875rem",
-            marginBottom: "1.5rem",
+            padding: "1rem",
+            marginBottom: "2rem",
           }}>
             <div style={{
               width: "36px", height: "36px",
-              background: "var(--gradient-primary)",
+              background: "var(--accent-blue)",
+              color: "#ffffff",
               borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontWeight: 700, fontSize: "1rem",
-              marginBottom: "0.5rem",
+              fontWeight: 600, fontSize: "0.95rem",
+              marginBottom: "0.75rem",
             }}>
               {user.name?.charAt(0).toUpperCase()}
             </div>
-            <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>{user.name}</p>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>{user.email}</p>
+            <p style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text-primary)" }}>{user.name}</p>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginTop: "0.15rem" }}>{user.email}</p>
           </div>
         )}
 
         {/* Nav Links */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.35rem" }}>
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -111,18 +128,18 @@ export default function Sidebar() {
               onClick={() => setMobileOpen(false)}
               style={({ isActive }) => ({
                 display: "flex", alignItems: "center", gap: "0.75rem",
-                padding: "0.75rem 1rem",
-                borderRadius: "10px",
+                padding: "0.7rem 1rem",
+                borderRadius: "8px",
                 textDecoration: "none",
-                fontWeight: 600,
-                fontSize: "0.9rem",
-                transition: "all 0.2s ease",
-                background: isActive ? "rgba(139,92,246,0.15)" : "transparent",
-                color: isActive ? "var(--accent-purple)" : "var(--text-secondary)",
-                border: isActive ? "1px solid rgba(139,92,246,0.3)" : "1px solid transparent",
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                background: isActive ? "var(--bg-card-hover)" : "transparent",
+                color: isActive ? "var(--accent-blue)" : "var(--text-secondary)",
+                border: "1px solid transparent",
               })}
             >
-              <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
+              <span style={{ display: "inline-flex", fontSize: "1.1rem" }}>{item.icon}</span>
               {item.label}
             </NavLink>
           ))}
@@ -134,16 +151,16 @@ export default function Sidebar() {
           className="btn btn-secondary w-full"
           style={{ marginTop: "1rem", justifyContent: "center", gap: "0.5rem" }}
         >
-          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+          {theme === "dark" ? <><FiSun /> Light</> : <><FiMoon /> Dark</>}
         </button>
 
         {/* Logout */}
         <button
           onClick={handleLogout}
           className="btn btn-danger w-full"
-          style={{ marginTop: "0.5rem", justifyContent: "center" }}
+          style={{ marginTop: "0.5rem", justifyContent: "center", gap: "0.5rem" }}
         >
-          🚪 Logout
+          <FiLogOut /> Logout
         </button>
       </nav>
 
@@ -153,7 +170,8 @@ export default function Sidebar() {
           onClick={() => setMobileOpen(false)}
           style={{
             position: "fixed", inset: 0,
-            background: "rgba(0,0,0,0.6)",
+            background: "rgba(0,0,0,0.4)",
+            backdropFilter: "blur(4px)",
             zIndex: 850,
           }}
         />
@@ -162,7 +180,7 @@ export default function Sidebar() {
       <style>{`
         @media (max-width: 768px) {
           #mobile-menu-toggle { display: flex !important; }
-          nav.sidebar { transform: translateX(${mobileOpen ? "0" : "-100%"}); transition: transform 0.3s ease; }
+          nav.sidebar { transform: translateX(${mobileOpen ? "0" : "-100%"}); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         }
       `}</style>
     </>
