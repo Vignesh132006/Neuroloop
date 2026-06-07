@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiRefreshCw, FiGithub, FiAward, FiActivity } from "react-icons/fi"
 
 export default function Leaderboard() {
   const { user } = useAuth()
@@ -30,19 +31,37 @@ export default function Leaderboard() {
     fetchLeaderboard()
   }, [])
 
+  const renderRank = (rank) => {
+    const badgeStyle = {
+      display: "inline-flex",
+      width: "24px",
+      height: "24px",
+      borderRadius: "50%",
+      color: "#000000",
+      fontWeight: 750,
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "0.75rem",
+    }
+    if (rank === 1) return <span style={{ ...badgeStyle, background: "#ffd700" }}>1</span>
+    if (rank === 2) return <span style={{ ...badgeStyle, background: "#c0c0c0" }}>2</span>
+    if (rank === 3) return <span style={{ ...badgeStyle, background: "#cd7f32" }}>3</span>
+    return <span style={{ color: "var(--text-secondary)", fontSize: "0.875rem", paddingLeft: "0.5rem" }}>{rank}</span>
+  }
+
   return (
     <div className="app-layout">
       <Sidebar />
       <main className="main-content fade-in">
-        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
 
         <div className="page-header flex-between">
           <div>
-            <h1 className="page-title">🔥 Streak Leaderboard</h1>
+            <h1 className="page-title">Streak Leaderboard</h1>
             <p className="page-subtitle">Compete with friends and keep your daily learning streak alive!</p>
           </div>
-          <button className="btn btn-secondary" onClick={fetchLeaderboard} disabled={loading}>
-            🔄 Refresh
+          <button className="btn btn-secondary" onClick={fetchLeaderboard} disabled={loading} style={{ gap: "0.35rem" }}>
+            <FiRefreshCw /> Refresh
           </button>
         </div>
 
@@ -57,31 +76,30 @@ export default function Leaderboard() {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--text-secondary)" }}>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 700 }}>Rank</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 700 }}>Name</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 700 }}>GitHub Linked</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 700, textAlign: "right" }}>Streak</th>
+                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Rank</th>
+                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Name</th>
+                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>GitHub Linked</th>
+                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "right" }}>Streak</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((u, idx) => {
                     const isSelf = user && (u.name === user.name)
                     const rank = idx + 1
-                    let rankEmoji = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`
                     
                     return (
                       <tr 
                         key={u._id} 
                         style={{ 
                           borderBottom: "1px solid var(--border)", 
-                          background: isSelf ? "rgba(139, 92, 246, 0.08)" : "transparent",
-                          fontWeight: isSelf ? "bold" : "normal"
+                          background: isSelf ? "var(--bg-card-hover)" : "transparent",
+                          fontWeight: isSelf ? "600" : "normal"
                         }}
                       >
-                        <td style={{ padding: "1rem 0.5rem", fontSize: "1.1rem" }}>
-                          {rankEmoji}
-                        </td>
                         <td style={{ padding: "1rem 0.5rem" }}>
+                          {renderRank(rank)}
+                        </td>
+                        <td style={{ padding: "1rem 0.5rem", color: "var(--text-primary)" }}>
                           <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             {u.name}
                             {isSelf && <span className="badge badge-purple" style={{ textTransform: "none" }}>You</span>}
@@ -89,15 +107,17 @@ export default function Leaderboard() {
                         </td>
                         <td style={{ padding: "1rem 0.5rem" }}>
                           {u.githubUsername ? (
-                            <span className="badge badge-blue" style={{ textTransform: "none" }}>
-                              🔗 @{u.githubUsername}
+                            <span className="badge badge-blue" style={{ textTransform: "none", gap: "0.3rem", display: "inline-flex", alignItems: "center" }}>
+                              <FiGithub size={12} /> @{u.githubUsername}
                             </span>
                           ) : (
                             <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Not Linked</span>
                           )}
                         </td>
-                        <td style={{ padding: "1rem 0.5rem", textAlign: "right", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent-orange)" }}>
-                          🔥 {u.streak} day{u.streak !== 1 ? "s" : ""}
+                        <td style={{ padding: "1rem 0.5rem", textAlign: "right", fontSize: "1rem", fontWeight: 700, color: "var(--accent-orange)" }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                            <FiActivity size={14} /> {u.streak} day{u.streak !== 1 ? "s" : ""}
+                          </span>
                         </td>
                       </tr>
                     )
@@ -108,7 +128,7 @@ export default function Leaderboard() {
 
             {users.length === 0 && (
               <div className="empty-state">
-                <div className="empty-state-icon">🔥</div>
+                <div className="empty-state-icon"><FiAward size={32} /></div>
                 <h3>No players on the leaderboard yet</h3>
                 <p>Register and login to start your streak!</p>
               </div>
