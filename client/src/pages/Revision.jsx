@@ -24,6 +24,8 @@ export default function Revision() {
   const [completing, setCompleting] = useState({})
   const [toast, setToast] = useState(null)
   const [activeTab, setActiveTab] = useState("due")
+  const [notePlans, setNotePlans] = useState({})
+  const [notePlanLoading, setNotePlanLoading] = useState({})
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type })
@@ -67,7 +69,7 @@ export default function Revision() {
     setPlanLoading(true)
     try {
       const res = await api.post("/ai/study-plan", {
-        weakTopics: weakTopics.map((t) => t.topic),
+        weakTopics: weakTopics.map((t) => t.subTopic || t.topic),
         userName: user?.name,
       })
       setStudyPlan(res.data.plan)
@@ -77,6 +79,22 @@ export default function Revision() {
       showToast("Study plan generation failed", "error")
     } finally {
       setPlanLoading(false)
+    }
+  }
+
+  const getRevisionPlan = async (note) => {
+    setNotePlanLoading((p) => ({ ...p, [note._id]: true }))
+    try {
+      const res = await api.post("/revision/study-plan", {
+        topic: note.topic,
+        noteContent: note.notes,
+      })
+      setNotePlans((p) => ({ ...p, [note._id]: res.data.plan }))
+      showToast("Revision plan generated!")
+    } catch (e) {
+      showToast("Failed to generate plan", "error")
+    } finally {
+      setNotePlanLoading((p) => ({ ...p, [note._id]: false }))
     }
   }
 
@@ -211,14 +229,33 @@ export default function Revision() {
                       <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
                         Next: in {getNextInterval(note.revisionCount + 1)} days
                       </span>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => markRevised(note._id)}
-                        disabled={completing[note._id]}
-                      >
-                        {completing[note._id] ? "Saving..." : "Mark Revised"}
-                      </button>
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => getRevisionPlan(note)}
+                          disabled={notePlanLoading[note._id]}
+                          style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                        >
+                          <FiCpu /> {notePlanLoading[note._id] ? "Generating..." : "Get AI Plan"}
+                        </button>
+                        <button
+                          className="btn btn-success"
+                          onClick={() => markRevised(note._id)}
+                          disabled={completing[note._id]}
+                        >
+                          {completing[note._id] ? "Saving..." : "Mark Revised"}
+                        </button>
+                      </div>
                     </div>
+
+                    {notePlans[note._id] && (
+                      <div className="card mt-3" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", padding: "1rem" }}>
+                        <h4 style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.5rem", color: "var(--text-primary)" }}>3-Day Revision Plan</h4>
+                        <div style={{ whiteSpace: "pre-line", fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                          {notePlans[note._id]}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -240,7 +277,9 @@ export default function Revision() {
                   <div key={i} className="card" style={{ borderLeft: "3px solid var(--accent-pink)" }}>
                     <div className="flex-between">
                       <div>
-                        <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{t.topic}</h3>
+                        <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>
+                          {t.subTopic ? `${t.topic} — ${t.subTopic}` : t.topic}
+                        </h3>
                         <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.15rem" }}>
                           Failed {t.failCount} time{t.failCount !== 1 ? "s" : ""} (scored below 60%)
                         </p>

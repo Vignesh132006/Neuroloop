@@ -5,6 +5,10 @@ const RevisionLog = require("../models/RevisionLog")
 const authMiddleware = require("../middleware/authMiddleware")
 const User = require("../models/User")
 const { sendRevisionReminder } = require("../utils/sendgrid")
+const Groq = require("groq-sdk")
+const StudyPlan = require("../models/StudyPlan")
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
 
 // Spaced repetition intervals in days: [1, 3, 7, 14, 30]
 const INTERVALS = [1, 3, 7, 14, 30]
@@ -122,6 +126,47 @@ router.post("/send-reminders", authMiddleware, async (req, res) => {
     })
   } catch (error) {
     console.error("Reminder job failed:", error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /api/revision/study-plan — specific topic the user wants a plan for
+router.post("/study-plan", authMiddleware, async (req, res) => {
+  try {
+    const { topic, noteContent } = req.body
+    if (!topic || !noteContent) {
+      return res.status(400).json({ error: "Topic and noteContent are required" })
+    }
+
+    const prompt = `A student needs to revise this specific topic: ${topic}. Their note content is: ${noteContent}. Create a focused 3-day revision plan with: Day 1 (re-read and summarise), Day 2 (practice questions), Day 3 (test yourself). Keep it specific to this topic only. Be practical and encouraging.`
+
+    const completion = await groq.chat.completions.create({
+      model: "llama3-70b-8192",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful study assistant. Create a focused, practical, and encouraging 3-day revision plan.",
+        },
+        { role: "user", content: prompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 2048,
+    })
+
+    const plan = completion.choices[0]?.message?.content ?? ""
+
+    // Save to StudyPlan collection automatically
+    const savedPlan = new StudyPlan({
+      user: req.user.id,
+      title: `Revision Plan — ${topic}`,
+      weakTopics: [topic],
+      plan: plan,
+    })
+    await savedPlan.save()
+
+    res.json({ plan })
+  } catch (error) {
+    console.error("Revision study plan error:", error)
     res.status(500).json({ error: error.message })
   }
 })
