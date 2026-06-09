@@ -11,6 +11,7 @@ const quizRoutes = require("./routes/quizRoutes")
 const revisionRoutes = require("./routes/revisionRoutes")
 const aiRoutes = require("./routes/aiRoutes")
 const testRoutes = require("./routes/testRoutes")
+const studyPlanRoutes = require("./routes/studyPlanRoutes")
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use("/api/topics", topicRoutes)
 app.use("/api/quiz", quizRoutes)
 app.use("/api/revision", revisionRoutes)
 app.use("/api/ai", aiRoutes)
+app.use("/api/study-plans", studyPlanRoutes)
 app.use("/api", testRoutes)
 
 // Keep backward-compat alias for old /api/journal routes

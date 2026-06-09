@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const Groq = require("groq-sdk")
 const authMiddleware = require("../middleware/authMiddleware")
+const StudyPlan = require("../models/StudyPlan")
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
 
@@ -186,7 +187,17 @@ Return ONLY valid JSON (no markdown, no code fences) in this format:
     text = text.trim().replace(/^```json\n?/, "").replace(/^```\n?/, "").replace(/\n?```$/, "").trim()
 
     const plan = JSON.parse(text)
-    res.json({ plan })
+
+    // Save to StudyPlan collection automatically
+    const savedPlan = new StudyPlan({
+      user: req.user.id,
+      title: `Study Plan for ${weakTopics.join(", ")} - 7 Day`,
+      weakTopics,
+      plan: text,
+    })
+    await savedPlan.save()
+
+    res.json({ plan, savedId: savedPlan._id })
   } catch (error) {
     handleAIError(error, res, "Study plan generation")
   }
