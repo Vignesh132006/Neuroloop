@@ -26,6 +26,7 @@ const quizResultSchema = new mongoose.Schema(
         correctAnswer: { type: String },
         userAnswer: { type: String },
         isCorrect: { type: Boolean },
+        subtopic: { type: String },
       },
     ],
 

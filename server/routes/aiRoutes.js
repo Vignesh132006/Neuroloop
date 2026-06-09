@@ -71,13 +71,16 @@ router.post("/mcq", authMiddleware, async (req, res) => {
 
     const prompt = `Based on these notes about "${topic || "the topic"}", generate exactly ${count} multiple choice questions.
 
+Each question must have a 'subtopic' field identifying the specific concept being tested (e.g., 'Binary Search Tree', 'Recursion', 'Time Complexity'). Return as JSON: [{question, options, answer, subtopic}]
+
 Return ONLY a valid JSON array (no markdown, no explanation, no code fences) in this exact format:
 [
   {
     "question": "Question text here?",
     "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
     "correctAnswer": "A) Option 1",
-    "explanation": "Brief explanation of why this is correct"
+    "explanation": "Brief explanation of why this is correct",
+    "subtopic": "Specific subtopic concept being tested (e.g., 'Binary Search Tree')"
   }
 ]
 
@@ -94,7 +97,14 @@ ${notes}`
 
     text = text.trim().replace(/^```json\n?/, "").replace(/^```\n?/, "").replace(/\n?```$/, "").trim()
 
-    const questions = JSON.parse(text)
+    const rawQuestions = JSON.parse(text)
+    const questions = rawQuestions.map(q => ({
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer || q.answer,
+      explanation: q.explanation || "",
+      subtopic: q.subtopic || ""
+    }))
     res.json({ questions })
   } catch (error) {
     handleAIError(error, res, "MCQ generation")

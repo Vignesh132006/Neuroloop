@@ -15,7 +15,7 @@ router.post("/submit", authMiddleware, async (req, res) => {
     // Find weak areas from wrong answers
     const weakAreas = questions
       .filter((q) => !q.isCorrect)
-      .map((q) => q.question.substring(0, 60))
+      .map((q) => (q.subtopic || q.question.substring(0, 60)).trim())
 
     const quizResult = new QuizResult({
       user: req.user.id,
@@ -77,14 +77,62 @@ router.get("/history", authMiddleware, async (req, res) => {
 // GET /api/quiz/weakness — Get weakness report
 router.get("/weakness", authMiddleware, async (req, res) => {
   try {
-    const results = await QuizResult.find({ user: req.user.id, percentage: { $lt: 60 } })
-    const weakMap = {}
+    const results = await QuizResult.find({ user: req.user.id })
+    const subtopicStats = {}
+
     results.forEach((r) => {
-      weakMap[r.topic] = (weakMap[r.topic] || 0) + 1
+      if (r.questions && r.questions.length > 0) {
+        r.questions.forEach((q) => {
+          const sub = (q.subtopic || "").trim()
+          const subTopicName = sub || q.question.substring(0, 60).trim()
+          if (!subTopicName) return
+
+          const key = `${r.topic} ||| ${subTopicName}`
+          if (!subtopicStats[key]) {
+            subtopicStats[key] = {
+              topic: r.topic,
+              subTopic: subTopicName,
+              wrongCount: 0,
+              totalCount: 0,
+            }
+          }
+          subtopicStats[key].totalCount += 1
+          if (!q.isCorrect) {
+            subtopicStats[key].wrongCount += 1
+          }
+        })
+      } else if (r.weakAreas && r.weakAreas.length > 0) {
+        r.weakAreas.forEach((wa) => {
+          if (!wa) return
+          const key = `${r.topic} ||| ${wa}`
+          if (!subtopicStats[key]) {
+            subtopicStats[key] = {
+              topic: r.topic,
+              subTopic: wa,
+              wrongCount: 0,
+              totalCount: 0,
+            }
+          }
+          subtopicStats[key].wrongCount += 1
+          subtopicStats[key].totalCount += 1
+        })
+      }
     })
-    const weakTopics = Object.entries(weakMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([topic, failCount]) => ({ topic, failCount }))
+
+    const weakTopics = Object.values(subtopicStats)
+      .filter((stat) => stat.wrongCount > 0)
+      .map((stat) => {
+        const percentage = Math.round(((stat.totalCount - stat.wrongCount) / stat.totalCount) * 100)
+        return {
+          topic: stat.topic,
+          subTopic: stat.subTopic,
+          wrongCount: stat.wrongCount,
+          failCount: stat.wrongCount,
+          percentage,
+        }
+      })
+      .sort((a, b) => b.wrongCount - a.wrongCount)
+
     res.json({ weakTopics })
   } catch (error) {
     res.status(500).json({ error: error.message })
