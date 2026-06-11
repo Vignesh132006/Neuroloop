@@ -11,14 +11,13 @@ const studyPlanSchema = new mongoose.Schema({
 })
 
 // pre-validate middleware to automatically map old schema fields to new schema fields
-studyPlanSchema.pre('validate', function(next) {
+studyPlanSchema.pre('validate', function() {
   if (!this.topic) {
     this.topic = this.title || "General";
   }
   if (!this.weakSubtopics || this.weakSubtopics.length === 0) {
     this.weakSubtopics = this.weakTopics || [];
   }
-  next();
 })
 
 module.exports = mongoose.model("StudyPlan", studyPlanSchema)
