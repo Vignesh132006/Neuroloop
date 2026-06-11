@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
@@ -15,6 +16,7 @@ import {
 
 export default function Revision() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [dueNotes, setDueNotes] = useState([])
   const [weakTopics, setWeakTopics] = useState([])
   const [studyPlan, setStudyPlan] = useState(null)
@@ -97,7 +99,10 @@ export default function Revision() {
         topic,
         weakSubtopics: subtopicsArray,
       })
-      showToast("Study plan saved! View in Study Plans section")
+      showToast("Study plan saved! Navigating to Study Plans...")
+      setTimeout(() => {
+        navigate("/study-plans")
+      }, 1000)
     } catch (err) {
       console.error(err)
       showToast(err.response?.data?.error || "Failed to generate study plan", "error")
