@@ -12,6 +12,7 @@ import Quiz      from "./pages/Quiz"
 import Revision  from "./pages/Revision"
 import Chat      from "./pages/Chat"
 import Leaderboard from "./pages/Leaderboard"
+import StudyPlans from "./pages/StudyPlans"
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/revision"  element={<PrivateRoute><Revision /></PrivateRoute>} />
           <Route path="/chat"      element={<PrivateRoute><Chat /></PrivateRoute>} />
           <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
+          <Route path="/study-plans" element={<PrivateRoute><StudyPlans /></PrivateRoute>} />
 
           {/* Redirect */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

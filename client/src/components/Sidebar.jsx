@@ -12,7 +12,8 @@ import {
   FiSun, 
   FiMoon, 
   FiLogOut, 
-  FiMenu 
+  FiMenu,
+  FiLayers
 } from "react-icons/fi"
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { to: "/revision",  icon: <FiRefreshCw />, label: "Revision" },
   { to: "/chat",      icon: <FiMessageSquare />, label: "Neuro Chat" },
   { to: "/leaderboard", icon: <FiAward />, label: "Leaderboard" },
+  { to: "/study-plans", icon: <FiLayers />, label: "Study Plans" },
 ]
 
 export default function Sidebar() {

@@ -26,6 +26,7 @@ export default function Revision() {
   const [activeTab, setActiveTab] = useState("due")
   const [notePlans, setNotePlans] = useState({})
   const [notePlanLoading, setNotePlanLoading] = useState({})
+  const [genLoading, setGenLoading] = useState({})
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type })
@@ -40,7 +41,7 @@ export default function Revision() {
         api.get("/quiz/weakness"),
       ])
       setDueNotes(revRes.data)
-      setWeakTopics(weakRes.data.weakTopics || [])
+      setWeakTopics(weakRes.data || [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -68,8 +69,14 @@ export default function Revision() {
     if (weakTopics.length === 0) { showToast("No weak topics detected!", "info"); return }
     setPlanLoading(true)
     try {
+      const topicsList = weakTopics.flatMap(t => {
+        if (t.weakSubtopics && Array.isArray(t.weakSubtopics)) {
+          return t.weakSubtopics.map(sub => sub.name)
+        }
+        return [t.subTopic || t.topic]
+      })
       const res = await api.post("/ai/study-plan", {
-        weakTopics: weakTopics.map((t) => t.subTopic || t.topic),
+        weakTopics: topicsList,
         userName: user?.name,
       })
       setStudyPlan(res.data.plan)
@@ -79,6 +86,23 @@ export default function Revision() {
       showToast("Study plan generation failed", "error")
     } finally {
       setPlanLoading(false)
+    }
+  }
+
+  const handleGenerateTopicPlan = async (topic, weakSubtopics) => {
+    setGenLoading((prev) => ({ ...prev, [topic]: true }))
+    try {
+      const subtopicsArray = weakSubtopics.map((s) => s.name)
+      await api.post("/study-plans/generate", {
+        topic,
+        weakSubtopics: subtopicsArray,
+      })
+      showToast("Study plan saved! View in Study Plans section")
+    } catch (err) {
+      console.error(err)
+      showToast(err.response?.data?.error || "Failed to generate study plan", "error")
+    } finally {
+      setGenLoading((prev) => ({ ...prev, [topic]: false }))
     }
   }
 
@@ -272,26 +296,57 @@ export default function Revision() {
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                {weakTopics.map((t, i) => (
-                  <div key={i} className="card" style={{ borderLeft: "3px solid var(--accent-pink)" }}>
-                    <div className="flex-between">
-                      <div>
-                        <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>
-                          {t.subTopic ? `${t.topic} — ${t.subTopic}` : t.topic}
-                        </h3>
-                        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.15rem" }}>
-                          Failed {t.failCount} time{t.failCount !== 1 ? "s" : ""} (scored below 60%)
-                        </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                {weakTopics.map((group, i) => (
+                  <div key={i} className="card" style={{ borderLeft: "4px solid var(--accent-pink)" }}>
+                    <div className="flex-between mb-3">
+                      <h3 style={{ fontWeight: 600, fontSize: "1.15rem", color: "var(--text-primary)" }}>
+                        Topic: {group.topic}
+                      </h3>
+                      <span className="badge badge-pink" style={{ fontSize: "0.8rem", padding: "0.3rem 0.6rem" }}>
+                        {group.totalFails} {group.totalFails === 1 ? "fail" : "fails"}
+                      </span>
+                    </div>
+
+                    <div style={{ marginBottom: "1.25rem" }}>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.5rem" }}>
+                        Weak subtopics:
+                      </p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                        {group.weakSubtopics && group.weakSubtopics.map((sub, idx) => (
+                          <span
+                            key={idx}
+                            className="badge"
+                            style={{
+                              backgroundColor: "rgba(249, 115, 22, 0.15)",
+                              color: "rgb(249, 115, 22)",
+                              padding: "0.3rem 0.65rem",
+                              borderRadius: "9999px",
+                              fontSize: "0.775rem",
+                              fontWeight: 500
+                            }}
+                          >
+                            {sub.name} ({sub.failCount})
+                          </span>
+                        ))}
                       </div>
-                      <span className="badge badge-pink">Weak</span>
                     </div>
-                    <div className="progress-bar mt-3">
-                      <div className="progress-fill" style={{
-                        width: `${Math.max(10, 100 - t.failCount * 20)}%`,
-                        background: "var(--accent-pink)",
-                      }} />
-                    </div>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleGenerateTopicPlan(group.topic, group.weakSubtopics)}
+                      disabled={!!genLoading[group.topic]}
+                      style={{ width: "100%", justifyContent: "center", gap: "0.5rem" }}
+                    >
+                      {genLoading[group.topic] ? (
+                        <>
+                          <div className="spinner" style={{ width: "16px", height: "16px", borderWidth: "2px", margin: 0 }} />
+                          Generating Study Plan...
+                        </>
+                      ) : (
+                        "Get AI Study Plan"
+                      )}
+                    </button>
                   </div>
                 ))}
               </div>

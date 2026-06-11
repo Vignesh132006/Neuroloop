@@ -5,6 +5,26 @@ const Note = require("../models/Note")
 const User = require("../models/User")
 const authMiddleware = require("../middleware/authMiddleware")
 
+function extractSubtopic(questionText) {
+  try {
+    // Try to get text after "—" dash
+    if (questionText.includes('—')) {
+      const afterDash = questionText.split('—')[1].trim()
+      // Remove common question words
+      const cleaned = afterDash
+        .replace(/^(what is|what are|which|how|why|define|explain)\s+/i, '')
+        .replace(/\s+(in|of|for|the|a|an)\s+.*/i, '')
+        .replace(/\?.*$/, '')
+        .trim()
+      // Capitalize first letter
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+    }
+    return questionText.substring(0, 30)
+  } catch(e) {
+    return "General"
+  }
+}
+
 // POST /api/quiz/submit — Submit quiz result
 router.post("/submit", authMiddleware, async (req, res) => {
   try {
@@ -15,7 +35,7 @@ router.post("/submit", authMiddleware, async (req, res) => {
     // Find weak areas from wrong answers
     const weakAreas = questions
       .filter((q) => !q.isCorrect)
-      .map((q) => (q.subtopic || q.question.substring(0, 60)).trim())
+      .map((q) => extractSubtopic(q.question))
 
     const quizResult = new QuizResult({
       user: req.user.id,
@@ -78,62 +98,56 @@ router.get("/history", authMiddleware, async (req, res) => {
 router.get("/weakness", authMiddleware, async (req, res) => {
   try {
     const results = await QuizResult.find({ user: req.user.id })
-    const subtopicStats = {}
+    const groups = {}
 
     results.forEach((r) => {
-      if (r.questions && r.questions.length > 0) {
-        r.questions.forEach((q) => {
-          const sub = (q.subtopic || "").trim()
-          const subTopicName = sub || q.question.substring(0, 60).trim()
-          if (!subTopicName) return
+      const topic = r.topic
+      if (!topic) return
 
-          const key = `${r.topic} ||| ${subTopicName}`
-          if (!subtopicStats[key]) {
-            subtopicStats[key] = {
-              topic: r.topic,
-              subTopic: subTopicName,
-              wrongCount: 0,
-              totalCount: 0,
-            }
-          }
-          subtopicStats[key].totalCount += 1
-          if (!q.isCorrect) {
-            subtopicStats[key].wrongCount += 1
-          }
-        })
-      } else if (r.weakAreas && r.weakAreas.length > 0) {
+      if (!groups[topic]) {
+        groups[topic] = {}
+      }
+
+      if (r.weakAreas && Array.isArray(r.weakAreas)) {
         r.weakAreas.forEach((wa) => {
           if (!wa) return
-          const key = `${r.topic} ||| ${wa}`
-          if (!subtopicStats[key]) {
-            subtopicStats[key] = {
-              topic: r.topic,
-              subTopic: wa,
-              wrongCount: 0,
-              totalCount: 0,
-            }
-          }
-          subtopicStats[key].wrongCount += 1
-          subtopicStats[key].totalCount += 1
+          groups[topic][wa] = (groups[topic][wa] || 0) + 1
         })
       }
     })
 
-    const weakTopics = Object.values(subtopicStats)
-      .filter((stat) => stat.wrongCount > 0)
-      .map((stat) => {
-        const percentage = Math.round(((stat.totalCount - stat.wrongCount) / stat.totalCount) * 100)
-        return {
-          topic: stat.topic,
-          subTopic: stat.subTopic,
-          wrongCount: stat.wrongCount,
-          failCount: stat.wrongCount,
-          percentage,
-        }
-      })
-      .sort((a, b) => b.wrongCount - a.wrongCount)
+    const weakTopics = []
 
-    res.json({ weakTopics })
+    for (const topic in groups) {
+      const subtopicsMap = groups[topic]
+      const weakSubtopics = []
+      let totalFails = 0
+
+      for (const subtopicName in subtopicsMap) {
+        const count = subtopicsMap[subtopicName]
+        weakSubtopics.push({
+          name: subtopicName,
+          failCount: count
+        })
+        totalFails += count
+      }
+
+      if (weakSubtopics.length > 0) {
+        // Sort subtopics inside topic by failCount descending
+        weakSubtopics.sort((a, b) => b.failCount - a.failCount)
+
+        weakTopics.push({
+          topic,
+          weakSubtopics,
+          totalFails
+        })
+      }
+    }
+
+    // Sort topics by totalFails descending
+    weakTopics.sort((a, b) => b.totalFails - a.totalFails)
+
+    res.json(weakTopics)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
