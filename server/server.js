@@ -1,6 +1,7 @@
 require("dotenv").config()
 
 const express = require("express")
+const cron = require('node-cron')
 const mongoose = require("mongoose")
 const cors = require("cors")
 
@@ -52,3 +53,20 @@ const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`[Server] Running on port ${PORT}`)
 })
+
+// Daily revision reminder — runs every day at 8:00 AM
+cron.schedule('0 8 * * *', async () => {
+  try {
+    console.log('[Cron] Running daily revision reminders...')
+    const response = await fetch(`http://localhost:${process.env.PORT || 5000}/api/revision/send-reminders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await response.json()
+    console.log('[Cron] Reminder result:', data)
+  } catch (err) {
+    console.error('[Cron] Reminder failed:', err.message)
+  }
+})
+
+console.log('[Cron] Daily reminder scheduler started — runs at 8:00 AM')
