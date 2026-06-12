@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
-import { 
-  FiSearch, 
-  FiFileText, 
-  FiCpu, 
-  FiCheck, 
-  FiInfo 
-} from "react-icons/fi"
 
 export default function Notes() {
   const [notes, setNotes] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("all")
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
@@ -47,13 +39,6 @@ export default function Notes() {
     (filter === "all" || note.difficulty === filter)
   )
 
-  const filtered = notes.filter((n) => {
-    const matchSearch = n.topic.toLowerCase().includes(search.toLowerCase()) ||
-      n.notes.toLowerCase().includes(search.toLowerCase())
-    const matchFilter = filter === "all" || n.difficulty === filter
-    return matchSearch && matchFilter
-  })
-
   const generateMCQ = async (note) => {
     setAiLoading("mcq")
     setMcqQuestions([])
@@ -87,103 +72,89 @@ export default function Notes() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in">
-        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+      <div className="page-wrap">
+        {toast && (
+          <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>
+            {toast.msg}
+          </div>
+        )}
 
         <div className="page-header">
+          <div className="page-eyebrow">NeuroLoop</div>
           <h1 className="page-title">Notes Library</h1>
           <p className="page-subtitle">Browse, search, and generate AI questions from your notes</p>
         </div>
 
         {/* Search + Filter */}
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ position: "relative", flex: 1, minWidth: "200px" }}>
-            <FiSearch style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+        <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
+          <div className="search-bar" style={{ flex: 1, minWidth: "200px", marginBottom: 0 }}>
+            <span style={{ color: "var(--t2)" }}>🔍</span>
             <input
-              className="form-input"
               placeholder="Search notes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: "2.5rem" }}
             />
           </div>
-          {["all", "easy", "medium", "hard"].map((f) => (
-            <button
-              key={f}
-              className={`btn ${filter === f ? "btn-primary" : "btn-secondary"}`}
-              onClick={() => setFilter(f)}
-              style={{ textTransform: "capitalize" }}
-            >
-              {f}
-            </button>
-          ))}
+          <div className="filter-row" style={{ marginBottom: 0 }}>
+            {["all", "easy", "medium", "hard"].map((f) => (
+              <button
+                key={f}
+                className={`filter-btn ${filter === f ? "active" : ""}`}
+                onClick={() => setFilter(f)}
+                style={{ textTransform: "capitalize" }}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
-          <div className="loading-screen"><div className="spinner" /><p>Loading notes...</p></div>
+          <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
+            <div className="skeleton" style={{ height: "150px", width: "100%" }} />
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <input
-                type="text"
-                placeholder="Search by topic or content..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '10px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
-              />
-            </div>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--t2)', marginBottom: '0.25rem' }}>
               {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} found
             </p>
             {filteredNotes.length === 0 ? (
-              <div className="card">
-                <div className="empty-state">
-                  <div className="empty-state-icon"><FiFileText size={32} /></div>
-                  <h3>No notes found</h3>
-                  <p>Try adjusting your search or add notes in the Journal</p>
-                </div>
+              <div className="empty-state">
+                <div className="empty-icon">📝</div>
+                <h3 className="empty-title">No notes found</h3>
+                <p className="empty-sub">Try adjusting your search or add notes in the Journal</p>
               </div>
             ) : (
               filteredNotes.map((note) => (
                 <div key={note._id}>
                   <div
                     className="card"
-                    style={{ cursor: "pointer", borderLeft: `3px solid var(--accent-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"})` }}
+                    style={{ cursor: "pointer", position: "relative" }}
                     onClick={() => setSelected(selected?._id === note._id ? null : note)}
                   >
-                    <div className="flex-between mb-2">
-                      <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{note.topic}</h3>
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: note.difficulty === 'easy' ? 'var(--em)' : note.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--t1)" }}>{note.topic}</h3>
                       <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <span className={`badge badge-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                          <span className={`dot dot-${note.difficulty}`}></span>
+                        <span className={`badge ${note.difficulty === "easy" ? "badge-em" : note.difficulty === "hard" ? "badge-red" : "badge-gold"}`}>
                           {note.difficulty}
                         </span>
-                        <span className="badge badge-purple">Mastery: {note.masteryScore}%</span>
+                        <span className="badge badge-neutral">Mastery: {note.masteryScore}%</span>
                       </div>
                     </div>
-                    <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", lineHeight: 1.6 }}>
+                    <p style={{ color: "var(--t2)", fontSize: "0.85rem", lineHeight: 1.6 }}>
                       {note.notes.slice(0, 160)}...
                     </p>
-
-                    {/* Progress */}
-                    <div className="progress-bar mt-2">
-                      <div className="progress-fill" style={{ width: `${note.masteryScore}%` }} />
+                    <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden', marginTop: '8px' }}>
+                      <div style={{ height: '100%', background: 'var(--gold)', width: `${note.masteryScore}%`, transition: 'width 0.4s' }} />
                     </div>
-
-                    <div className="flex-between mt-2">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
                       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                         {(note.tags || []).slice(0, 3).map((t) => (
-                          <span key={t} className="badge badge-blue">{t}</span>
+                          <span key={t} className="badge badge-neutral">{t}</span>
                         ))}
                       </div>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                      <span style={{ color: "var(--t3)", fontSize: "0.78rem" }}>
                         Rev: {note.revisionCount} · {new Date(note.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -191,60 +162,47 @@ export default function Notes() {
 
                   {/* Expanded AI Panel */}
                   {selected?._id === note._id && (
-                    <div className="card" style={{ marginTop: "0.5rem", background: "var(--bg-secondary)" }}>
-                      <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem" }}>
-                        <FiCpu style={{ color: "var(--accent-purple)" }} /> AI Tools for "{note.topic}"
+                    <div className="card" style={{ marginTop: "0.5rem", background: "var(--s2)", border: '1px solid var(--bd)' }}>
+                      <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem", color: 'var(--t1)' }}>
+                        🤖 AI Tools for "{note.topic}"
                       </h4>
                       <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => generateMCQ(note)}
-                          disabled={!!aiLoading}
-                        >
+                        <button className="btn-gold" onClick={() => generateMCQ(note)} disabled={!!aiLoading}>
                           {aiLoading === "mcq" ? "Generating..." : "Generate MCQ"}
                         </button>
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() => generateInterview(note)}
-                          disabled={!!aiLoading}
-                        >
+                        <button className="btn-outline" onClick={() => generateInterview(note)} disabled={!!aiLoading}>
                           {aiLoading === "interview" ? "Generating..." : "Interview Questions"}
                         </button>
                       </div>
 
-                      {/* Full notes */}
-                      <div className="ai-output" style={{ marginBottom: "1.5rem", fontSize: "0.875rem", lineHeight: 1.6 }}>
+                      <div className="ai-output" style={{ marginBottom: "1.5rem", fontSize: "0.85rem", lineHeight: 1.6, background: 'var(--s1)', border: '1px solid var(--bd)', color: 'var(--t2)' }}>
                         {note.notes}
                       </div>
 
-                      {/* MCQ Questions */}
+                      {/* MCQ */}
                       {mcqQuestions.length > 0 && (
                         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>MCQ Questions</h5>
+                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem", color: 'var(--t1)' }}>MCQ Questions</h5>
                           {mcqQuestions.map((q, i) => (
-                            <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.75rem", color: "var(--text-primary)" }}>{i + 1}. {q.question}</p>
+                            <div key={i} style={{ padding: "1rem", background: "var(--s3)", borderRadius: "12px", border: "1px solid var(--bd)" }}>
+                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.75rem", color: 'var(--t1)' }}>{i + 1}. {q.question}</p>
                               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                                 {(q.options || []).map((opt, j) => (
                                   <div key={j} style={{
-                                    padding: "0.5rem 0.75rem",
-                                    borderRadius: "6px",
-                                    fontSize: "0.875rem",
-                                    background: opt === q.correctAnswer ? "rgba(48, 209, 88, 0.08)" : "var(--bg-secondary)",
-                                    border: opt === q.correctAnswer ? "1px solid var(--accent-green)" : "1px solid var(--border)",
-                                    color: opt === q.correctAnswer ? "var(--accent-green)" : "var(--text-primary)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between"
+                                    padding: "0.5rem 0.75rem", borderRadius: "8px", fontSize: "0.85rem",
+                                    background: opt === q.correctAnswer ? "var(--emg)" : "rgba(255,255,255,0.03)",
+                                    border: opt === q.correctAnswer ? "1px solid var(--em)" : "1px solid var(--bd)",
+                                    color: opt === q.correctAnswer ? "var(--em)" : "var(--t1)",
+                                    display: "flex", alignItems: "center", justifyContent: "space-between",
                                   }}>
                                     <span>{opt}</span>
-                                    {opt === q.correctAnswer && <FiCheck />}
+                                    {opt === q.correctAnswer && <span>✅</span>}
                                   </div>
                                 ))}
                               </div>
                               {q.explanation && (
-                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                                  <FiInfo /> {q.explanation}
+                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--t2)" }}>
+                                  💡 {q.explanation}
                                 </p>
                               )}
                             </div>
@@ -252,24 +210,21 @@ export default function Notes() {
                         </div>
                       )}
 
-                      {/* Interview Questions */}
+                      {/* Interview */}
                       {interviewQuestions.length > 0 && (
-                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>Interview Questions</h5>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: mcqQuestions.length > 0 ? '1.5rem' : 0 }}>
+                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem", color: 'var(--t1)' }}>Interview Questions</h5>
                           {interviewQuestions.map((q, i) => (
-                            <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                              <div className="flex-between mb-2">
-                                <span className={`badge badge-${q.difficulty === "hard" ? "pink" : q.difficulty === "easy" ? "green" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                                  <span className={`dot dot-${q.difficulty}`}></span>
+                            <div key={i} style={{ padding: "1rem", background: "var(--s3)", borderRadius: "12px", border: "1px solid var(--bd)" }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                <span className={`badge ${q.difficulty === "hard" ? "badge-red" : q.difficulty === "easy" ? "badge-em" : "badge-gold"}`}>
                                   {q.difficulty}
                                 </span>
-                                <span className="badge badge-purple">{q.type}</span>
+                                <span className="badge badge-neutral">{q.type}</span>
                               </div>
-                              <p style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text-primary)", marginBottom: "0.5rem" }}>{i + 1}. {q.question}</p>
+                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.5rem", color: 'var(--t1)' }}>{i + 1}. {q.question}</p>
                               {q.hint && (
-                                <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                                  <FiInfo /> Hint: {q.hint}
-                                </p>
+                                <p style={{ fontSize: "0.8rem", color: "var(--t2)" }}>💡 Hint: {q.hint}</p>
                               )}
                             </div>
                           ))}
@@ -282,7 +237,7 @@ export default function Notes() {
             )}
           </div>
         )}
-      </main>
+      </div>
     </div>
   )
 }

@@ -1,13 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Sidebar from "../components/Sidebar"
+import TaskCompleteToast from "../components/TaskCompleteToast"
 import api from "../api/axios"
-import { 
-  FiBookOpen, 
-  FiUpload, 
-  FiEdit2, 
-  FiTrash2, 
-  FiCpu 
-} from "react-icons/fi"
 
 export default function Journal() {
   const [topic, setTopic] = useState("")
@@ -21,6 +15,7 @@ export default function Journal() {
   const [summaryLoading, setSummaryLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
   const [toast, setToast] = useState(null)
+  const [celebrationToast, setCelebrationToast] = useState({ visible: false, topic: '' })
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type })
@@ -37,6 +32,10 @@ export default function Journal() {
   }
 
   useEffect(() => { fetchJournals() }, [])
+
+  const dismissCelebration = useCallback(() => {
+    setCelebrationToast({ visible: false, topic: '' })
+  }, [])
 
   const handleSave = async () => {
     if (!topic.trim() || !notes.trim()) {
@@ -55,7 +54,7 @@ export default function Journal() {
         setEditId(null)
       } else {
         await api.post("/notes/add", payload)
-        showToast("Journal saved!")
+        setCelebrationToast({ visible: true, topic: topic })
       }
       setTopic(""); setNotes(""); setTags(""); setSummary(""); setDifficulty("medium")
       fetchJournals()
@@ -108,17 +107,14 @@ export default function Journal() {
       showToast("Please upload a valid PDF file", "error")
       return
     }
-    
     const formData = new FormData()
     formData.append("pdf", file)
-    
     setPdfLoading(true)
     showToast("Parsing PDF and generating summary...", "info")
     try {
       const res = await api.post("/notes/upload-pdf", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       })
-      
       setTopic(res.data.topic || "")
       setNotes(res.data.text || "")
       setSummary(res.data.summary || "")
@@ -133,35 +129,34 @@ export default function Journal() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in">
-        {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
+      <div className="page-wrap">
+        {toast && (
+          <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>
+            {toast.msg}
+          </div>
+        )}
+
+        <TaskCompleteToast
+          topic={celebrationToast.topic}
+          isVisible={celebrationToast.visible}
+          onDismiss={dismissCelebration}
+        />
 
         <div className="page-header">
+          <div className="page-eyebrow">NeuroLoop</div>
           <h1 className="page-title">Daily Learning Journal</h1>
           <p className="page-subtitle">Write, reflect, and let AI summarise your learning</p>
         </div>
 
         {/* Editor Card */}
-        <div className="card mb-6">
-          <h2 style={{ fontWeight: 600, fontSize: "1.15rem", marginBottom: "1.5rem" }}>
-            {editId ? "Edit Entry" : "New Entry"}
+        <div className="card">
+          <h2 className="card-title">
+            {editId ? "✏️ Edit Entry" : "✨ New Entry"}
           </h2>
 
           {/* PDF Upload Section */}
           {!editId && (
-            <div style={{
-              border: "1px dashed var(--border)",
-              borderRadius: "var(--radius)",
-              padding: "2rem",
-              textAlign: "center",
-              marginBottom: "1.5rem",
-              background: "var(--bg-secondary)"
-            }}>
-              <FiUpload size={32} style={{ color: "var(--accent-blue)", marginBottom: "0.5rem" }} />
-              <h4 style={{ fontWeight: 600, fontSize: "0.95rem", marginBottom: "0.25rem" }}>PDF Note Upload</h4>
-              <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "1.25rem" }}>
-                Upload a PDF note and let AI automatically extract the topic, notes, and summary.
-              </p>
+            <div className="upload-zone">
               <input
                 type="file"
                 accept="application/pdf"
@@ -170,12 +165,13 @@ export default function Journal() {
                 disabled={pdfLoading}
                 style={{ display: "none" }}
               />
-              <label 
-                htmlFor="pdf-file-upload" 
-                className={`btn ${pdfLoading ? "btn-secondary" : "btn-primary"}`}
-                style={{ cursor: "pointer", display: "inline-flex", margin: "0 auto" }}
-              >
-                {pdfLoading ? "Extracting..." : "Select PDF Note"}
+              <label htmlFor="pdf-file-upload" style={{ cursor: "pointer", display: "block" }}>
+                <div className="upload-icon">📄</div>
+                <div className="upload-title">PDF Note Upload</div>
+                <div className="upload-sub">Upload a PDF note and let AI automatically extract the topic, notes, and summary.</div>
+                <button className="btn-gold" type="button" style={{ pointerEvents: 'none' }}>
+                  {pdfLoading ? "Extracting..." : "Select PDF Note"}
+                </button>
               </label>
             </div>
           )}
@@ -227,15 +223,15 @@ export default function Journal() {
             />
           </div>
 
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-            <button id="journal-save" className="btn btn-primary" onClick={handleSave} disabled={loading}>
-              {loading ? "Saving..." : editId ? "Update Entry" : "Save Journal"}
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "1rem" }}>
+            <button id="journal-save" className="btn-gold" onClick={handleSave} disabled={loading} style={{ padding: '11px 24px' }}>
+              {loading ? "Saving..." : editId ? "Update Entry" : "💾 Save Journal"}
             </button>
-            <button className="btn btn-secondary" onClick={generateSummary} disabled={summaryLoading} style={{ gap: "0.4rem" }}>
-              <FiCpu /> {summaryLoading ? "Generating..." : "AI Summary"}
+            <button className="btn-outline" onClick={generateSummary} disabled={summaryLoading} style={{ padding: '11px 24px' }}>
+              🤖 {summaryLoading ? "Generating..." : "AI Summary"}
             </button>
             {editId && (
-              <button className="btn btn-danger" onClick={() => { setEditId(null); setTopic(""); setNotes(""); setSummary(""); }}>
+              <button className="btn-ghost" onClick={() => { setEditId(null); setTopic(""); setNotes(""); setSummary(""); setTags(""); setDifficulty("medium") }}>
                 Cancel Edit
               </button>
             )}
@@ -243,68 +239,64 @@ export default function Journal() {
 
           {/* AI Summary Output */}
           {summary && (
-            <div className="ai-output mt-4">
-              <div style={{ fontWeight: 600, marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <FiCpu style={{ color: "var(--accent-purple)" }} /> AI Summary
+            <div className="ai-output" style={{ marginTop: '20px', background: 'var(--s2)', border: '1px solid var(--bd)' }}>
+              <div style={{ fontWeight: 600, marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.35rem", color: 'var(--t1)' }}>
+                🤖 AI Summary
               </div>
-              {summary}
+              <div style={{ color: 'var(--t2)', fontSize: '0.88rem' }}>{summary}</div>
             </div>
           )}
         </div>
 
         {/* Journal List */}
-        <div>
-          <div className="flex-between mb-4">
-            <h2 style={{ fontWeight: 600, fontSize: "1.15rem" }}>Saved Entries</h2>
-            <span className="badge badge-blue">{journals.length} entries</span>
+        <div style={{ marginTop: '30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h2 style={{ fontWeight: 600, fontSize: "1.1rem", color: 'var(--t1)' }}>Saved Entries</h2>
+            <span className="badge badge-gold">{journals.length} entries</span>
           </div>
 
           {journals.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon"><FiBookOpen size={32} /></div>
-                <h3>No journal entries yet</h3>
-                <p>Write your first entry above to get started</p>
+                <div className="empty-icon">📓</div>
+                <h3 className="empty-title">Your learning journey starts with one note!</h3>
+                <p className="empty-sub">Write your first entry above to get started</p>
               </div>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {journals.map((j) => (
-                <div key={j._id} className="card" style={{ borderLeft: `3px solid var(--accent-${j.difficulty === "easy" ? "green" : j.difficulty === "hard" ? "pink" : "blue"})` }}>
-                  <div className="flex-between mb-2">
-                    <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--text-primary)" }}>{j.topic}</h3>
+                <div key={j._id} className="card" style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: j.difficulty === 'easy' ? 'var(--em)' : j.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--t1)" }}>{j.topic}</h3>
                     <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                      <span className={`badge badge-${j.difficulty === "easy" ? "green" : j.difficulty === "hard" ? "pink" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                        <span className={`dot dot-${j.difficulty}`}></span>
+                      <span className={`badge ${j.difficulty === "easy" ? "badge-em" : j.difficulty === "hard" ? "badge-red" : "badge-gold"}`}>
                         {j.difficulty}
                       </span>
-                      <span className="badge badge-purple">Rev: {j.revisionCount}</span>
+                      <span className="badge badge-neutral">Rev: {j.revisionCount}</span>
                     </div>
                   </div>
-                  <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "0.75rem", lineHeight: 1.6 }}>
+                  <p style={{ color: "var(--t2)", fontSize: "0.85rem", marginBottom: "12px", lineHeight: 1.6 }}>
                     {j.notes.length > 200 ? j.notes.slice(0, 200) + "..." : j.notes}
                   </p>
                   {(j.tags || []).length > 0 && (
-                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
-                      {j.tags.map((t) => <span key={t} className="badge badge-blue">{t}</span>)}
+                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "12px" }}>
+                      {j.tags.map((t) => <span key={t} className="badge badge-neutral">{t}</span>)}
                     </div>
                   )}
                   {j.aiSummary && (
-                    <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem", fontSize: "0.85rem", marginBottom: "0.75rem", color: "var(--text-secondary)" }}>
-                      AI Summary: {j.aiSummary.slice(0, 150)}...
+                    <div style={{ background: "var(--s2)", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px", fontSize: "0.82rem", marginBottom: "12px", color: "var(--t2)" }}>
+                      🤖 AI Summary: {j.aiSummary.slice(0, 150)}...
                     </div>
                   )}
                   <div style={{ display: "flex", gap: "0.5rem", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                    <span style={{ color: "var(--t3)", fontSize: "0.78rem" }}>
                       {new Date(j.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </span>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button className="btn btn-secondary btn-icon" onClick={() => handleEdit(j)} title="Edit">
-                        <FiEdit2 size={14} />
-                      </button>
-                      <button className="btn btn-danger btn-icon" onClick={() => handleDelete(j._id)} title="Delete">
-                        <FiTrash2 size={14} />
-                      </button>
+                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: '0.78rem' }} onClick={() => handleEdit(j)} title="Edit">Edit</button>
+                      <button className="btn-ghost" style={{ padding: '6px 12px', fontSize: '0.78rem' }} onClick={() => handleDelete(j._id)} title="Delete">Delete</button>
                     </div>
                   </div>
                 </div>
@@ -312,7 +304,7 @@ export default function Journal() {
             </div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   )
 }
