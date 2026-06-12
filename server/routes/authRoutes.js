@@ -105,19 +105,26 @@ router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
 // PUT /api/auth/profile — Update user profile settings
 router.put("/profile", require("../middleware/authMiddleware"), async (req, res) => {
   try {
-    const { githubUsername, emailNotifications } = req.body
-    const updateData = {}
+    const { githubUsername, emailNotifications, currentPassword, newPassword } = req.body
     
-    if (githubUsername !== undefined) updateData.githubUsername = githubUsername.trim()
-    if (emailNotifications !== undefined) updateData.emailNotifications = emailNotifications
+    const user = await User.findById(req.user.id)
+    if (!user) return res.status(404).json({ message: "User not found" })
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { $set: updateData },
-      { new: true }
-    ).select("-password")
+    if (currentPassword && newPassword) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password)
+      if (!isMatch) {
+        return res.status(400).json({ message: "Current password is incorrect" })
+      }
+      user.password = await bcrypt.hash(newPassword, 12)
+    }
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" })
+    if (githubUsername !== undefined) user.githubUsername = githubUsername.trim()
+    if (emailNotifications !== undefined) user.emailNotifications = emailNotifications
+
+    await user.save()
+
+    const updatedUser = user.toObject()
+    delete updatedUser.password
 
     res.json({ message: "Profile updated successfully", user: updatedUser })
   } catch (error) {
