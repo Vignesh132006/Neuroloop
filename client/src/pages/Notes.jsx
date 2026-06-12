@@ -11,6 +11,7 @@ import {
 
 export default function Notes() {
   const [notes, setNotes] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("all")
   const [loading, setLoading] = useState(true)
@@ -38,6 +39,13 @@ export default function Notes() {
   }
 
   useEffect(() => { fetchNotes() }, [])
+
+  const filteredNotes = notes.filter(note =>
+    (note.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.notes.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (note.aiSummary && note.aiSummary.toLowerCase().includes(searchQuery.toLowerCase()))) &&
+    (filter === "all" || note.difficulty === filter)
+  )
 
   const filtered = notes.filter((n) => {
     const matchSearch = n.topic.toLowerCase().includes(search.toLowerCase()) ||
@@ -94,8 +102,8 @@ export default function Notes() {
             <input
               className="form-input"
               placeholder="Search notes..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{ paddingLeft: "2.5rem" }}
             />
           </div>
@@ -113,144 +121,165 @@ export default function Notes() {
 
         {loading ? (
           <div className="loading-screen"><div className="spinner" /><p>Loading notes...</p></div>
-        ) : filtered.length === 0 ? (
-          <div className="card">
-            <div className="empty-state">
-              <div className="empty-state-icon"><FiFileText size={32} /></div>
-              <h3>No notes found</h3>
-              <p>Try adjusting your search or add notes in the Journal</p>
-            </div>
-          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {filtered.map((note) => (
-              <div key={note._id}>
-                <div
-                  className="card"
-                  style={{ cursor: "pointer", borderLeft: `3px solid var(--accent-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"})` }}
-                  onClick={() => setSelected(selected?._id === note._id ? null : note)}
-                >
-                  <div className="flex-between mb-2">
-                    <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{note.topic}</h3>
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <span className={`badge badge-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                        <span className={`dot dot-${note.difficulty}`}></span>
-                        {note.difficulty}
-                      </span>
-                      <span className="badge badge-purple">Mastery: {note.masteryScore}%</span>
-                    </div>
-                  </div>
-                  <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", lineHeight: 1.6 }}>
-                    {note.notes.slice(0, 160)}...
-                  </p>
-
-                  {/* Progress */}
-                  <div className="progress-bar mt-2">
-                    <div className="progress-fill" style={{ width: `${note.masteryScore}%` }} />
-                  </div>
-
-                  <div className="flex-between mt-2">
-                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                      {(note.tags || []).slice(0, 3).map((t) => (
-                        <span key={t} className="badge badge-blue">{t}</span>
-                      ))}
-                    </div>
-                    <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-                      Rev: {note.revisionCount} · {new Date(note.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <input
+                type="text"
+                placeholder="Search by topic or content..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '14px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>
+              {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} found
+            </p>
+            {filteredNotes.length === 0 ? (
+              <div className="card">
+                <div className="empty-state">
+                  <div className="empty-state-icon"><FiFileText size={32} /></div>
+                  <h3>No notes found</h3>
+                  <p>Try adjusting your search or add notes in the Journal</p>
                 </div>
-
-                {/* Expanded AI Panel */}
-                {selected?._id === note._id && (
-                  <div className="card" style={{ marginTop: "0.5rem", background: "var(--bg-secondary)" }}>
-                    <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem" }}>
-                      <FiCpu style={{ color: "var(--accent-purple)" }} /> AI Tools for "{note.topic}"
-                    </h4>
-                    <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => generateMCQ(note)}
-                        disabled={!!aiLoading}
-                      >
-                        {aiLoading === "mcq" ? "Generating..." : "Generate MCQ"}
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => generateInterview(note)}
-                        disabled={!!aiLoading}
-                      >
-                        {aiLoading === "interview" ? "Generating..." : "Interview Questions"}
-                      </button>
-                    </div>
-
-                    {/* Full notes */}
-                    <div className="ai-output" style={{ marginBottom: "1.5rem", fontSize: "0.875rem", lineHeight: 1.6 }}>
-                      {note.notes}
-                    </div>
-
-                    {/* MCQ Questions */}
-                    {mcqQuestions.length > 0 && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                        <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>MCQ Questions</h5>
-                        {mcqQuestions.map((q, i) => (
-                          <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                            <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.75rem", color: "var(--text-primary)" }}>{i + 1}. {q.question}</p>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                              {(q.options || []).map((opt, j) => (
-                                <div key={j} style={{
-                                  padding: "0.5rem 0.75rem",
-                                  borderRadius: "6px",
-                                  fontSize: "0.875rem",
-                                  background: opt === q.correctAnswer ? "rgba(48, 209, 88, 0.08)" : "var(--bg-secondary)",
-                                  border: opt === q.correctAnswer ? "1px solid var(--accent-green)" : "1px solid var(--border)",
-                                  color: opt === q.correctAnswer ? "var(--accent-green)" : "var(--text-primary)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between"
-                                }}>
-                                  <span>{opt}</span>
-                                  {opt === q.correctAnswer && <FiCheck />}
-                                </div>
-                              ))}
-                            </div>
-                            {q.explanation && (
-                              <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                                <FiInfo /> {q.explanation}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Interview Questions */}
-                    {interviewQuestions.length > 0 && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                        <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>Interview Questions</h5>
-                        {interviewQuestions.map((q, i) => (
-                          <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                            <div className="flex-between mb-2">
-                              <span className={`badge badge-${q.difficulty === "hard" ? "pink" : q.difficulty === "easy" ? "green" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                                <span className={`dot dot-${q.difficulty}`}></span>
-                                {q.difficulty}
-                              </span>
-                              <span className="badge badge-purple">{q.type}</span>
-                            </div>
-                            <p style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text-primary)", marginBottom: "0.5rem" }}>{i + 1}. {q.question}</p>
-                            {q.hint && (
-                              <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                                <FiInfo /> Hint: {q.hint}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
-            ))}
+            ) : (
+              filteredNotes.map((note) => (
+                <div key={note._id}>
+                  <div
+                    className="card"
+                    style={{ cursor: "pointer", borderLeft: `3px solid var(--accent-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"})` }}
+                    onClick={() => setSelected(selected?._id === note._id ? null : note)}
+                  >
+                    <div className="flex-between mb-2">
+                      <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{note.topic}</h3>
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <span className={`badge badge-${note.difficulty === "easy" ? "green" : note.difficulty === "hard" ? "pink" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                          <span className={`dot dot-${note.difficulty}`}></span>
+                          {note.difficulty}
+                        </span>
+                        <span className="badge badge-purple">Mastery: {note.masteryScore}%</span>
+                      </div>
+                    </div>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", lineHeight: 1.6 }}>
+                      {note.notes.slice(0, 160)}...
+                    </p>
+
+                    {/* Progress */}
+                    <div className="progress-bar mt-2">
+                      <div className="progress-fill" style={{ width: `${note.masteryScore}%` }} />
+                    </div>
+
+                    <div className="flex-between mt-2">
+                      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                        {(note.tags || []).slice(0, 3).map((t) => (
+                          <span key={t} className="badge badge-blue">{t}</span>
+                        ))}
+                      </div>
+                      <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                        Rev: {note.revisionCount} · {new Date(note.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Expanded AI Panel */}
+                  {selected?._id === note._id && (
+                    <div className="card" style={{ marginTop: "0.5rem", background: "var(--bg-secondary)" }}>
+                      <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem" }}>
+                        <FiCpu style={{ color: "var(--accent-purple)" }} /> AI Tools for "{note.topic}"
+                      </h4>
+                      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => generateMCQ(note)}
+                          disabled={!!aiLoading}
+                        >
+                          {aiLoading === "mcq" ? "Generating..." : "Generate MCQ"}
+                        </button>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => generateInterview(note)}
+                          disabled={!!aiLoading}
+                        >
+                          {aiLoading === "interview" ? "Generating..." : "Interview Questions"}
+                        </button>
+                      </div>
+
+                      {/* Full notes */}
+                      <div className="ai-output" style={{ marginBottom: "1.5rem", fontSize: "0.875rem", lineHeight: 1.6 }}>
+                        {note.notes}
+                      </div>
+
+                      {/* MCQ Questions */}
+                      {mcqQuestions.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>MCQ Questions</h5>
+                          {mcqQuestions.map((q, i) => (
+                            <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.75rem", color: "var(--text-primary)" }}>{i + 1}. {q.question}</p>
+                              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                                {(q.options || []).map((opt, j) => (
+                                  <div key={j} style={{
+                                    padding: "0.5rem 0.75rem",
+                                    borderRadius: "6px",
+                                    fontSize: "0.875rem",
+                                    background: opt === q.correctAnswer ? "rgba(48, 209, 88, 0.08)" : "var(--bg-secondary)",
+                                    border: opt === q.correctAnswer ? "1px solid var(--accent-green)" : "1px solid var(--border)",
+                                    color: opt === q.correctAnswer ? "var(--accent-green)" : "var(--text-primary)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between"
+                                  }}>
+                                    <span>{opt}</span>
+                                    {opt === q.correctAnswer && <FiCheck />}
+                                  </div>
+                                ))}
+                              </div>
+                              {q.explanation && (
+                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                                  <FiInfo /> {q.explanation}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Interview Questions */}
+                      {interviewQuestions.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem" }}>Interview Questions</h5>
+                          {interviewQuestions.map((q, i) => (
+                            <div key={i} style={{ padding: "1.25rem", background: "var(--bg-card)", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                              <div className="flex-between mb-2">
+                                <span className={`badge badge-${q.difficulty === "hard" ? "pink" : q.difficulty === "easy" ? "green" : "blue"}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                                  <span className={`dot dot-${q.difficulty}`}></span>
+                                  {q.difficulty}
+                                </span>
+                                <span className="badge badge-purple">{q.type}</span>
+                              </div>
+                              <p style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text-primary)", marginBottom: "0.5rem" }}>{i + 1}. {q.question}</p>
+                              {q.hint && (
+                                <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                                  <FiInfo /> Hint: {q.hint}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         )}
       </main>
