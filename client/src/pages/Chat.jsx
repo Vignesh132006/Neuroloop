@@ -16,7 +16,8 @@ export default function Chat() {
   const [loading, setLoading] = useState(false)
   const [context, setContext] = useState("")
   const [notes, setNotes] = useState([])
-  const messagesEndRef = useRef(null)  const textareaRef = useRef(null)
+  const messagesEndRef = useRef(null)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
