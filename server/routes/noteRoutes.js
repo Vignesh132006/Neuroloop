@@ -49,51 +49,6 @@ async function fetchGitHubCommits(username) {
   }
 }
 
-// POST /api/notes/add — Create a note
-router.post("/add", authMiddleware, async (req, res) => {
-  try {
-    const { topic, notes, tags, difficulty, aiSummary } = req.body
-
-    if (!topic || !notes) {
-      return res.status(400).json({ message: "Topic and notes are required" })
-    }
-
-    // Spaced repetition: first revision in 1 day
-    const nextRevision = new Date()
-    nextRevision.setDate(nextRevision.getDate() + 1)
-
-    const newNote = new Note({
-      topic,
-      notes,
-      tags: tags || [],
-      difficulty: difficulty || "medium",
-      aiSummary: aiSummary || "",
-      nextRevision,
-      user: req.user.id,
-    })
-
-    await newNote.save()
-
-    res.status(201).json({ message: "Note saved successfully", note: newNote })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: error.message })
-  }
-})
-
-// GET /api/notes — Get all notes for user
-router.get("/", authMiddleware, async (req, res) => {
-  try {
-    const notes = await Note.find({ user: req.user.id }).sort({ createdAt: -1 })
-    res.status(200).json(notes)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-// ─── IMPORTANT: /stats/* routes MUST come before /:id ────────────────────────
-// Otherwise Express matches the literal string "stats" as the :id param value.
-
 // GET /api/notes/stats/heatmap — Activity heatmap data (merged with GitHub activity)
 router.get("/stats/heatmap", authMiddleware, async (req, res) => {
   try {
@@ -193,7 +148,6 @@ router.get("/stats/weekly", authMiddleware, async (req, res) => {
 })
 
 // POST /api/notes/upload-pdf — Parse PDF and summarize text via AI
-// NOTE: Must also be before /:id to avoid route shadowing
 router.post("/upload-pdf", authMiddleware, upload.single("pdf"), async (req, res) => {
   try {
     if (!req.file) {
@@ -234,15 +188,44 @@ router.post("/upload-pdf", authMiddleware, upload.single("pdf"), async (req, res
   }
 })
 
-// ─── Wildcard /:id routes LAST ────────────────────────────────────────────────
-
-// GET /api/notes/:id — Get single note
-router.get("/:id", authMiddleware, async (req, res) => {
+// GET /api/notes — Get all notes for user
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const note = await Note.findOne({ _id: req.params.id, user: req.user.id })
-    if (!note) return res.status(404).json({ message: "Note not found" })
-    res.json(note)
+    const notes = await Note.find({ user: req.user.id }).sort({ createdAt: -1 })
+    res.status(200).json(notes)
   } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /api/notes/add — Create a note
+router.post("/add", authMiddleware, async (req, res) => {
+  try {
+    const { topic, notes, tags, difficulty, aiSummary } = req.body
+
+    if (!topic || !notes) {
+      return res.status(400).json({ message: "Topic and notes are required" })
+    }
+
+    // Spaced repetition: first revision in 1 day
+    const nextRevision = new Date()
+    nextRevision.setDate(nextRevision.getDate() + 1)
+
+    const newNote = new Note({
+      topic,
+      notes,
+      tags: tags || [],
+      difficulty: difficulty || "medium",
+      aiSummary: aiSummary || "",
+      nextRevision,
+      user: req.user.id,
+    })
+
+    await newNote.save()
+
+    res.status(201).json({ message: "Note saved successfully", note: newNote })
+  } catch (error) {
+    console.error(error)
     res.status(500).json({ error: error.message })
   }
 })
@@ -272,6 +255,17 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     const deleted = await Note.findOneAndDelete({ _id: req.params.id, user: req.user.id })
     if (!deleted) return res.status(404).json({ message: "Note not found" })
     res.status(200).json({ message: "Note deleted successfully" })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// GET /api/notes/:id — Get single note
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+    const note = await Note.findOne({ _id: req.params.id, user: req.user.id })
+    if (!note) return res.status(404).json({ message: "Note not found" })
+    res.json(note)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
