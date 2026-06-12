@@ -1,48 +1,159 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useState, useEffect } from "react"
-import { 
-  FiActivity, 
-  FiBookOpen, 
-  FiFileText, 
-  FiHelpCircle, 
-  FiRefreshCw, 
-  FiMessageSquare, 
-  FiAward, 
-  FiSun, 
-  FiMoon, 
-  FiLogOut, 
-  FiMenu,
-  FiLayers,
-  FiSettings
-} from "react-icons/fi"
+import api from "../api/axios"
 
-const navItems = [
-  { to: "/dashboard", icon: <FiActivity />, label: "Dashboard" },
-  { to: "/journal",   icon: <FiBookOpen />, label: "Journal" },
-  { to: "/notes",     icon: <FiFileText />, label: "Notes" },
-  { to: "/quiz",      icon: <FiHelpCircle />, label: "Quiz" },
-  { to: "/revision",  icon: <FiRefreshCw />, label: "Revision" },
-  { to: "/chat",      icon: <FiMessageSquare />, label: "Neuro Chat" },
-  { to: "/leaderboard", icon: <FiAward />, label: "Leaderboard" },
-  { to: "/study-plans", icon: <FiLayers />, label: "Study Plans" },
-  { to: "/settings",    icon: <FiSettings />, label: "Settings" },
+const S = `
+  .sb{
+    width:220px;min-height:100vh;
+    background:#0d0d0d;
+    border-right:1px solid rgba(255,255,255,0.06);
+    display:flex;flex-direction:column;
+    padding:20px 12px;
+    position:fixed;left:0;top:0;z-index:100;
+  }
+
+  .sb-logo{
+    display:flex;align-items:center;gap:10px;
+    padding:6px 8px 22px;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    margin-bottom:20px;
+  }
+  .sb-logo-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,#d4af37,#a08020);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;
+    box-shadow:0 4px 14px rgba(212,175,55,0.35);
+    flex-shrink:0;
+  }
+  .sb-logo-name{
+    font-family:'DM Serif Display',Georgia,serif;
+    font-size:1.15rem;color:#f5f0e8;
+    letter-spacing:-0.01em;
+  }
+  .sb-logo-name span{color:#d4af37;}
+
+  .sb-group-label{
+    font-size:0.6rem;font-weight:700;
+    letter-spacing:0.14em;text-transform:uppercase;
+    color:rgba(255,255,255,0.18);
+    padding:0 8px;margin:12px 0 4px;
+  }
+
+  .sb-link{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border-radius:9px;
+    color:rgba(255,255,255,0.4);
+    font-size:0.84rem;font-weight:500;
+    margin-bottom:1px;
+    border:1px solid transparent;
+    transition:all 0.17s ease;
+    text-decoration:none;position:relative;
+  }
+  .sb-link:hover{
+    background:rgba(255,255,255,0.04);
+    color:rgba(255,255,255,0.75);
+  }
+  .sb-link.active{
+    background:rgba(212,175,55,0.1);
+    color:#d4af37;
+    border-color:rgba(212,175,55,0.25);
+  }
+  .sb-link.active .sb-link-icon{
+    filter:drop-shadow(0 0 5px rgba(212,175,55,0.7));
+  }
+  .sb-link-icon{
+    font-size:1rem;width:20px;
+    text-align:center;flex-shrink:0;
+  }
+  .sb-badge{
+    margin-left:auto;
+    background:#ef4444;color:#fff;
+    font-size:0.62rem;font-weight:700;
+    border-radius:99px;padding:1px 6px;
+    min-width:18px;text-align:center;
+  }
+
+  .sb-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+
+  .sb-streak{
+    background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(212,175,55,0.04));
+    border:1px solid rgba(212,175,55,0.22);
+    border-radius:11px;padding:11px 13px;
+    display:flex;align-items:center;gap:9px;
+    margin-top: 10px;
+  }
+  .sb-streak-fire{
+    font-size:1.35rem;
+    animation:fireAnim 2.2s ease-in-out infinite;
+  }
+  @keyframes fireAnim{
+    0%,100%{transform:scale(1) rotate(-4deg);}
+    50%{transform:scale(1.2) rotate(4deg);}
+  }
+  .sb-streak-num{font-weight:700;font-size:1rem;color:#d4af37;}
+  .sb-streak-lbl{font-size:0.7rem;color:rgba(255,255,255,0.3);}
+
+  .sb-user{
+    display:flex;align-items:center;gap:9px;
+    padding:10px 10px;border-radius:11px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .sb-avatar{
+    width:33px;height:33px;border-radius:50%;
+    background:linear-gradient(135deg,#d4af37,#a08020);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:0.85rem;color:#0a0a0a;
+    flex-shrink:0;
+  }
+  .sb-user-name{font-size:0.82rem;font-weight:600;color:#f5f0e8;}
+  .sb-user-email{font-size:0.68rem;color:rgba(255,255,255,0.28);}
+
+  .sb-logout{
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    padding:9px;border-radius:9px;
+    background:rgba(239,68,68,0.07);
+    border:1px solid rgba(239,68,68,0.18);
+    color:#f87171;font-size:0.82rem;font-weight:600;
+    width:100%;transition:all 0.2s;
+    border: 1px solid rgba(239,68,68,0.18);
+    cursor: pointer;
+  }
+  .sb-logout:hover{
+    background:rgba(239,68,68,0.14);
+    border-color:rgba(239,68,68,0.35);
+    color:#fca5a5;
+  }
+`;
+
+const learningItems = [
+  { to: '/dashboard',    icon: '🏠', label: 'Dashboard' },
+  { to: '/journal',      icon: '📓', label: 'Journal' },
+  { to: '/notes',        icon: '📝', label: 'Notes' },
+  { to: '/revision',     icon: '🔄', label: 'Revision',   hasBadge: true },
+  { to: '/quiz',         icon: '🧠', label: 'Quiz' },
+]
+
+const toolsItems = [
+  { to: '/study-plans',  icon: '📅', label: 'Study Plans' },
+  { to: '/chat',         icon: '💬', label: 'Neuro Chat' },
+  { to: '/leaderboard',  icon: '🏆', label: 'Leaderboard' },
+  { to: '/settings',     icon: '⚙️', label: 'Settings' },
 ]
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark")
+  const [dueCount, setDueCount] = useState(0)
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme)
-    localStorage.setItem("theme", theme)
-  }, [theme])
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
+    api.get("/revision")
+      .then((r) => setDueCount(r.data?.length || 0))
+      .catch(() => {})
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -51,121 +162,109 @@ export default function Sidebar() {
 
   return (
     <>
+      <style>{S}</style>
+      
       {/* Mobile Hamburger */}
       <button
-        className="btn btn-secondary"
-        style={{
-          position: "fixed", top: "1rem", left: "1rem",
-          zIndex: 1000, display: "none",
-          padding: "0.5rem",
-          borderRadius: "50%",
-          width: "40px",
-          height: "40px",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
         id="mobile-menu-toggle"
         onClick={() => setMobileOpen(!mobileOpen)}
+        style={{
+          position: 'fixed', top: '1rem', left: '1rem',
+          zIndex: 1000, display: 'none',
+          width: '40px', height: '40px',
+          borderRadius: '50%',
+          background: 'rgba(13,13,26,0.9)',
+          border: '1px solid var(--bd)',
+          color: 'var(--t1)',
+          fontSize: '1.2rem',
+          cursor: 'pointer',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(12px)',
+        }}
       >
-        <FiMenu size={20} />
+        ☰
       </button>
 
       <nav
-        className="sidebar"
+        className="sb"
         style={{
-          position: "fixed", top: 0, left: 0,
-          width: "260px", height: "100vh",
-          background: "var(--bg-secondary)",
-          borderRight: "1px solid var(--border)",
-          display: "flex", flexDirection: "column",
-          padding: "2rem 1.25rem",
-          zIndex: 900,
-          overflowY: "auto",
-          transform: mobileOpen ? "translateX(0)" : undefined,
+          transform: mobileOpen ? 'translateX(0)' : undefined,
         }}
       >
         {/* Logo */}
-        <div style={{ marginBottom: "2.5rem", padding: "0 0.5rem" }}>
-          <h1 style={{
-            fontSize: "1.35rem", fontWeight: 700,
-            letterSpacing: "-0.03em",
-            color: "var(--text-primary)",
-          }}>
-            NeuroLoop
-          </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", fontWeight: 500 }}>
-            Learn · Remember · Master
-          </p>
+        <div className="sb-logo">
+          <div className="sb-logo-mark">🧠</div>
+          <span className="sb-logo-name">Neuro<span>Loop</span></span>
         </div>
 
-        {/* User Info */}
-        {user && (
-          <div style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "12px",
-            padding: "1rem",
-            marginBottom: "2rem",
-          }}>
-            <div style={{
-              width: "36px", height: "36px",
-              background: "var(--accent-blue)",
-              color: "#ffffff",
-              borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontWeight: 600, fontSize: "0.95rem",
-              marginBottom: "0.75rem",
-            }}>
-              {user.name?.charAt(0).toUpperCase()}
-            </div>
-            <p style={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--text-primary)" }}>{user.name}</p>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginTop: "0.15rem" }}>{user.email}</p>
-          </div>
-        )}
-
-        {/* Nav Links */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-          {navItems.map((item) => (
+        {/* Navigation */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', overflowY: 'auto' }}>
+          <div className="sb-group-label">Learning</div>
+          {learningItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               onClick={() => setMobileOpen(false)}
-              style={({ isActive }) => ({
-                display: "flex", alignItems: "center", gap: "0.75rem",
-                padding: "0.7rem 1rem",
-                borderRadius: "8px",
-                textDecoration: "none",
-                fontWeight: 500,
-                fontSize: "0.875rem",
-                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                background: isActive ? "var(--bg-card-hover)" : "transparent",
-                color: isActive ? "var(--accent-blue)" : "var(--text-secondary)",
-                border: "1px solid transparent",
-              })}
+              className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
             >
-              <span style={{ display: "inline-flex", fontSize: "1.1rem" }}>{item.icon}</span>
-              {item.label}
+              <span className="sb-link-icon">{item.icon}</span>
+              <span>{item.label}</span>
+              {item.hasBadge && dueCount > 0 && (
+                <span className="sb-badge">{dueCount}</span>
+              )}
+            </NavLink>
+          ))}
+
+          <div className="sb-group-label">Tools</div>
+          {toolsItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
+            >
+              <span className="sb-link-icon">{item.icon}</span>
+              <span>{item.label}</span>
+              {item.hasBadge && dueCount > 0 && (
+                <span className="sb-badge">{dueCount}</span>
+              )}
             </NavLink>
           ))}
         </div>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="btn btn-secondary w-full"
-          style={{ marginTop: "1rem", justifyContent: "center", gap: "0.5rem" }}
-        >
-          {theme === "dark" ? <><FiSun /> Light</> : <><FiMoon /> Dark</>}
-        </button>
+        <div className="sb-bottom">
+          {/* Streak Widget */}
+          <div className="sb-streak">
+            <span className="sb-streak-fire">🔥</span>
+            <div>
+              <div className="sb-streak-num">
+                {user?.streak || 0} day{(user?.streak || 0) !== 1 ? 's' : ''}
+              </div>
+              <div className="sb-streak-lbl">
+                Current streak
+              </div>
+            </div>
+          </div>
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="btn btn-danger w-full"
-          style={{ marginTop: "0.5rem", justifyContent: "center", gap: "0.5rem" }}
-        >
-          <FiLogOut /> Logout
-        </button>
+          {/* User section */}
+          {user && (
+            <div className="sb-user">
+              <div className="sb-avatar">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+              <div style={{ overflow: 'hidden', flex: 1 }}>
+                <div className="sb-user-name">{user.name}</div>
+                <div className="sb-user-email">{user.email}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Logout */}
+          <button onClick={handleLogout} className="sb-logout">
+            🚪 Logout
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Overlay */}
@@ -173,9 +272,9 @@ export default function Sidebar() {
         <div
           onClick={() => setMobileOpen(false)}
           style={{
-            position: "fixed", inset: 0,
-            background: "rgba(0,0,0,0.4)",
-            backdropFilter: "blur(4px)",
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
             zIndex: 850,
           }}
         />
@@ -184,7 +283,7 @@ export default function Sidebar() {
       <style>{`
         @media (max-width: 768px) {
           #mobile-menu-toggle { display: flex !important; }
-          nav.sidebar { transform: translateX(${mobileOpen ? "0" : "-100%"}); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+          nav.sb { transform: translateX(${mobileOpen ? '0' : '-100%'}); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         }
       `}</style>
     </>
