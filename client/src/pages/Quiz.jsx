@@ -135,47 +135,53 @@ export default function Quiz() {
         </div>
 
         {activeTab === "history" ? (
-          <div>
+          <div className="card">
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Quiz History</h3>
             {history.length === 0 ? (
-              <div className="card">
-                <div className="empty-state">
-                  <div className="empty-state-icon"><FiHelpCircle size={32} /></div>
-                  <h3>No quiz history yet</h3>
-                  <p>Take your first quiz!</p>
-                </div>
-              </div>
+              <p style={{ color: '#64748b', fontSize: '14px' }}>No quizzes taken yet.</p>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {history.map((q) => (
-                  <div key={q._id} className="card">
-                    <div className="flex-between mb-2">
-                      <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--text-primary)" }}>{q.topic}</h3>
-                      <span style={{
-                        fontWeight: 700, fontSize: "1.25rem",
-                        color: q.percentage >= 80 ? "var(--accent-green)" : q.percentage >= 60 ? "var(--accent-blue)" : "var(--accent-pink)",
-                      }}>
-                        {q.percentage}%
-                      </span>
-                    </div>
-                    <div className="progress-bar mb-2">
-                      <div className="progress-fill" style={{
-                        width: `${q.percentage}%`,
-                        background: q.percentage >= 80 ? "var(--accent-green)" : q.percentage >= 60 ? "var(--accent-blue)" : "var(--accent-pink)",
-                      }} />
-                    </div>
-                    <div style={{ display: "flex", gap: "1.25rem", color: "var(--text-muted)", fontSize: "0.8rem", alignItems: "center" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                        <FiCheck /> Correct: {q.score}/{q.totalQuestions}
-                      </span>
-                      <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                        <FiClock /> Time: {q.timeTaken}s
-                      </span>
-                      <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                        <FiCalendar /> {new Date(q.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+                      <th style={{ padding: '10px 12px', textAlign: 'left', borderBottom: '1px solid var(--border)' }}>Date</th>
+                      <th style={{ padding: '10px 12px', textAlign: 'left', borderBottom: '1px solid var(--border)' }}>Topic</th>
+                      <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>Score</th>
+                      <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>Time</th>
+                      <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>Result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((quiz, i) => (
+                      <tr key={quiz._id} style={{ background: i % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
+                        <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+                          {new Date(quiz.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </td>
+                        <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', fontWeight: '500', color: 'var(--text-primary)' }}>
+                          {quiz.topic}
+                        </td>
+                        <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', textAlign: 'center', fontWeight: '600' }}>
+                          {quiz.score}/{quiz.totalQuestions} ({Math.round(quiz.percentage)}%)
+                        </td>
+                        <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', textAlign: 'center', color: 'var(--text-muted)' }}>
+                          {quiz.timeTaken ? `${Math.round(quiz.timeTaken / 60)}m ${quiz.timeTaken % 60}s` : '—'}
+                        </td>
+                        <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+                          <span style={{
+                            padding: '3px 10px',
+                            borderRadius: '20px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            background: quiz.percentage >= 60 ? '#dcfce7' : '#fee2e2',
+                            color: quiz.percentage >= 60 ? '#16a34a' : '#dc2626'
+                          }}>
+                            {quiz.percentage >= 60 ? 'Pass' : 'Fail'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
