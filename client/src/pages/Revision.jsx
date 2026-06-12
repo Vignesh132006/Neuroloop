@@ -23,6 +23,7 @@ export default function Revision() {
   const [loading, setLoading] = useState(true)
   const [planLoading, setPlanLoading] = useState(false)
   const [confidence, setConfidence] = useState({})
+  const [confidenceMap, setConfidenceMap] = useState({})
   const [completing, setCompleting] = useState({})
   const [toast, setToast] = useState(null)
   const [activeTab, setActiveTab] = useState("due")
@@ -53,11 +54,10 @@ export default function Revision() {
 
   useEffect(() => { fetchData() }, [])
 
-  const markRevised = async (noteId) => {
-    const conf = confidence[noteId] || 3
+  const handleMarkRevised = async (noteId, confidenceVal) => {
     setCompleting((p) => ({ ...p, [noteId]: true }))
     try {
-      const res = await api.put(`/revision/${noteId}`, { confidenceRating: conf })
+      const res = await api.put(`/revision/${noteId}`, { confidenceRating: confidenceVal })
       showToast(`Revised! Next revision in ${res.data.daysUntilNext} days`)
       fetchData()
     } catch (e) {
@@ -224,57 +224,61 @@ export default function Revision() {
                       <div className="progress-fill" style={{ width: `${note.masteryScore}%` }} />
                     </div>
 
-                    {/* Confidence Rating */}
-                    <div style={{ marginBottom: "1rem" }}>
-                      <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: "0.5rem" }}>
-                        How confident are you? (1 = struggling, 5 = mastered)
-                      </p>
-                      <div style={{ display: "flex", gap: "0.4rem" }}>
-                        {[1, 2, 3, 4, 5].map((v) => {
-                          const currentVal = confidence[note._id] || 3
-                          const isSelected = currentVal === v
-                          return (
-                            <button
-                              key={v}
-                              onClick={() => setConfidence((p) => ({ ...p, [note._id]: v }))}
-                              style={{
-                                width: "36px", height: "36px",
-                                borderRadius: "8px",
-                                border: `1px solid ${isSelected ? "var(--accent-blue)" : "var(--border)"}`,
-                                background: isSelected ? "var(--accent-blue)" : "var(--bg-secondary)",
-                                color: isSelected ? "#ffffff" : "var(--text-primary)",
-                                cursor: "pointer",
-                                fontWeight: 700,
-                                fontSize: "0.875rem",
-                                transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                              }}
-                            >{v}</button>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="flex-between">
+                    <div className="flex-between" style={{ marginBottom: "1rem" }}>
                       <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
                         Next: in {getNextInterval(note.revisionCount + 1)} days
                       </span>
-                      <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() => getRevisionPlan(note)}
-                          disabled={notePlanLoading[note._id]}
-                          style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
-                        >
-                          <FiCpu /> {notePlanLoading[note._id] ? "Generating..." : "Get AI Plan"}
-                        </button>
-                        <button
-                          className="btn btn-success"
-                          onClick={() => markRevised(note._id)}
-                          disabled={completing[note._id]}
-                        >
-                          {completing[note._id] ? "Saving..." : "Mark Revised"}
-                        </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => getRevisionPlan(note)}
+                        disabled={notePlanLoading[note._id]}
+                        style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                      >
+                        <FiCpu /> {notePlanLoading[note._id] ? "Generating..." : "Get AI Plan"}
+                      </button>
+                    </div>
+
+                    <div style={{ marginTop: '12px' }}>
+                      <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '6px', fontWeight: '500' }}>
+                        How confident do you feel? (affects your mastery score)
+                      </p>
+                      <div style={{ display: 'flex', gap: '6px', marginBottom: '10px' }}>
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <button
+                            key={star}
+                            onClick={() => setConfidenceMap(prev => ({ ...prev, [note._id]: star }))}
+                            style={{
+                              padding: '6px 12px',
+                              borderRadius: '6px',
+                              border: '1px solid',
+                              borderColor: confidenceMap[note._id] === star ? '#3b82f6' : '#e2e8f0',
+                              background: confidenceMap[note._id] === star ? '#eff6ff' : 'transparent',
+                              color: confidenceMap[note._id] === star ? '#1d4ed8' : '#64748b',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              fontWeight: confidenceMap[note._id] === star ? '600' : '400'
+                            }}
+                          >
+                            {star === 1 ? '1 Hard' : star === 2 ? '2' : star === 3 ? '3 OK' : star === 4 ? '4' : '5 Easy'}
+                          </button>
+                        ))}
                       </div>
+                      <button
+                        onClick={() => handleMarkRevised(note._id, confidenceMap[note._id] || 3)}
+                        disabled={completing[note._id]}
+                        style={{
+                          padding: '8px 18px',
+                          background: '#22c55e',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '500'
+                        }}
+                      >
+                        {completing[note._id] ? "Saving..." : "Mark as Revised"}
+                      </button>
                     </div>
 
                     {notePlans[note._id] && (
