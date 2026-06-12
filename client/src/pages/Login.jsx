@@ -391,6 +391,7 @@ export default function Login() {
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                   required
+                  autoComplete="username"
                 />
               </div>
               <div className="lp-field">
@@ -403,6 +404,7 @@ export default function Login() {
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                 />
               </div>
               
@@ -438,6 +440,7 @@ export default function Login() {
                   value={signupName}
                   onChange={(e) => setSignupName(e.target.value)}
                   required
+                  autoComplete="name"
                 />
               </div>
               <div className="lp-field">
@@ -450,6 +453,7 @@ export default function Login() {
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   required
+                  autoComplete="email"
                 />
               </div>
               <div className="lp-field">
@@ -462,6 +466,7 @@ export default function Login() {
                   value={signupPassword}
                   onChange={(e) => setSignupPassword(e.target.value)}
                   required
+                  autoComplete="new-password"
                 />
               </div>
 
