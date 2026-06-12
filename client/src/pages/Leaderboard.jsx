@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiAward, FiRefreshCw, FiZap } from "react-icons/fi"
 
 function PodiumSection({ top3 }) {
   if (!top3 || top3.length < 3) return null
@@ -34,8 +35,8 @@ function PodiumSection({ top3 }) {
           <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', textAlign: 'center' }}>
             {slot.user.name}
           </p>
-          <span style={{ fontSize: '0.75rem', color: 'var(--accent-warm)', fontWeight: 700 }}>
-            🔥 {slot.user.streak} days
+          <span style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+            <FiZap size={12} fill="#d4af37" /> {slot.user.streak} days
           </span>
           <div className="podium-block" style={{
             height: `${slot.blockHeight}px`,
@@ -83,11 +84,11 @@ export default function Leaderboard() {
 
         <div className="page-header flex-between">
           <div>
-            <h1 className="page-title">🏆 Streak Leaderboard</h1>
+            <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiAward /> Streak Leaderboard</h1>
             <p className="page-subtitle">Compete with friends and keep your daily learning streak alive!</p>
           </div>
-          <button className="btn btn-secondary" onClick={fetchLeaderboard} disabled={loading} style={{ gap: "0.35rem" }}>
-            🔄 Refresh
+          <button className="btn btn-secondary" onClick={fetchLeaderboard} disabled={loading} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
+            <FiRefreshCw /> Refresh
           </button>
         </div>
 
@@ -158,10 +159,10 @@ export default function Leaderboard() {
                           </td>
                           <td style={{ padding: '0.875rem 0.5rem', textAlign: 'right' }}>
                             <span style={{
-                              fontWeight: 700, fontSize: '0.95rem', color: 'var(--accent-warm)',
+                              fontWeight: 700, fontSize: '0.95rem', color: 'var(--gold)',
                               display: 'inline-flex', alignItems: 'center', gap: '4px',
                             }}>
-                              🔥 {u.streak} day{u.streak !== 1 ? 's' : ''}
+                              <FiZap size={14} fill="#d4af37" /> {u.streak} day{u.streak !== 1 ? 's' : ''}
                             </span>
                           </td>
                         </tr>
@@ -173,8 +174,8 @@ export default function Leaderboard() {
 
               {users.length === 0 && (
                 <div className="empty-state">
-                  <div className="empty-state-icon">🏆</div>
-                  <h3>No players on the leaderboard yet</h3>
+                  <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiAward /></div>
+                  <h3 className="empty-title">No players on the leaderboard yet</h3>
                   <p>Register and login to start your streak!</p>
                 </div>
               )}

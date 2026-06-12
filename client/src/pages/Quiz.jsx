@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import Sidebar from "../components/Sidebar"
 import QuizScoreCard from "../components/QuizScoreCard"
 import api from "../api/axios"
+import { FiCheckSquare, FiFileText, FiInfo, FiSmile, FiCpu, FiAward } from "react-icons/fi"
 
 export default function Quiz() {
   const navigate = useNavigate()
@@ -153,7 +154,7 @@ export default function Quiz() {
             <h3 className="card-title">Quiz History</h3>
             {history.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">🧠</div>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiCheckSquare /></div>
                 <h3 className="empty-title">No quizzes taken yet</h3>
                 <p className="empty-sub">Take your first quiz to see your progress here!</p>
               </div>
@@ -201,7 +202,7 @@ export default function Quiz() {
                 <h3 className="card-title">Select a note to quiz yourself on:</h3>
                 {notes.length === 0 ? (
                   <div className="empty-state">
-                    <div className="empty-icon">📝</div>
+                    <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiFileText /></div>
                     <h3 className="empty-title">No notes yet</h3>
                     <p className="empty-sub">Add notes in the Journal to start quizzing!</p>
                   </div>
@@ -291,7 +292,7 @@ export default function Quiz() {
                       </div>
                       {submitted && q.explanation && (
                         <div style={{ background: 'var(--s3)', border: '1px solid var(--bd)', color: 'var(--t2)', fontSize: '0.85rem', padding: '12px 16px', borderRadius: '8px', marginTop: '16px' }}>
-                          💡 {q.explanation}
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><FiInfo style={{ color: 'var(--gold)', flexShrink: 0 }} /> <span>{q.explanation}</span></div>
                         </div>
                       )}
                     </div>
@@ -312,7 +313,9 @@ export default function Quiz() {
                 {submitted && (
                   <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem' }}>
                     <button className="btn-ghost" onClick={resetQuiz}>Take Another Quiz</button>
-                    <button className="btn-gold" onClick={() => setShowResultModal(true)}>View Results 🎉</button>
+                    <button className="btn-gold" onClick={() => setShowResultModal(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <FiAward /> View Results
+                    </button>
                   </div>
                 )}
               </div>

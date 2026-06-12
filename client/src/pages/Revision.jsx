@@ -5,6 +5,7 @@ import RevisionCompleteModal from "../components/RevisionCompleteModal"
 import RevisionIntervalPicker from "../components/RevisionIntervalPicker"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiRefreshCw, FiAlertTriangle, FiCalendar, FiCpu, FiCheck, FiBookOpen, FiClock, FiInfo, FiSmile, FiTarget } from "react-icons/fi"
 
 export default function Revision() {
   const { user } = useAuth()
@@ -157,8 +158,8 @@ export default function Revision() {
             <h1 className="page-title">Smart Revision</h1>
             <p className="page-subtitle">Spaced repetition powered by science</p>
           </div>
-          <button className="btn-gold" onClick={generateStudyPlan} disabled={planLoading} style={{ padding: '11px 24px' }}>
-            🤖 {planLoading ? "Generating..." : "AI Study Plan"}
+          <button className="btn-gold" onClick={generateStudyPlan} disabled={planLoading} style={{ padding: '11px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <FiCpu /> {planLoading ? "Generating..." : "AI Study Plan"}
           </button>
         </div>
 
@@ -166,19 +167,19 @@ export default function Revision() {
         <div className="stat-grid" style={{ marginBottom: '24px' }}>
           <div className="stat-card">
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)' }} />
-            <div className="stat-icon" style={{ background: 'rgba(212,175,55,0.1)' }}>🔄</div>
+            <div className="stat-icon" style={{ background: 'rgba(212,175,55,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiRefreshCw /></div>
             <div className="stat-val">{dueNotes.length}</div>
             <div className="stat-label">Due Today</div>
           </div>
           <div className="stat-card">
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--red)' }} />
-            <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.1)' }}>⚠️</div>
+            <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--red)' }}><FiAlertTriangle /></div>
             <div className="stat-val" style={{ color: 'var(--red)' }}>{weakTopics.length}</div>
             <div className="stat-label">Weak Topics</div>
           </div>
           <div className="stat-card">
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--em)' }} />
-            <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.1)' }}>📅</div>
+            <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--em)' }}><FiCalendar /></div>
             <div className="stat-val" style={{ fontSize: '1.25rem', padding: '10px 0' }}>1·3·7·14·30d</div>
             <div className="stat-label">Intervals</div>
           </div>
@@ -206,7 +207,7 @@ export default function Revision() {
             {dueNotes.length === 0 ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-icon">✅</div>
+                  <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--em)' }}><FiSmile /></div>
                   <h3 className="empty-title">All caught up!</h3>
                   <p className="empty-sub">No revisions due today. Keep studying to build new notes.</p>
                 </div>
@@ -249,9 +250,9 @@ export default function Revision() {
                         className="btn-outline"
                         onClick={() => getRevisionPlan(note)}
                         disabled={notePlanLoading[note._id]}
-                        style={{ fontSize: '0.8rem', padding: '6px 14px' }}
+                        style={{ fontSize: '0.8rem', padding: '6px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                       >
-                        🤖 {notePlanLoading[note._id] ? "Generating..." : "Get AI Plan"}
+                        <FiCpu /> {notePlanLoading[note._id] ? "Generating..." : "Get AI Plan"}
                       </button>
                     </div>
 
@@ -287,15 +288,17 @@ export default function Revision() {
                         onClick={() => handleMarkRevised(note, confidenceMap[note._id] || 3)}
                         disabled={completing[note._id]}
                         className="btn-emerald"
-                        style={{ padding: '8px 18px' }}
+                        style={{ padding: '8px 18px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                       >
-                        {completing[note._id] ? "Saving..." : "✅ Mark as Revised"}
+                        <FiCheck /> {completing[note._id] ? "Saving..." : "Mark as Revised"}
                       </button>
                     </div>
 
                     {notePlans[note._id] && (
                       <div className="card" style={{ marginTop: '12px', background: 'var(--s2)', padding: '16px', border: '1px solid var(--bd)' }}>
-                        <h4 style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', color: 'var(--t1)' }}>📋 3-Day Revision Plan</h4>
+                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', color: 'var(--t1)' }}>
+                          <FiCpu style={{ color: 'var(--gold)' }} /> 3-Day Revision Plan
+                        </h4>
                         <div style={{ whiteSpace: 'pre-line', fontSize: '0.85rem', color: 'var(--t2)', lineHeight: '1.5' }}>
                           {notePlans[note._id]}
                         </div>
@@ -311,7 +314,7 @@ export default function Revision() {
             {weakTopics.length === 0 ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-icon">🎯</div>
+                  <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiTarget /></div>
                   <h3 className="empty-title">No weak spots detected</h3>
                   <p className="empty-sub">Take more quizzes to identify areas to improve</p>
                 </div>
@@ -351,7 +354,7 @@ export default function Revision() {
             {!studyPlan ? (
               <div className="card">
                 <div className="empty-state">
-                  <div className="empty-icon">📚</div>
+                  <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiBookOpen /></div>
                   <h3 className="empty-title">No study plan yet</h3>
                   <p className="empty-sub">Click "AI Study Plan" to generate a personalised 7-day plan based on your weak topics</p>
                 </div>
@@ -367,7 +370,9 @@ export default function Revision() {
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)' }} />
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: '8px' }}>
                         <h3 style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--t1)' }}>Day {day.day}: {day.focus}</h3>
-                        <span className="badge badge-gold">⏱ {day.estimatedTime}</span>
+                        <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <FiClock size={12} /> {day.estimatedTime}
+                        </span>
                       </div>
                       <ul style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                         {(day.tasks || []).map((task, i) => (
@@ -379,7 +384,9 @@ export default function Revision() {
                 </div>
                 {studyPlan.tips && (
                   <div className="card" style={{ marginTop: '16px' }}>
-                    <h3 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '12px', color: 'var(--t1)' }}>💡 Tips</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1rem', marginBottom: '12px', color: 'var(--t1)' }}>
+                      <FiInfo style={{ color: 'var(--gold)' }} /> Tips
+                    </h3>
                     <ul style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                       {studyPlan.tips.map((tip, i) => (
                         <li key={i} style={{ color: 'var(--t2)', fontSize: '0.85rem' }}>{tip}</li>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
+import { FiCalendar, FiPrinter, FiTrash2 } from "react-icons/fi"
 
 export default function StudyPlans() {
   const [plans, setPlans] = useState([])
@@ -105,7 +106,7 @@ export default function StudyPlans() {
         ) : plans.length === 0 ? (
           <div className="card">
             <div className="empty-state">
-              <div className="empty-icon">📅</div>
+              <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiCalendar /></div>
               <h3 className="empty-title">No study plans yet</h3>
               <p className="empty-sub">Go to Revision → Weak Topics to generate one.</p>
             </div>
@@ -121,14 +122,14 @@ export default function StudyPlans() {
                     className="btn-outline"
                     onClick={() => downloadPDF(plan)}
                     title="Download PDF"
-                    style={{ padding: '6px 10px', fontSize: '0.82rem' }}
-                  >📥 Print</button>
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  ><FiPrinter /> Print</button>
                   <button
                     className="btn-ghost"
                     onClick={() => handleDelete(plan._id)}
                     title="Delete"
-                    style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171' }}
-                  >🗑️ Delete</button>
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  ><FiTrash2 /> Delete</button>
                 </div>
 
                 <h3 style={{ fontWeight: 600, fontSize: "1.15rem", color: "var(--t1)", marginRight: "8rem" }}>

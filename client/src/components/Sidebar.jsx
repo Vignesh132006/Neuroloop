@@ -2,6 +2,8 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useState, useEffect } from "react"
 import api from "../api/axios"
+import { FiGrid, FiBookOpen, FiFileText, FiRefreshCw, FiCheckSquare, FiCalendar, FiMessageSquare, FiAward, FiSettings, FiZap, FiLogOut } from "react-icons/fi"
+import NeuroLoopLogo from "./NeuroLoopLogo"
 
 const S = `
   .sb{
@@ -129,18 +131,18 @@ const S = `
 `;
 
 const learningItems = [
-  { to: '/dashboard',    icon: '🏠', label: 'Dashboard' },
-  { to: '/journal',      icon: '📓', label: 'Journal' },
-  { to: '/notes',        icon: '📝', label: 'Notes' },
-  { to: '/revision',     icon: '🔄', label: 'Revision',   hasBadge: true },
-  { to: '/quiz',         icon: '🧠', label: 'Quiz' },
+  { to: '/dashboard',    icon: <FiGrid />, label: 'Dashboard' },
+  { to: '/journal',      icon: <FiBookOpen />, label: 'Journal' },
+  { to: '/notes',        icon: <FiFileText />, label: 'Notes' },
+  { to: '/revision',     icon: <FiRefreshCw />, label: 'Revision',   hasBadge: true },
+  { to: '/quiz',         icon: <FiCheckSquare />, label: 'Quiz' },
 ]
 
 const toolsItems = [
-  { to: '/study-plans',  icon: '📅', label: 'Study Plans' },
-  { to: '/chat',         icon: '💬', label: 'Neuro Chat' },
-  { to: '/leaderboard',  icon: '🏆', label: 'Leaderboard' },
-  { to: '/settings',     icon: '⚙️', label: 'Settings' },
+  { to: '/study-plans',  icon: <FiCalendar />, label: 'Study Plans' },
+  { to: '/chat',         icon: <FiMessageSquare />, label: 'Neuro Chat' },
+  { to: '/leaderboard',  icon: <FiAward />, label: 'Leaderboard' },
+  { to: '/settings',     icon: <FiSettings />, label: 'Settings' },
 ]
 
 export default function Sidebar() {
@@ -194,8 +196,7 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="sb-logo">
-          <div className="sb-logo-mark">🧠</div>
-          <span className="sb-logo-name">Neuro<span>Loop</span></span>
+          <NeuroLoopLogo size={32} showWordmark={true} />
         </div>
 
         {/* Navigation */}
@@ -208,7 +209,7 @@ export default function Sidebar() {
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
             >
-              <span className="sb-link-icon">{item.icon}</span>
+              <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
               <span>{item.label}</span>
               {item.hasBadge && dueCount > 0 && (
                 <span className="sb-badge">{dueCount}</span>
@@ -224,7 +225,7 @@ export default function Sidebar() {
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
             >
-              <span className="sb-link-icon">{item.icon}</span>
+              <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
               <span>{item.label}</span>
               {item.hasBadge && dueCount > 0 && (
                 <span className="sb-badge">{dueCount}</span>
@@ -236,7 +237,9 @@ export default function Sidebar() {
         <div className="sb-bottom">
           {/* Streak Widget */}
           <div className="sb-streak">
-            <span className="sb-streak-fire">🔥</span>
+            <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#d4af37' }}>
+              <FiZap size={18} fill="#d4af37" />
+            </span>
             <div>
               <div className="sb-streak-num">
                 {user?.streak || 0} day{(user?.streak || 0) !== 1 ? 's' : ''}
@@ -261,8 +264,8 @@ export default function Sidebar() {
           )}
 
           {/* Logout */}
-          <button onClick={handleLogout} className="sb-logout">
-            🚪 Logout
+          <button onClick={handleLogout} className="sb-logout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <FiLogOut size={14} /> Logout
           </button>
         </div>
       </nav>

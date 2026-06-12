@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
+import { FiSearch, FiFileText, FiCpu, FiCheck, FiInfo, FiSmile } from "react-icons/fi"
 
 export default function Notes() {
   const [notes, setNotes] = useState([])
@@ -87,8 +88,8 @@ export default function Notes() {
 
         {/* Search + Filter */}
         <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
-          <div className="search-bar" style={{ flex: 1, minWidth: "200px", marginBottom: 0 }}>
-            <span style={{ color: "var(--t2)" }}>🔍</span>
+          <div className="search-bar" style={{ flex: 1, minWidth: "200px", marginBottom: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ color: "var(--t2)", display: "flex", alignItems: "center" }}><FiSearch /></span>
             <input
               placeholder="Search notes..."
               value={searchQuery}
@@ -120,7 +121,7 @@ export default function Notes() {
             </p>
             {filteredNotes.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">📝</div>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiFileText /></div>
                 <h3 className="empty-title">No notes found</h3>
                 <p className="empty-sub">Try adjusting your search or add notes in the Journal</p>
               </div>
@@ -164,7 +165,7 @@ export default function Notes() {
                   {selected?._id === note._id && (
                     <div className="card" style={{ marginTop: "0.5rem", background: "var(--s2)", border: '1px solid var(--bd)' }}>
                       <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem", color: 'var(--t1)' }}>
-                        🤖 AI Tools for "{note.topic}"
+                        <FiCpu style={{ color: 'var(--gold)' }} /> AI Tools for "{note.topic}"
                       </h4>
                       <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
                         <button className="btn-gold" onClick={() => generateMCQ(note)} disabled={!!aiLoading}>
@@ -196,13 +197,13 @@ export default function Notes() {
                                     display: "flex", alignItems: "center", justifyContent: "space-between",
                                   }}>
                                     <span>{opt}</span>
-                                    {opt === q.correctAnswer && <span>✅</span>}
+                                    {opt === q.correctAnswer && <span style={{ display: "flex", alignItems: "center", color: "var(--em)" }}><FiCheck /></span>}
                                   </div>
                                 ))}
                               </div>
                               {q.explanation && (
-                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--t2)" }}>
-                                  💡 {q.explanation}
+                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--t2)", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <FiInfo style={{ color: "var(--gold)" }} /> {q.explanation}
                                 </p>
                               )}
                             </div>
@@ -224,7 +225,9 @@ export default function Notes() {
                               </div>
                               <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.5rem", color: 'var(--t1)' }}>{i + 1}. {q.question}</p>
                               {q.hint && (
-                                <p style={{ fontSize: "0.8rem", color: "var(--t2)" }}>💡 Hint: {q.hint}</p>
+                                <p style={{ fontSize: "0.8rem", color: "var(--t2)", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <FiInfo style={{ color: "var(--gold)" }} /> Hint: {q.hint}
+                                </p>
                               )}
                             </div>
                           ))}

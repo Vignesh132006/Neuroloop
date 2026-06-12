@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar"
 import MotivationBanner from "../components/MotivationBanner"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiFileText, FiCheckSquare, FiRefreshCw, FiAward, FiSmile } from "react-icons/fi"
 
 function ActivityHeatmap({ heatmapData }) {
   const today = new Date()
@@ -139,20 +140,20 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="stat-grid">
           {[
-            {ic:'📝',bg:'rgba(212,175,55,0.1)',bar:'linear-gradient(90deg,#d4af37,#f0d060)',
+            {ic:<FiFileText size={18} style={{ color: '#d4af37' }} />,bg:'rgba(212,175,55,0.1)',bar:'linear-gradient(90deg,#d4af37,#f0d060)',
              v:notes.length,l:'Notes Written',s:'Your knowledge base is growing'},
-            {ic:'🧠',bg:'rgba(16,185,129,0.1)',bar:'linear-gradient(90deg,#10b981,#34d399)',
+            {ic:<FiCheckSquare size={18} style={{ color: '#10b981' }} />,bg:'rgba(16,185,129,0.1)',bar:'linear-gradient(90deg,#10b981,#34d399)',
              v:quizHistory.length,l:'Quizzes Taken',s:`Avg score: ${avgQuizScore}%`},
-            {ic:'🔄',bg:'rgba(59,130,246,0.1)',bar:'linear-gradient(90deg,#3b82f6,#60a5fa)',
+            {ic:<FiRefreshCw size={18} style={{ color: '#3b82f6' }} />,bg:'rgba(59,130,246,0.1)',bar:'linear-gradient(90deg,#3b82f6,#60a5fa)',
              v:totalRevisions,l:'Revisions Done',s:'Spaced repetition mastery'},
-            {ic:'⭐',bg:'rgba(212,175,55,0.08)',bar:'linear-gradient(90deg,#d4af37,#10b981)',
+            {ic:<FiAward size={18} style={{ color: '#d4af37' }} />,bg:'rgba(212,175,55,0.08)',bar:'linear-gradient(90deg,#d4af37,#10b981)',
              v:`${masteryScore}%`,l:'Overall Mastery',
              s:masteryScore>=80?'You are a knowledge champion!':'Keep reviewing to boost this!'},
           ].map((s,i)=>(
             <div key={i} className="stat-card">
               <div style={{position:'absolute',bottom:0,left:0,right:0,height:'2px',
                            background:s.bar,borderRadius:'0 0 16px 16px'}}/>
-              <div className="stat-icon" style={{background:s.bg}}>{s.ic}</div>
+              <div className="stat-icon" style={{background:s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{s.ic}</div>
               <div className="stat-val">{s.v}</div>
               <div className="stat-label">{s.l}</div>
               <div className="stat-sub">{s.s}</div>
@@ -222,12 +223,14 @@ export default function Dashboard() {
           {/* Due Revisions */}
           <div className="card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>🔄 Due for Revision</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>
+                <FiRefreshCw style={{ color: 'var(--gold)' }} /> Due for Revision
+              </h3>
               <span className="badge badge-gold">{dueRevisions.length} due</span>
             </div>
             {dueRevisions.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">✅</div>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--em)' }}><FiSmile /></div>
                 <h3 className="empty-title">All caught up!</h3>
                 <p className="empty-sub">No revisions due today. Keep learning!</p>
               </div>
@@ -260,12 +263,14 @@ export default function Dashboard() {
           {/* Recent Notes */}
           <div className="card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>📝 Recent Notes</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>
+                <FiFileText style={{ color: 'var(--em)' }} /> Recent Notes
+              </h3>
               <span className="badge badge-em">{notes.length} total</span>
             </div>
             {notes.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">📓</div>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiFileText /></div>
                 <h3 className="empty-title">Your learning journey starts here!</h3>
                 <p className="empty-sub">Write your first journal entry to begin</p>
               </div>
@@ -298,7 +303,9 @@ export default function Dashboard() {
         {/* Quiz History */}
         {quizHistory.length > 0 && (
           <div className="card" style={{ marginTop: '16px' }}>
-            <h3 style={{ fontWeight: 600, fontSize: '1.05rem', marginBottom: '16px', color: 'var(--t1)' }}>🧠 Recent Quiz Performance</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', marginBottom: '16px', color: 'var(--t1)' }}>
+              <FiCheckSquare style={{ color: 'var(--gold)' }} /> Recent Quiz Performance
+            </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {quizHistory.slice(0, 5).map((q) => (
                 <div key={q._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
+import { FiSettings, FiUser, FiZap, FiSliders, FiLock, FiCheck } from "react-icons/fi"
 
 export default function Settings() {
   const [user, setUser] = useState(null)
@@ -65,7 +66,7 @@ export default function Settings() {
       <Sidebar />
       <main className="main-content fade-in">
         <div className="page-header">
-          <h1 className="page-title">⚙️ Settings</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiSettings /> Settings</h1>
           <p className="page-subtitle">Manage your account information, notification preferences, and security settings</p>
         </div>
 
@@ -77,7 +78,7 @@ export default function Settings() {
             {/* Account Info */}
             <div className="card">
               <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.25rem" }}>
-                👤 Account Info
+                <FiUser style={{ color: 'var(--gold)' }} /> Account Info
               </h2>
               {user && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
@@ -93,7 +94,9 @@ export default function Settings() {
                   ))}
                   <div className="flex-between">
                     <span style={{ color: 'var(--text-secondary)' }}>Current Streak</span>
-                    <strong style={{ color: 'var(--accent-warm)' }}>{user.streak} day{user.streak !== 1 ? "s" : ""} 🔥</strong>
+                    <strong style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      {user.streak} day{user.streak !== 1 ? "s" : ""} <FiZap fill="#d4af37" />
+                    </strong>
                   </div>
                 </div>
               )}
@@ -102,7 +105,7 @@ export default function Settings() {
             {/* Profile Settings */}
             <div className="card">
               <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.25rem" }}>
-                🔧 Profile Settings
+                <FiSliders style={{ color: 'var(--gold)' }} /> Profile Settings
               </h2>
               <form onSubmit={handleSaveProfile} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
@@ -131,8 +134,8 @@ export default function Settings() {
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                   <button type="submit" className="btn btn-primary">Save Settings</button>
                   {profileSuccess && (
-                    <span style={{ color: "var(--success)", fontSize: "0.85rem", fontWeight: 500 }}>
-                      ✅ {profileSuccess}
+                    <span style={{ color: "var(--em)", fontSize: "0.85rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <FiCheck /> {profileSuccess}
                     </span>
                   )}
                 </div>
@@ -142,7 +145,7 @@ export default function Settings() {
             {/* Change Password */}
             <div className="card">
               <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.25rem" }}>
-                🔒 Change Password
+                <FiLock style={{ color: 'var(--gold)' }} /> Change Password
               </h2>
               <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 {[
@@ -165,7 +168,9 @@ export default function Settings() {
                   <p style={{ color: "var(--danger)", fontSize: "0.85rem", fontWeight: 500 }}>{passwordError}</p>
                 )}
                 {passwordSuccess && (
-                  <p style={{ color: "var(--success)", fontSize: "0.85rem", fontWeight: 500 }}>✅ {passwordSuccess}</p>
+                  <p style={{ color: "var(--em)", fontSize: "0.85rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "4px" }}>
+                    <FiCheck /> {passwordSuccess}
+                  </p>
                 )}
 
                 <div>

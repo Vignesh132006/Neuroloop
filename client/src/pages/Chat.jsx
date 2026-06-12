@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
+import { FiMessageSquare, FiTrash2, FiSend } from "react-icons/fi"
 
 export default function Chat() {
   const { user } = useAuth()
@@ -75,7 +76,7 @@ export default function Chat() {
         {/* Header */}
         <div className="flex-between mb-4">
           <div>
-            <h1 className="page-title">💬 Neuro AI Tutor</h1>
+            <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}><FiMessageSquare /> Neuro AI Tutor</h1>
             <p className="page-subtitle">Socratic learning assistant • Ask anything</p>
           </div>
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
@@ -85,8 +86,8 @@ export default function Chat() {
                 <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>{n.topic}</option>
               ))}
             </select>
-            <button className="btn btn-secondary" onClick={clearChat} style={{ gap: "0.35rem" }}>
-              🗑️ Clear
+            <button className="btn btn-secondary" onClick={clearChat} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
+              <FiTrash2 /> Clear
             </button>
           </div>
         </div>
@@ -165,9 +166,9 @@ export default function Chat() {
             className="btn btn-primary"
             onClick={sendMessage}
             disabled={loading || !input.trim()}
-            style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem", gap: "0.35rem" }}
+            style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem", gap: "0.35rem", display: 'inline-flex', alignItems: 'center' }}
           >
-            📤 Send
+            <FiSend /> Send
           </button>
         </div>
         <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.72rem", marginTop: "0.5rem" }}>

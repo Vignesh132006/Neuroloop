@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import Sidebar from "../components/Sidebar"
 import TaskCompleteToast from "../components/TaskCompleteToast"
 import api from "../api/axios"
+import { FiEdit3, FiPlus, FiUpload, FiSave, FiCpu, FiBookOpen } from "react-icons/fi"
 
 export default function Journal() {
   const [topic, setTopic] = useState("")
@@ -150,8 +151,8 @@ export default function Journal() {
 
         {/* Editor Card */}
         <div className="card">
-          <h2 className="card-title">
-            {editId ? "✏️ Edit Entry" : "✨ New Entry"}
+          <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {editId ? <FiEdit3 /> : <FiPlus />} {editId ? "Edit Entry" : "New Entry"}
           </h2>
 
           {/* PDF Upload Section */}
@@ -166,7 +167,7 @@ export default function Journal() {
                 style={{ display: "none" }}
               />
               <label htmlFor="pdf-file-upload" style={{ cursor: "pointer", display: "block" }}>
-                <div className="upload-icon">📄</div>
+                <div className="upload-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiUpload /></div>
                 <div className="upload-title">PDF Note Upload</div>
                 <div className="upload-sub">Upload a PDF note and let AI automatically extract the topic, notes, and summary.</div>
                 <button className="btn-gold" type="button" style={{ pointerEvents: 'none' }}>
@@ -224,11 +225,11 @@ export default function Journal() {
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "1rem" }}>
-            <button id="journal-save" className="btn-gold" onClick={handleSave} disabled={loading} style={{ padding: '11px 24px' }}>
-              {loading ? "Saving..." : editId ? "Update Entry" : "💾 Save Journal"}
+            <button id="journal-save" className="btn-gold" onClick={handleSave} disabled={loading} style={{ padding: '11px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <FiSave /> {loading ? "Saving..." : editId ? "Update Entry" : "Save Journal"}
             </button>
-            <button className="btn-outline" onClick={generateSummary} disabled={summaryLoading} style={{ padding: '11px 24px' }}>
-              🤖 {summaryLoading ? "Generating..." : "AI Summary"}
+            <button className="btn-outline" onClick={generateSummary} disabled={summaryLoading} style={{ padding: '11px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <FiCpu /> {summaryLoading ? "Generating..." : "AI Summary"}
             </button>
             {editId && (
               <button className="btn-ghost" onClick={() => { setEditId(null); setTopic(""); setNotes(""); setSummary(""); setTags(""); setDifficulty("medium") }}>
@@ -240,8 +241,8 @@ export default function Journal() {
           {/* AI Summary Output */}
           {summary && (
             <div className="ai-output" style={{ marginTop: '20px', background: 'var(--s2)', border: '1px solid var(--bd)' }}>
-              <div style={{ fontWeight: 600, marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.35rem", color: 'var(--t1)' }}>
-                🤖 AI Summary
+              <div style={{ fontWeight: 600, marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem", color: 'var(--t1)' }}>
+                <FiCpu style={{ color: 'var(--gold)' }} /> AI Summary
               </div>
               <div style={{ color: 'var(--t2)', fontSize: '0.88rem' }}>{summary}</div>
             </div>
@@ -258,7 +259,7 @@ export default function Journal() {
           {journals.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-icon">📓</div>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiBookOpen /></div>
                 <h3 className="empty-title">Your learning journey starts with one note!</h3>
                 <p className="empty-sub">Write your first entry above to get started</p>
               </div>
@@ -286,8 +287,11 @@ export default function Journal() {
                     </div>
                   )}
                   {j.aiSummary && (
-                    <div style={{ background: "var(--s2)", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px", fontSize: "0.82rem", marginBottom: "12px", color: "var(--t2)" }}>
-                      🤖 AI Summary: {j.aiSummary.slice(0, 150)}...
+                    <div style={{ background: "var(--s2)", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px", fontSize: "0.82rem", marginBottom: "12px", color: "var(--t2)", display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                      <FiCpu style={{ color: 'var(--gold)', marginTop: '2px', flexShrink: 0 }} />
+                      <div>
+                        <strong>AI Summary:</strong> {j.aiSummary.slice(0, 150)}...
+                      </div>
                     </div>
                   )}
                   <div style={{ display: "flex", gap: "0.5rem", justifyContent: "space-between", alignItems: "center" }}>
