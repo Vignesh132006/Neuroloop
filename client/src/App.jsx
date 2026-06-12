@@ -3,7 +3,6 @@ import { AuthProvider } from "./context/AuthContext"
 import PrivateRoute from "./components/PrivateRoute"
 import "./index.css"
 
-import Signup    from "./pages/Signup"
 import Login     from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import Journal   from "./pages/Journal"
@@ -22,7 +21,7 @@ export default function App() {
         <Routes>
           {/* Public */}
           <Route path="/login"  element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<Navigate to="/login" replace />} />
 
           {/* Protected */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

@@ -52,18 +52,49 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`[Server] Running on port ${PORT}`)
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('[Warning] SENDGRID_API_KEY not set. Emails will not send.')
+  } else {
+    console.log('[Email] SendGrid ready.')
+  }
 })
 
 // Daily revision reminder — runs every day at 8:00 AM
 cron.schedule('0 8 * * *', async () => {
   try {
     console.log('[Cron] Running daily revision reminders...')
-    const response = await fetch(`http://localhost:${process.env.PORT || 5000}/api/revision/send-reminders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    const data = await response.json()
-    console.log('[Cron] Reminder result:', data)
+    const User = require('./models/User')
+    const Note = require('./models/Note')
+    const { sendReminderEmail } = require('./utils/emailService')
+
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    const users = await User.find({ emailNotifications: { $ne: false } })
+    const usersWithDueRevisions = []
+
+    for (const user of users) {
+      const dueNotes = await Note.find({
+        user: user._id,
+        nextRevision: { $lte: today },
+      })
+      if (dueNotes.length > 0) {
+        usersWithDueRevisions.push({
+          email: user.email,
+          name: user.name,
+          dueNotes,
+        })
+      }
+    }
+
+    for (const user of usersWithDueRevisions) {
+      const dueTopics = user.dueNotes.map(n => n.topic)
+      try {
+        await sendReminderEmail(user.email, user.name, dueTopics)
+      } catch (err) {
+        console.error(`[Email] Failed for ${user.email}:`, err.message)
+      }
+    }
   } catch (err) {
     console.error('[Cron] Reminder failed:', err.message)
   }

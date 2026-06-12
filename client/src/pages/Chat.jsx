@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
-import { FiTrash2, FiSend } from "react-icons/fi"
 
 export default function Chat() {
   const { user } = useAuth()
@@ -28,32 +27,20 @@ export default function Chat() {
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return
-
     const userMsg = { role: "user", content: input.trim() }
     const newMessages = [...messages, userMsg]
     setMessages(newMessages)
     setInput("")
     setLoading(true)
-
     try {
-      // Build history for API (exclude the initial greeting for brevity)
       const history = newMessages.slice(1, -1).map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
         content: m.content,
       }))
-
-      const res = await api.post("/ai/chat", {
-        message: input.trim(),
-        history,
-        context,
-      })
-
+      const res = await api.post("/ai/chat", { message: input.trim(), history, context })
       setMessages((prev) => [...prev, { role: "assistant", content: res.data.reply }])
     } catch (e) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "I am having trouble connecting right now. Please try again in a moment." },
-      ])
+      setMessages((prev) => [...prev, { role: "assistant", content: "I am having trouble connecting right now. Please try again in a moment." }])
     } finally {
       setLoading(false)
     }
@@ -74,56 +61,42 @@ export default function Chat() {
   }
 
   const formatMessage = (content) => {
-    // Basic markdown-like rendering
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:var(--bg-secondary);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--border)">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:rgba(124,58,237,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--border-subtle);color:var(--primary-glow)">$1</code>')
       .replace(/\n/g, "<br/>")
   }
 
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 0px)", padding: "2rem 3rem" }}>
+      <main className="main-content fade-in" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 0px)", padding: "2rem 2.5rem" }}>
         {/* Header */}
         <div className="flex-between mb-4">
           <div>
-            <h1 className="page-title">Neuro AI Tutor</h1>
+            <h1 className="page-title">💬 Neuro AI Tutor</h1>
             <p className="page-subtitle">Socratic learning assistant • Ask anything</p>
           </div>
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-            <select
-              className="form-select"
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              style={{ width: "auto", minWidth: "180px" }}
-            >
+            <select className="form-select" value={context} onChange={(e) => setContext(e.target.value)} style={{ width: "auto", minWidth: "180px" }}>
               <option value="">No context</option>
               {notes.map((n) => (
-                <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>
-                  {n.topic}
-                </option>
+                <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>{n.topic}</option>
               ))}
             </select>
-            <button className="btn btn-secondary" onClick={clearChat} title="Clear chat" style={{ gap: "0.35rem" }}>
-              <FiTrash2 /> Clear
+            <button className="btn btn-secondary" onClick={clearChat} style={{ gap: "0.35rem" }}>
+              🗑️ Clear
             </button>
           </div>
         </div>
 
         {/* Chat Area */}
         <div style={{
-          flex: 1,
-          overflowY: "auto",
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius)",
-          padding: "1.5rem",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          marginBottom: "1rem",
+          flex: 1, overflowY: "auto",
+          background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius)", padding: "1.5rem",
+          display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1rem",
         }}>
           {messages.map((msg, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: msg.role === "user" ? "flex-end" : "flex-start" }}>
@@ -131,13 +104,12 @@ export default function Chat() {
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
                   <div style={{
                     width: "28px", height: "28px",
-                    background: "var(--accent-blue)",
-                    color: "#ffffff",
-                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, var(--primary), var(--accent))",
+                    color: "#ffffff", borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "0.8rem", fontWeight: 700,
+                    fontSize: "0.75rem", fontWeight: 700,
                   }}>N</div>
-                  <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--accent-blue)" }}>Neuro</span>
+                  <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--primary-glow)" }}>Neuro</span>
                 </div>
               )}
               <div
@@ -151,19 +123,17 @@ export default function Chat() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <div style={{
                 width: "28px", height: "28px",
-                background: "var(--accent-blue)",
-                color: "#ffffff",
-                borderRadius: "50%",
+                background: "linear-gradient(135deg, var(--primary), var(--accent))",
+                color: "#ffffff", borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.8rem", fontWeight: 700,
+                fontSize: "0.75rem", fontWeight: 700,
               }}>N</div>
               <div className="chat-bubble assistant">
                 <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
                   {[0, 0.15, 0.3].map((delay, i) => (
                     <div key={i} style={{
-                      width: "6px", height: "6px",
-                      borderRadius: "50%",
-                      background: "var(--text-muted)",
+                      width: "6px", height: "6px", borderRadius: "50%",
+                      background: "var(--primary-glow)",
                       animation: `spin 1.2s ease-in-out ${delay}s infinite`,
                     }} />
                   ))}
@@ -174,14 +144,11 @@ export default function Chat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Bar */}
+        {/* Input */}
         <div style={{
-          display: "flex",
-          gap: "0.75rem",
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius)",
-          padding: "0.75rem",
+          display: "flex", gap: "0.75rem",
+          background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius)", padding: "0.75rem",
         }}>
           <textarea
             id="chat-input"
@@ -200,11 +167,10 @@ export default function Chat() {
             disabled={loading || !input.trim()}
             style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem", gap: "0.35rem" }}
           >
-            <FiSend /> Send
+            📤 Send
           </button>
         </div>
-
-        <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.5rem" }}>
+        <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.72rem", marginTop: "0.5rem" }}>
           Neuro uses the Socratic method to guide deep understanding
         </p>
       </main>

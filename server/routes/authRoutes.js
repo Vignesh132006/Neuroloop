@@ -23,6 +23,13 @@ router.post("/signup", async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword })
     await newUser.save()
 
+    const { sendWelcomeEmail } = require('../utils/emailService')
+    try {
+      await sendWelcomeEmail(newUser.email, newUser.name)
+    } catch (err) {
+      console.error('[Email] Welcome email failed:', err.message)
+    }
+
     const token = jwt.sign(
       { id: newUser._id, name: newUser.name, email: newUser.email },
       process.env.JWT_SECRET,

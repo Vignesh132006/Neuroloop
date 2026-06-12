@@ -2,7 +2,53 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
-import { FiRefreshCw, FiGithub, FiAward, FiActivity } from "react-icons/fi"
+
+function PodiumSection({ top3 }) {
+  if (!top3 || top3.length < 3) return null
+
+  const slots = [
+    { user: top3[1], rank: 2, medal: '🥈', avatarSize: 56, blockHeight: 80, color: '#9CA3AF' },
+    { user: top3[0], rank: 1, medal: '🥇', avatarSize: 72, blockHeight: 120, color: '#F59E0B' },
+    { user: top3[2], rank: 3, medal: '🥉', avatarSize: 48, blockHeight: 60, color: '#B45309' },
+  ]
+
+  const bgColors = ['#9CA3AF', '#F59E0B', '#B45309']
+
+  return (
+    <div className="podium-container">
+      {slots.map((slot, idx) => (
+        <div key={slot.rank} className="podium-slot">
+          {slot.rank === 1 && <div className="crown-float">👑</div>}
+          <div
+            className="podium-avatar"
+            style={{
+              width: slot.avatarSize,
+              height: slot.avatarSize,
+              background: `linear-gradient(135deg, ${slot.color}44, ${slot.color}88)`,
+              border: `3px solid ${slot.color}`,
+              fontSize: `${slot.avatarSize * 0.35}px`,
+            }}
+          >
+            {slot.user.name?.charAt(0).toUpperCase()}
+          </div>
+          <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', textAlign: 'center' }}>
+            {slot.user.name}
+          </p>
+          <span style={{ fontSize: '0.75rem', color: 'var(--accent-warm)', fontWeight: 700 }}>
+            🔥 {slot.user.streak} days
+          </span>
+          <div className="podium-block" style={{
+            height: `${slot.blockHeight}px`,
+            background: `linear-gradient(180deg, ${slot.color}22, ${slot.color}11)`,
+            border: `1px solid ${slot.color}33`,
+          }}>
+            <span>{slot.medal}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function Leaderboard() {
   const { user } = useAuth()
@@ -27,27 +73,7 @@ export default function Leaderboard() {
     }
   }
 
-  useEffect(() => {
-    fetchLeaderboard()
-  }, [])
-
-  const renderRank = (rank) => {
-    const badgeStyle = {
-      display: "inline-flex",
-      width: "24px",
-      height: "24px",
-      borderRadius: "50%",
-      color: "#000000",
-      fontWeight: 750,
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: "0.75rem",
-    }
-    if (rank === 1) return <span style={{ ...badgeStyle, background: "#ffd700" }}>1</span>
-    if (rank === 2) return <span style={{ ...badgeStyle, background: "#c0c0c0" }}>2</span>
-    if (rank === 3) return <span style={{ ...badgeStyle, background: "#cd7f32" }}>3</span>
-    return <span style={{ color: "var(--text-secondary)", fontSize: "0.875rem", paddingLeft: "0.5rem" }}>{rank}</span>
-  }
+  useEffect(() => { fetchLeaderboard() }, [])
 
   return (
     <div className="app-layout">
@@ -57,83 +83,103 @@ export default function Leaderboard() {
 
         <div className="page-header flex-between">
           <div>
-            <h1 className="page-title">Streak Leaderboard</h1>
+            <h1 className="page-title">🏆 Streak Leaderboard</h1>
             <p className="page-subtitle">Compete with friends and keep your daily learning streak alive!</p>
           </div>
           <button className="btn btn-secondary" onClick={fetchLeaderboard} disabled={loading} style={{ gap: "0.35rem" }}>
-            <FiRefreshCw /> Refresh
+            🔄 Refresh
           </button>
         </div>
 
         {loading ? (
-          <div className="loading-screen">
-            <div className="spinner" />
-            <p>Loading leaderboard...</p>
-          </div>
+          <div className="loading-screen"><div className="spinner" /><p>Loading leaderboard...</p></div>
         ) : (
-          <div className="card">
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-                <thead>
-                  <tr style={{ borderBottom: "2px solid var(--border)", color: "var(--text-secondary)" }}>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Rank</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Name</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>GitHub Linked</th>
-                    <th style={{ padding: "1rem 0.5rem", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "right" }}>Streak</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((u, idx) => {
-                    const isSelf = user && (u.name === user.name)
-                    const rank = idx + 1
-                    
-                    return (
-                      <tr 
-                        key={u._id} 
-                        style={{ 
-                          borderBottom: "1px solid var(--border)", 
-                          background: isSelf ? "var(--bg-card-hover)" : "transparent",
-                          fontWeight: isSelf ? "600" : "normal"
-                        }}
-                      >
-                        <td style={{ padding: "1rem 0.5rem" }}>
-                          {renderRank(rank)}
-                        </td>
-                        <td style={{ padding: "1rem 0.5rem", color: "var(--text-primary)" }}>
-                          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            {u.name}
-                            {isSelf && <span className="badge badge-purple" style={{ textTransform: "none" }}>You</span>}
-                          </span>
-                        </td>
-                        <td style={{ padding: "1rem 0.5rem" }}>
-                          {u.githubUsername ? (
-                            <span className="badge badge-blue" style={{ textTransform: "none", gap: "0.3rem", display: "inline-flex", alignItems: "center" }}>
-                              <FiGithub size={12} /> @{u.githubUsername}
-                            </span>
-                          ) : (
-                            <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Not Linked</span>
-                          )}
-                        </td>
-                        <td style={{ padding: "1rem 0.5rem", textAlign: "right", fontSize: "1rem", fontWeight: 700, color: "var(--accent-orange)" }}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                            <FiActivity size={14} /> {u.streak} day{u.streak !== 1 ? "s" : ""}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
+          <>
+            {/* Podium */}
+            {users.length >= 3 && <PodiumSection top3={users.slice(0, 3)} />}
 
-            {users.length === 0 && (
-              <div className="empty-state">
-                <div className="empty-state-icon"><FiAward size={32} /></div>
-                <h3>No players on the leaderboard yet</h3>
-                <p>Register and login to start your streak!</p>
+            {/* Table */}
+            <div className="card">
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                      {['Rank', 'Name', 'GitHub', 'Streak'].map(h => (
+                        <th key={h} style={{
+                          padding: '0.75rem 0.5rem', fontWeight: 600, fontSize: '0.7rem',
+                          textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)',
+                          textAlign: h === 'Streak' ? 'right' : 'left',
+                        }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((u, idx) => {
+                      const isSelf = user && (u.name === user.name)
+                      const rank = idx + 1
+                      const medals = ['🥇', '🥈', '🥉']
+
+                      return (
+                        <tr
+                          key={u._id}
+                          style={{
+                            borderBottom: '1px solid var(--border-subtle)',
+                            background: isSelf ? 'rgba(124,58,237,0.08)' : 'transparent',
+                            border: isSelf ? '1px solid var(--border-glow)' : undefined,
+                          }}
+                        >
+                          <td style={{ padding: '0.875rem 0.5rem', fontWeight: 700, fontSize: '1rem' }}>
+                            {rank <= 3 ? medals[rank - 1] : <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', paddingLeft: '4px' }}>{rank}</span>}
+                          </td>
+                          <td style={{ padding: '0.875rem 0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                              <div style={{
+                                width: '32px', height: '32px', borderRadius: '50%',
+                                background: isSelf ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(124,58,237,0.2)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: '#fff', fontWeight: 700, fontSize: '0.8rem',
+                              }}>
+                                {u.name?.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{u.name}</span>
+                                {isSelf && <span className="badge badge-purple" style={{ marginLeft: '8px', fontSize: '0.65rem' }}>You</span>}
+                              </div>
+                            </div>
+                          </td>
+                          <td style={{ padding: '0.875rem 0.5rem' }}>
+                            {u.githubUsername ? (
+                              <span className="badge badge-cyan" style={{ gap: '4px' }}>
+                                @{u.githubUsername}
+                              </span>
+                            ) : (
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>Not linked</span>
+                            )}
+                          </td>
+                          <td style={{ padding: '0.875rem 0.5rem', textAlign: 'right' }}>
+                            <span style={{
+                              fontWeight: 700, fontSize: '0.95rem', color: 'var(--accent-warm)',
+                              display: 'inline-flex', alignItems: 'center', gap: '4px',
+                            }}>
+                              🔥 {u.streak} day{u.streak !== 1 ? 's' : ''}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
+
+              {users.length === 0 && (
+                <div className="empty-state">
+                  <div className="empty-state-icon">🏆</div>
+                  <h3>No players on the leaderboard yet</h3>
+                  <p>Register and login to start your streak!</p>
+                </div>
+              )}
+            </div>
+          </>
         )}
       </main>
     </div>

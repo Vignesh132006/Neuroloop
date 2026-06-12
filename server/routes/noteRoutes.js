@@ -271,4 +271,23 @@ router.get("/:id", authMiddleware, async (req, res) => {
   }
 })
 
+// PATCH /api/notes/:id/reschedule — Reschedule revision date for a note
+router.patch('/:id/reschedule', authMiddleware, async (req, res) => {
+  try {
+    const { nextRevisionDate } = req.body
+    if (!nextRevisionDate) {
+      return res.status(400).json({ message: 'nextRevisionDate is required' })
+    }
+    const note = await Note.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { nextRevision: new Date(nextRevisionDate) },
+      { new: true }
+    )
+    if (!note) return res.status(404).json({ message: 'Note not found' })
+    res.json({ message: 'Revision date updated', note })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 module.exports = router
