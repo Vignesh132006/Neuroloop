@@ -16,7 +16,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false)
   const [context, setContext] = useState("")
   const [notes, setNotes] = useState([])
-  const messagesEndRef = useRef(null)
+  const messagesEndRef = useRef(null)  const textareaRef = useRef(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -25,6 +25,13 @@ export default function Chat() {
   useEffect(() => {
     api.get("/notes").then((r) => setNotes(r.data)).catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
+    }
+  }, [input])
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return
@@ -61,120 +68,172 @@ export default function Chat() {
     }])
   }
 
+  const handleSuggestionClick = (promptText) => {
+    setInput(promptText)
+    setTimeout(() => {
+      textareaRef.current?.focus()
+    }, 50)
+  }
+
   const formatMessage = (content) => {
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:rgba(124,58,237,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--border-subtle);color:var(--primary-glow)">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:rgba(212,175,55,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
       .replace(/\n/g, "<br/>")
   }
+
+  const suggestions = [
+    {
+      title: "💡 Socratic Dialogue",
+      desc: "Break down a topic using the Socratic method step-by-step.",
+      prompt: "Let's explore a topic of my choice. Ask me questions one by one using the Socratic method to test my deep understanding."
+    },
+    {
+      title: "🤔 Clarify a Concept",
+      desc: "Deeply understand a concept you are struggling with.",
+      prompt: "I am struggling to understand the difference between deep learning and machine learning. Help me break it down Socrates-style."
+    },
+    {
+      title: "🔍 Spot Logical Gaps",
+      desc: "Have Neuro critique your thesis or logic on a topic.",
+      prompt: "I have an idea about how spaced repetition prevents memory decay. Let's discuss it, and you point out any flaws in my logic."
+    }
+  ]
 
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 0px)", padding: "2rem 2.5rem" }}>
+      <div className="page-wrap fade-in" style={{ display: "flex", flexDirection: "column", height: "100vh", paddingBottom: "24px" }}>
         {/* Header */}
-        <div className="flex-between mb-4">
+        <div className="flex-between" style={{ marginBottom: "1rem" }}>
           <div>
-            <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}><FiMessageSquare /> Neuro AI Tutor</h1>
-            <p className="page-subtitle">Socratic learning assistant • Ask anything</p>
+            <div className="page-eyebrow">Interactive Learning</div>
+            <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}><FiMessageSquare /> Neuro Chat</h1>
+            <p className="page-subtitle">Socratic learning assistant • Deepen your understanding</p>
           </div>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-            <select className="form-select" value={context} onChange={(e) => setContext(e.target.value)} style={{ width: "auto", minWidth: "180px" }}>
-              <option value="">No context</option>
-              {notes.map((n) => (
-                <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>{n.topic}</option>
-              ))}
-            </select>
-            <button className="btn btn-secondary" onClick={clearChat} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
-              <FiTrash2 /> Clear
+          <div>
+            <button className="btn btn-ghost" onClick={clearChat} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
+              <FiTrash2 /> Clear Chat
             </button>
           </div>
         </div>
 
-        {/* Chat Area */}
-        <div style={{
-          flex: 1, overflowY: "auto",
-          background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
-          borderRadius: "var(--radius)", padding: "1.5rem",
-          display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1rem",
-        }}>
-          {messages.map((msg, i) => (
-            <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: msg.role === "user" ? "flex-end" : "flex-start" }}>
-              {msg.role === "assistant" && (
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
-                  <div style={{
-                    width: "28px", height: "28px",
-                    background: "linear-gradient(135deg, var(--primary), var(--accent))",
-                    color: "#ffffff", borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "0.75rem", fontWeight: 700,
-                  }}>N</div>
-                  <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--primary-glow)" }}>Neuro</span>
-                </div>
-              )}
-              <div
-                className={`chat-bubble ${msg.role === "user" ? "user" : "assistant"}`}
-                style={{ animation: "fadeIn 0.3s ease" }}
-                dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
-              />
-            </div>
-          ))}
-          {loading && (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={{
-                width: "28px", height: "28px",
-                background: "linear-gradient(135deg, var(--primary), var(--accent))",
-                color: "#ffffff", borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.75rem", fontWeight: 700,
-              }}>N</div>
-              <div className="chat-bubble assistant">
-                <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
-                  {[0, 0.15, 0.3].map((delay, i) => (
-                    <div key={i} style={{
-                      width: "6px", height: "6px", borderRadius: "50%",
-                      background: "var(--primary-glow)",
-                      animation: `spin 1.2s ease-in-out ${delay}s infinite`,
-                    }} />
+        {/* Chat Layout Container */}
+        <div className="chat-container-layout">
+          {/* Messages scroll area */}
+          <div className="chat-messages-area">
+            {messages.map((msg, i) => (
+              <div key={i} className={`chat-bubble-wrapper ${msg.role === "user" ? "user" : "assistant"}`}>
+                {msg.role === "assistant" && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
+                    <div style={{
+                      width: "24px", height: "24px",
+                      background: "linear-gradient(135deg, var(--gold), #af8f27)",
+                      color: "#0d0d0d", borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.7rem", fontWeight: 700,
+                    }}>N</div>
+                    <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--gold)" }}>Neuro</span>
+                  </div>
+                )}
+                <div
+                  className={`chat-bubble-container ${msg.role === "user" ? "user" : "assistant"}`}
+                  dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
+                />
+              </div>
+            ))}
+
+            {/* Suggestions on Empty / Start State */}
+            {messages.length === 1 && (
+              <div style={{ marginTop: "1rem" }}>
+                <p style={{ fontSize: "0.8rem", color: "var(--t2)", fontWeight: 500, marginBottom: "0.5rem" }}>Try one of these Socratic prompts to start:</p>
+                <div className="chat-suggestions-grid">
+                  {suggestions.map((s, idx) => (
+                    <button
+                      key={idx}
+                      className="chat-suggestion-item"
+                      onClick={() => handleSuggestionClick(s.prompt)}
+                    >
+                      <strong>{s.title}</strong>
+                      <span>{s.desc}</span>
+                    </button>
                   ))}
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            )}
 
-        {/* Input */}
-        <div style={{
-          display: "flex", gap: "0.75rem",
-          background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
-          borderRadius: "var(--radius)", padding: "0.75rem",
-        }}>
-          <textarea
-            id="chat-input"
-            className="form-textarea"
-            placeholder="Ask Neuro anything... (Shift+Enter for new line, Enter to send)"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={2}
-            style={{ flex: 1, minHeight: "unset", resize: "none", border: "none", background: "transparent", padding: "0.25rem 0.5rem" }}
-          />
-          <button
-            id="chat-send"
-            className="btn btn-primary"
-            onClick={sendMessage}
-            disabled={loading || !input.trim()}
-            style={{ alignSelf: "flex-end", padding: "0.625rem 1.25rem", gap: "0.35rem", display: 'inline-flex', alignItems: 'center' }}
-          >
-            <FiSend /> Send
-          </button>
+            {loading && (
+              <div className="chat-bubble-wrapper assistant">
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
+                  <div style={{
+                    width: "24px", height: "24px",
+                    background: "linear-gradient(135deg, var(--gold), #af8f27)",
+                    color: "#0d0d0d", borderRadius: "50%",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "0.7rem", fontWeight: 700,
+                  }}>N</div>
+                  <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--t2)" }}>Neuro is thinking...</span>
+                </div>
+                <div className="chat-bubble-container assistant" style={{ padding: "0.75rem 1.25rem" }}>
+                  <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                    {[0, 0.15, 0.3].map((delay, i) => (
+                      <div key={i} style={{
+                        width: "6px", height: "6px", borderRadius: "50%",
+                        background: "var(--gold)",
+                        animation: `glowPulse 1.2s ease-in-out ${delay}s infinite`,
+                      }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Panel */}
+          <div className="chat-input-panel">
+            <div className="chat-input-row">
+              <textarea
+                ref={textareaRef}
+                id="chat-input"
+                className="chat-input-textarea"
+                placeholder="Ask Neuro anything... (Shift+Enter for new line, Enter to send)"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+              />
+            </div>
+            
+            <div className="chat-controls">
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--t2)", fontWeight: 500 }}>Select Context Notes:</span>
+                <select
+                  className="form-select"
+                  value={context}
+                  onChange={(e) => setContext(e.target.value)}
+                  style={{ width: "auto", minWidth: "160px", padding: "6px 12px", fontSize: "0.8rem", height: "32px", background: "var(--s3)" }}
+                >
+                  <option value="">No Context Notes</option>
+                  {notes.map((n) => (
+                    <option key={n._id} value={`Topic: ${n.topic}. Notes: ${n.notes.slice(0, 200)}`}>{n.topic}</option>
+                  ))}
+                </select>
+              </div>
+              <button
+                id="chat-send"
+                className="btn btn-gold"
+                onClick={sendMessage}
+                disabled={loading || !input.trim()}
+                style={{ padding: "0.4rem 1.2rem", display: 'inline-flex', alignItems: 'center', gap: "0.4rem", height: "32px", fontSize: "0.85rem" }}
+              >
+                <FiSend /> Send
+              </button>
+            </div>
+          </div>
         </div>
-        <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.72rem", marginTop: "0.5rem" }}>
-          Neuro uses the Socratic method to guide deep understanding
-        </p>
-      </main>
+      </div>
     </div>
   )
 }
