@@ -64,8 +64,9 @@ export default function Settings() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <main className="main-content fade-in">
+      <div className="page-wrap fade-in">
         <div className="page-header">
+          <div className="page-eyebrow">User Management</div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiSettings /> Settings</h1>
           <p className="page-subtitle">Manage your account information, notification preferences, and security settings</p>
         </div>
@@ -73,7 +74,7 @@ export default function Settings() {
         {loading ? (
           <div className="loading-screen"><div className="spinner" /><p>Loading settings...</p></div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "600px" }}>
+          <div className="settings-grid">
 
             {/* Account Info */}
             <div className="card">
@@ -81,20 +82,20 @@ export default function Settings() {
                 <FiUser style={{ color: 'var(--gold)' }} /> Account Info
               </h2>
               {user && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                   {[
                     { label: 'Name', value: user.name },
                     { label: 'Email', value: user.email },
                     { label: 'Member Since', value: new Date(user.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) },
                   ].map(item => (
-                    <div key={item.label} className="flex-between" style={{ borderBottom: "1px solid var(--border-subtle)", paddingBottom: "0.5rem" }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>
-                      <strong style={{ color: 'var(--text-primary)' }}>{item.value}</strong>
+                    <div key={item.label} className="detail-row">
+                      <span className="detail-label">{item.label}</span>
+                      <strong className="detail-value">{item.value}</strong>
                     </div>
                   ))}
-                  <div className="flex-between">
-                    <span style={{ color: 'var(--text-secondary)' }}>Current Streak</span>
-                    <strong style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <div className="detail-row">
+                    <span className="detail-label">Current Streak</span>
+                    <strong className="detail-value" style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                       {user.streak} day{user.streak !== 1 ? "s" : ""} <FiZap fill="#d4af37" />
                     </strong>
                   </div>
@@ -116,23 +117,25 @@ export default function Settings() {
                     value={githubUsername}
                     onChange={(e) => setGithubUsername(e.target.value)}
                   />
-                  <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
+                  <p style={{ fontSize: "0.72rem", color: "var(--t2)", marginTop: "0.25rem" }}>
                     Used to fetch public commit data for your heatmap.
                   </p>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0.5rem 0" }}>
+                <div className="flex-between" style={{ margin: "0.5rem 0", paddingBottom: "0.5rem" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.9rem", fontWeight: 500, color: "var(--text-primary)" }}>Email Notifications</label>
-                    <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Receive daily email reminders for due revisions</span>
+                    <label style={{ display: "block", fontSize: "0.9rem", fontWeight: 500, color: "var(--t1)" }}>Email Notifications</label>
+                    <span style={{ fontSize: "0.72rem", color: "var(--t2)" }}>Receive daily email reminders for due revisions</span>
                   </div>
-                  <input
-                    type="checkbox" checked={emailNotifications}
-                    onChange={(e) => setEmailNotifications(e.target.checked)}
-                    style={{ width: "18px", height: "18px", accentColor: "var(--primary)", cursor: "pointer" }}
-                  />
+                  <label className="switch">
+                    <input
+                      type="checkbox" checked={emailNotifications}
+                      onChange={(e) => setEmailNotifications(e.target.checked)}
+                    />
+                    <span className="slider"></span>
+                  </label>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <button type="submit" className="btn btn-primary">Save Settings</button>
+                  <button type="submit" className="btn btn-gold">Save Settings</button>
                   {profileSuccess && (
                     <span style={{ color: "var(--em)", fontSize: "0.85rem", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: "4px" }}>
                       <FiCheck /> {profileSuccess}
@@ -165,7 +168,7 @@ export default function Settings() {
                 ))}
 
                 {passwordError && (
-                  <p style={{ color: "var(--danger)", fontSize: "0.85rem", fontWeight: 500 }}>{passwordError}</p>
+                  <p style={{ color: "var(--red)", fontSize: "0.85rem", fontWeight: 500 }}>{passwordError}</p>
                 )}
                 {passwordSuccess && (
                   <p style={{ color: "var(--em)", fontSize: "0.85rem", fontWeight: 500, display: "flex", alignItems: "center", gap: "4px" }}>
@@ -174,13 +177,13 @@ export default function Settings() {
                 )}
 
                 <div>
-                  <button type="submit" className="btn btn-primary">Update Password</button>
+                  <button type="submit" className="btn btn-gold">Update Password</button>
                 </div>
               </form>
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   )
 }
