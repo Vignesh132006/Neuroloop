@@ -177,7 +177,10 @@ router.post('/forgot-password', async (req, res) => {
       console.error('[Email] Failed to send reset OTP email:', mailErr.message);
       console.log(`[Email Fallback] Reset OTP for ${email} is: ${otp}`);
     }
-    res.json({ message: 'Verification code sent to your email' });
+    res.json({ 
+      message: 'Verification code sent to your email',
+      isFirstTime: !user.hasResetPasswordBefore
+    });
   } catch(err) {
     res.status(500).json({ message: err.message });
   }
@@ -210,6 +213,7 @@ router.post('/reset-password', async (req, res) => {
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetOtp = null;
     user.resetOtpExpiry = null;
+    user.hasResetPasswordBefore = true;
     await user.save();
 
     res.json({ message: 'Password reset successfully' });
