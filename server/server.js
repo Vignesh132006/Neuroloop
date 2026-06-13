@@ -71,10 +71,10 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`[Server] Running on port ${PORT}`)
-  if (!process.env.SENDGRID_API_KEY) {
-    console.warn('[Warning] SENDGRID_API_KEY not set. Emails will not send.')
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+    console.warn('[Warning] GMAIL_USER or GMAIL_PASS not set in environment variables. Emails will not send.')
   } else {
-    console.log('[Email] SendGrid ready.')
+    console.log('[Email] Gmail SMTP ready.')
   }
 })
 

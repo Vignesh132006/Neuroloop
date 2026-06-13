@@ -1,14 +1,21 @@
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
+    pass: process.env.GMAIL_PASS
+  }
+});
 
 async function sendReminderEmail(userEmail, userName, dueTopics) {
   const topicList = dueTopics
     .map(t => `<li style="margin:6px 0;color:#06B6D4;">${t}</li>`)
     .join('');
 
-  const msg = {
+  const mailOptions = {
     to: userEmail,
-    from: { email: process.env.SENDER_EMAIL, name: 'NeuroLoop' },
+    from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🔥 ${dueTopics.length} revision(s) due today — keep your streak alive!`,
     html: `
       <div style="font-family:Inter,sans-serif;background:#0D0D1A;color:#F0EFFE;
@@ -36,14 +43,14 @@ async function sendReminderEmail(userEmail, userName, dueTopics) {
     `,
   };
 
-  await sgMail.send(msg);
+  await transporter.sendMail(mailOptions);
   console.log(`[Email] Reminder sent to ${userEmail}`);
 }
 
 async function sendWelcomeEmail(userEmail, userName) {
-  const msg = {
+  const mailOptions = {
     to: userEmail,
-    from: { email: process.env.SENDER_EMAIL, name: 'NeuroLoop' },
+    from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🎉 Welcome to NeuroLoop, ${userName}! Your learning loop starts now.`,
     html: `
       <div style="font-family:Inter,sans-serif;background:#0D0D1A;color:#F0EFFE;
@@ -71,14 +78,14 @@ async function sendWelcomeEmail(userEmail, userName) {
     `,
   };
 
-  await sgMail.send(msg);
+  await transporter.sendMail(mailOptions);
   console.log(`[Email] Welcome email sent to ${userEmail}`);
 }
 
 async function sendResetOtpEmail(userEmail, userName, otp) {
-  const msg = {
+  const mailOptions = {
     to: userEmail,
-    from: { email: process.env.SENDER_EMAIL, name: 'NeuroLoop' },
+    from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: 'Your NeuroLoop password reset code',
     html: `
       <div style="font-family:Inter,sans-serif;background:#0a0a0a;color:#f5f0e8;
@@ -105,7 +112,8 @@ async function sendResetOtpEmail(userEmail, userName, otp) {
       </div>
     `,
   };
-  await sgMail.send(msg);
+
+  await transporter.sendMail(mailOptions);
   console.log('[Email] Reset OTP sent to', userEmail);
 }
 
