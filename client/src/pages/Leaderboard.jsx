@@ -8,16 +8,16 @@ function PodiumSection({ top3 }) {
   if (!top3 || top3.length < 3) return null
 
   const slots = [
-    { user: top3[0], rank: 1, medal: '🥇', avatarSize: 72, blockHeight: 125, color: 'var(--gold)' },
-    { user: top3[1], rank: 2, medal: '🥈', avatarSize: 56, blockHeight: 90, color: '#9CA3AF' },
-    { user: top3[2], rank: 3, medal: '🥉', avatarSize: 48, blockHeight: 70, color: '#B45309' },
+    { user: top3[0], rank: 1, avatarSize: 72, blockHeight: 125, color: 'var(--gold)' },
+    { user: top3[1], rank: 2, avatarSize: 56, blockHeight: 90, color: '#9CA3AF' },
+    { user: top3[2], rank: 3, avatarSize: 48, blockHeight: 70, color: '#B45309' },
   ]
 
   return (
     <div className="podium-container">
       {slots.map((slot) => (
         <div key={slot.rank} className="podium-slot">
-          {slot.rank === 1 && <div className="crown-float">👑</div>}
+          {slot.rank === 1 && <div className="crown-float" style={{fontSize:'1.2rem'}}><svg width="24" height="24" viewBox="0 0 24 24" fill="#d4af37" stroke="none"><path d="M2 8l4 4 6-6 6 6 4-4-2 12H4L2 8z"/><rect x="4" y="18" width="16" height="2" rx="1"/></svg></div>}
           <div
             className="podium-avatar"
             style={{
@@ -42,7 +42,7 @@ function PodiumSection({ top3 }) {
             border: `1px solid ${slot.color}22`,
             borderBottom: 'none',
           }}>
-            <span>{slot.medal}</span>
+            <span style={{fontWeight:700,color:slot.color,fontSize:'1.3rem'}}>#{slot.rank}</span>
           </div>
         </div>
       ))}
@@ -116,18 +116,20 @@ export default function Leaderboard() {
                     {users.map((u, idx) => {
                       const isSelf = user && (u.name === user.name)
                       const rank = idx + 1
-                      const medals = ['🥇', '🥈', '🥉']
+                      const rankLabels = ['1st', '2nd', '3rd']
 
                       return (
                         <tr
                           key={u._id}
+                          className="lb-row"
                           style={{
+                            '--i': idx,
                             background: isSelf ? 'var(--goldg)' : 'transparent',
                             borderLeft: isSelf ? '3px solid var(--gold)' : undefined,
                           }}
                         >
                           <td style={{ fontWeight: 700, fontSize: '1rem', width: '80px' }}>
-                            {rank <= 3 ? medals[rank - 1] : <span style={{ color: 'var(--t3)', fontSize: '0.85rem', paddingLeft: '4px' }}>{rank}</span>}
+                            {rank <= 3 ? <span style={{ color: 'var(--gold)', fontWeight: 700 }}>{rankLabels[rank - 1]}</span> : <span style={{ color: 'var(--t3)', fontSize: '0.85rem', paddingLeft: '4px' }}>{rank}</span>}
                           </td>
                           <td>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>

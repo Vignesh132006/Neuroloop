@@ -126,11 +126,11 @@ export default function Notes() {
                 <p className="empty-sub">Try adjusting your search or add notes in the Journal</p>
               </div>
             ) : (
-              filteredNotes.map((note) => (
+              filteredNotes.map((note, i) => (
                 <div key={note._id}>
                   <div
-                    className="card"
-                    style={{ cursor: "pointer", position: "relative" }}
+                    className="card anim-card"
+                    style={{ cursor: "pointer", position: "relative", '--i': i }}
                     onClick={() => setSelected(selected?._id === note._id ? null : note)}
                   >
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: note.difficulty === 'easy' ? 'var(--em)' : note.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
@@ -13,6 +13,25 @@ const getStrength = (pwd) => {
 }
 const strengthColors = ['#EF4444', '#F59E0B', '#3B82F6', '#10B981']
 const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong']
+
+const dots = [
+  {top:'15%',left:'20%',size:4,delay:'0s',dur:'3s'},
+  {top:'25%',left:'75%',size:3,delay:'0.5s',dur:'4s'},
+  {top:'60%',left:'15%',size:5,delay:'1s',dur:'3.5s'},
+  {top:'70%',left:'80%',size:3,delay:'1.5s',dur:'5s'},
+  {top:'40%',left:'60%',size:4,delay:'0.8s',dur:'4.2s'},
+  {top:'85%',left:'35%',size:3,delay:'2s',dur:'3.8s'},
+  {top:'10%',left:'50%',size:4,delay:'0.3s',dur:'4.5s'},
+  {top:'50%',left:'88%',size:3,delay:'1.2s',dur:'3.2s'},
+]
+
+const quotes = [
+  {q:'Learning is not attained by chance. It must be sought with ardor and attended with diligence.',a:'Abigail Adams'},
+  {q:'The beautiful thing about learning is that nobody can take it away from you.',a:'B.B. King'},
+  {q:'An investment in knowledge pays the best interest.',a:'Benjamin Franklin'},
+  {q:'Education is the most powerful weapon you can use to change the world.',a:'Nelson Mandela'},
+  {q:'The more that you read, the more things you will know.',a:'Dr. Seuss'},
+]
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState('login')
@@ -31,8 +50,23 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Quote rotation
+  const [quoteIndex, setQuoteIndex] = useState(0)
+  const [quoteVisible, setQuoteVisible] = useState(true)
+
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteVisible(false)
+      setTimeout(() => {
+        setQuoteIndex(i => (i + 1) % quotes.length)
+        setQuoteVisible(true)
+      }, 400)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -89,24 +123,13 @@ export default function Login() {
       <style>{`
         .lp-left{
           flex:1.2;display:flex;flex-direction:column;
-          justify-content:space-between;padding:48px 56px;
+          justify-content:space-between;padding:0;
           position:relative;overflow:hidden;
           border-right:1px solid rgba(255,255,255,0.06);
+          background:#0a0a0a;
         }
         @media (max-width: 900px) {
           .lp-left { display: none; }
-        }
-        .lp-left-glow{
-          position:absolute;width:500px;height:500px;
-          border-radius:50%;pointer-events:none;
-          background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 70%);
-          top:-150px;left:-150px;
-        }
-        .lp-left-glow2{
-          position:absolute;width:350px;height:350px;
-          border-radius:50%;pointer-events:none;
-          background:radial-gradient(circle,rgba(16,185,129,0.06) 0%,transparent 70%);
-          bottom:-100px;right:0;
         }
         .lp-right{
           width:480px;flex-shrink:0;
@@ -117,73 +140,6 @@ export default function Login() {
           .lp-right { width: 100%; }
         }
         .lp-form-wrap{width:100%;max-width:360px;}
-
-        .lp-headline{
-          font-family:'DM Serif Display',Georgia,serif;
-          font-size:3rem;line-height:1.15;
-          color:#f5f0e8;margin-bottom:10px;
-          font-weight:400;
-        }
-        .lp-headline em{
-          font-style:italic;color:#d4af37;
-        }
-        .lp-tagline{color:#a09880;font-size:0.95rem;line-height:1.6;max-width:420px;}
-
-        .lp-stat-grid{
-          display:grid;grid-template-columns:1fr 1fr;gap:12px;
-          margin-top:44px;
-        }
-        .lp-stat{
-          background:#111111;
-          border:1px solid rgba(255,255,255,0.07);
-          border-radius:13px;padding:16px;
-          display:flex;align-items:center;gap:12px;
-          transition:all 0.2s;
-        }
-        .lp-stat:hover{
-          border-color:rgba(212,175,55,0.2);
-          transform:translateY(-2px);
-          box-shadow:0 8px 24px rgba(0,0,0,0.3);
-        }
-        .lp-stat-ic{
-          width:38px;height:38px;border-radius:9px;
-          display:flex;align-items:center;justify-content:center;
-          font-size:1.15rem;flex-shrink:0;
-        }
-        .lp-stat-v{font-weight:700;font-size:1.05rem;color:#f5f0e8;}
-        .lp-stat-l{font-size:0.7rem;color:#5a5040;margin-top:1px;}
-
-        .lp-quote-block{margin-top:40px;}
-        .lp-quote-line{
-          width:32px;height:2px;background:#d4af37;
-          margin-bottom:14px;border-radius:99px;
-        }
-        .lp-quote-text{
-          font-family:'DM Serif Display',serif;
-          font-size:1.25rem;color:#f5f0e8;
-          line-height:1.5;font-weight:400;
-          font-style:italic;margin-bottom:8px;
-        }
-        .lp-quote-auth{font-size:0.78rem;color:#d4af37;font-weight:600;}
-
-        .lp-join{
-          display:flex;align-items:center;gap:10px;
-          margin-top:32px;
-        }
-        .lp-avs{display:flex;}
-        .lp-av{
-          width:28px;height:28px;border-radius:50%;
-          border:2px solid #0a0a0a;
-          margin-right:-7px;
-          font-size:0.7rem;font-weight:700;
-          display:flex;align-items:center;justify-content:center;
-          color:#0a0a0a;
-        }
-        .lp-join-t{
-          font-size:0.8rem;color:#a09880;
-          margin-left:13px;
-        }
-        .lp-join-t strong{color:#f5f0e8;}
 
         .lp-form-title{
           font-family:'DM Serif Display',serif;
@@ -202,6 +158,7 @@ export default function Login() {
           flex:1;padding:9px;border-radius:7px;
           border:none;font-size:0.85rem;font-weight:600;
           color:#5a5040;background:transparent;transition:all 0.2s;
+          cursor:pointer;
         }
         .lp-tab.active{
           background:#d4af37;color:#0a0a0a;
@@ -267,77 +224,244 @@ export default function Login() {
           color:#f5f0e8;
           border-color:rgba(255,255,255,0.16);
         }
+
+        /* Animated neural network background */
+        .lp-canvas-wrap{
+          position:absolute;inset:0;overflow:hidden;
+        }
+
+        /* Floating orbs */
+        .lp-orb{
+          position:absolute;border-radius:50%;
+          filter:blur(80px);pointer-events:none;
+          animation:orbFloat linear infinite;
+        }
+        .lp-orb-1{
+          width:400px;height:400px;
+          background:rgba(212,175,55,0.12);
+          top:-100px;left:-100px;
+          animation-duration:18s;
+          animation-name:orbFloat1;
+        }
+        .lp-orb-2{
+          width:300px;height:300px;
+          background:rgba(16,185,129,0.08);
+          bottom:-80px;right:-80px;
+          animation-duration:22s;
+          animation-name:orbFloat2;
+        }
+        .lp-orb-3{
+          width:200px;height:200px;
+          background:rgba(212,175,55,0.07);
+          top:40%;left:40%;
+          animation-duration:15s;
+          animation-name:orbFloat3;
+        }
+
+        @keyframes orbFloat1{
+          0%{transform:translate(0,0) scale(1);}
+          33%{transform:translate(60px,40px) scale(1.1);}
+          66%{transform:translate(-30px,70px) scale(0.95);}
+          100%{transform:translate(0,0) scale(1);}
+        }
+        @keyframes orbFloat2{
+          0%{transform:translate(0,0) scale(1);}
+          33%{transform:translate(-50px,-40px) scale(1.08);}
+          66%{transform:translate(30px,-60px) scale(0.92);}
+          100%{transform:translate(0,0) scale(1);}
+        }
+        @keyframes orbFloat3{
+          0%{transform:translate(0,0) scale(1);}
+          50%{transform:translate(-40px,30px) scale(1.15);}
+          100%{transform:translate(0,0) scale(1);}
+        }
+
+        /* Animated grid lines */
+        .lp-grid{
+          position:absolute;inset:0;
+          background-image:
+            linear-gradient(rgba(212,175,55,0.04) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(212,175,55,0.04) 1px,transparent 1px);
+          background-size:60px 60px;
+          animation:gridShift 20s linear infinite;
+        }
+        @keyframes gridShift{
+          0%{background-position:0 0;}
+          100%{background-position:60px 60px;}
+        }
+
+        /* Animated dots */
+        .lp-dot{
+          position:absolute;border-radius:50%;
+          background:var(--gold);
+          animation:dotPulse ease-in-out infinite;
+        }
+        @keyframes dotPulse{
+          0%,100%{opacity:0.15;transform:scale(1);}
+          50%{opacity:0.6;transform:scale(1.5);}
+        }
+
+        /* Rotating ring */
+        .lp-ring{
+          position:absolute;border-radius:50%;
+          border:1px solid rgba(212,175,55,0.12);
+          top:50%;left:50%;
+          transform:translate(-50%,-50%);
+          animation:ringRotate linear infinite;
+        }
+        .lp-ring-1{width:320px;height:320px;animation-duration:25s;}
+        .lp-ring-2{width:480px;height:480px;animation-duration:35s;animation-direction:reverse;}
+        .lp-ring-3{width:620px;height:620px;animation-duration:45s;
+                   border-color:rgba(16,185,129,0.08);}
+        @keyframes ringRotate{
+          from{transform:translate(-50%,-50%) rotate(0deg);}
+          to{transform:translate(-50%,-50%) rotate(360deg);}
+        }
+
+        /* Center logo mark */
+        .lp-center-mark{
+          position:absolute;top:50%;left:50%;
+          transform:translate(-50%,-50%);
+          display:flex;flex-direction:column;
+          align-items:center;gap:16px;
+          z-index:2;
+        }
+        .lp-logo-hex{
+          width:72px;height:72px;border-radius:20px;
+          background:linear-gradient(135deg,#d4af37,#a08020);
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 0 0 1px rgba(212,175,55,0.3),
+                     0 0 40px rgba(212,175,55,0.25),
+                     0 0 80px rgba(212,175,55,0.1);
+          animation:logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse{
+          0%,100%{box-shadow:0 0 0 1px rgba(212,175,55,0.3),0 0 40px rgba(212,175,55,0.25),0 0 80px rgba(212,175,55,0.1);}
+          50%{box-shadow:0 0 0 1px rgba(212,175,55,0.5),0 0 60px rgba(212,175,55,0.35),0 0 100px rgba(212,175,55,0.15);}
+        }
+        .lp-logo-svg{width:36px;height:36px;}
+
+        .lp-brand-name{
+          font-family:'DM Serif Display',serif;
+          font-size:1.6rem;color:#f5f0e8;
+          text-align:center;letter-spacing:-0.01em;
+        }
+        .lp-brand-name span{color:#d4af37;}
+
+        .lp-brand-tagline{
+          font-size:0.82rem;color:rgba(255,255,255,0.35);
+          text-align:center;letter-spacing:0.06em;
+          text-transform:uppercase;
+        }
+
+        /* Rotating text ring */
+        .lp-text-ring{
+          position:absolute;bottom:48px;left:0;right:0;
+          display:flex;justify-content:center;
+          z-index:2;
+        }
+        .lp-quote-fade{
+          text-align:center;
+          max-width:360px;
+          animation:quoteFade 0.6s ease;
+        }
+        @keyframes quoteFade{
+          from{opacity:0;transform:translateY(8px);}
+          to{opacity:1;transform:translateY(0);}
+        }
+        .lp-quote-mark{
+          font-family:'DM Serif Display',serif;
+          font-size:3rem;color:rgba(212,175,55,0.2);
+          line-height:0.5;margin-bottom:12px;display:block;
+        }
+        .lp-quote-q{
+          font-family:'DM Serif Display',serif;
+          font-size:1rem;color:rgba(255,255,255,0.65);
+          font-style:italic;line-height:1.6;margin-bottom:8px;
+        }
+        .lp-quote-a{
+          font-size:0.72rem;color:#d4af37;
+          font-weight:600;letter-spacing:0.08em;
+          text-transform:uppercase;
+        }
+
+        /* Top left branding */
+        .lp-top-brand{
+          position:absolute;top:32px;left:36px;
+          display:flex;align-items:center;gap:10px;
+          z-index:3;
+        }
+        .lp-top-brand-icon{
+          width:32px;height:32px;border-radius:8px;
+          background:linear-gradient(135deg,#d4af37,#a08020);
+          display:flex;align-items:center;justify-content:center;
+        }
+        .lp-top-brand-name{
+          font-family:'DM Serif Display',serif;
+          font-size:1.1rem;color:#f5f0e8;
+        }
+        .lp-top-brand-name span{color:#d4af37;}
       `}</style>
 
-      {/* LEFT */}
-      <div className="lp-left">
-        <div className="lp-left-glow"/>
-        <div className="lp-left-glow2"/>
-
-        {/* Logo */}
-        <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-          <div style={{
-            width:36,height:36,borderRadius:9,
-            background:'linear-gradient(135deg,#d4af37,#a08020)',
-            display:'flex',alignItems:'center',justifyContent:'center',
-            fontSize:18,boxShadow:'0 4px 14px rgba(212,175,55,0.4)',
-          }}>🧠</div>
-          <span style={{
-            fontFamily:"'DM Serif Display',serif",
-            fontSize:'1.2rem',color:'#f5f0e8',
-          }}>Neuro<span style={{color:'#d4af37'}}>Loop</span></span>
-        </div>
-
-        {/* Headline */}
-        <div>
-          <h1 className="lp-headline">
-            Learn smarter.<br/><em>Remember forever.</em>
-          </h1>
-          <p className="lp-tagline">
-            AI-powered spaced repetition, quizzes, and study plans
-            that adapt to how your brain actually learns.
-          </p>
-
-          <div className="lp-stat-grid">
-            {[
-              {ic:'🔥',bg:'rgba(239,68,68,0.12)',v:'47 days',l:'Top streak'},
-              {ic:'🧠',bg:'rgba(212,175,55,0.12)',v:'1,240',l:'Notes created'},
-              {ic:'⚡',bg:'rgba(16,185,129,0.12)',v:'98%',l:'Quiz accuracy'},
-              {ic:'🏆',bg:'rgba(212,175,55,0.1)',v:'#1',l:'Leaderboard'},
-            ].map(s=>(
-              <div key={s.l} className="lp-stat">
-                <div className="lp-stat-ic" style={{background:s.bg}}>{s.ic}</div>
-                <div>
-                  <div className="lp-stat-v">{s.v}</div>
-                  <div className="lp-stat-l">{s.l}</div>
-                </div>
-              </div>
-            ))}
+      {/* LEFT — Animated Visual Panel */}
+      <div className="lp-left" style={{position:'relative',overflow:'hidden',background:'#0a0a0a'}}>
+        {/* Grid */}
+        <div className="lp-grid"/>
+        {/* Orbs */}
+        <div className="lp-orb lp-orb-1"/>
+        <div className="lp-orb lp-orb-2"/>
+        <div className="lp-orb lp-orb-3"/>
+        {/* Rings */}
+        <div className="lp-ring lp-ring-1"/>
+        <div className="lp-ring lp-ring-2"/>
+        <div className="lp-ring lp-ring-3"/>
+        {/* Dots */}
+        {dots.map((d,i)=>(
+          <div key={i} className="lp-dot" style={{
+            top:d.top,left:d.left,
+            width:d.size,height:d.size,
+            animationDelay:d.delay,
+            animationDuration:d.dur,
+          }}/>
+        ))}
+        {/* Top brand */}
+        <div className="lp-top-brand">
+          <div className="lp-top-brand-icon">
+            <svg width="18" height="18" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
+              <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
+              <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
+              <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
           </div>
-
-          <div className="lp-quote-block">
-            <div className="lp-quote-line"/>
-            <div className="lp-quote-text">
-              "An investment in knowledge pays the best interest."
+          <div className="lp-top-brand-name">Neuro<span>Loop</span></div>
+        </div>
+        {/* Center logo */}
+        <div className="lp-center-mark">
+          <div className="lp-logo-hex">
+            <svg className="lp-logo-svg" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="8" r="3.5" fill="rgba(10,10,10,0.9)"/>
+              <circle cx="28" cy="24" r="3.5" fill="rgba(10,10,10,0.9)"/>
+              <circle cx="8" cy="24" r="3.5" fill="rgba(10,10,10,0.9)"/>
+              <line x1="18" y1="11.5" x2="26" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="18" y1="11.5" x2="10" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div className="lp-brand-name">Neuro<span>Loop</span></div>
+          <div className="lp-brand-tagline">AI Learning Journal</div>
+        </div>
+        {/* Rotating quote */}
+        <div className="lp-text-ring">
+          {quoteVisible && (
+            <div className="lp-quote-fade">
+              <span className="lp-quote-mark">&ldquo;</span>
+              <div className="lp-quote-q">{quotes[quoteIndex].q}</div>
+              <div className="lp-quote-a">&mdash; {quotes[quoteIndex].a}</div>
             </div>
-            <div className="lp-quote-auth">— Benjamin Franklin</div>
-          </div>
-        </div>
-
-        {/* Join row */}
-        <div className="lp-join">
-          <div className="lp-avs">
-            {[
-              {bg:'#d4af37',t:'V'},{bg:'#10b981',t:'A'},
-              {bg:'#3b82f6',t:'R'},{bg:'#8b5cf6',t:'S'},
-              {bg:'#ef4444',t:'M'},
-            ].map(a=>(
-              <div key={a.t} className="lp-av" style={{background:a.bg}}>{a.t}</div>
-            ))}
-          </div>
-          <div className="lp-join-t">
-            <strong>10,000+</strong> learners building their knowledge loop
-          </div>
+          )}
         </div>
       </div>
 
@@ -351,8 +475,17 @@ export default function Login() {
                 width:32,height:32,borderRadius:8,
                 background:'linear-gradient(135deg,#d4af37,#a08020)',
                 display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:16,boxShadow:'0 4px 10px rgba(212,175,55,0.4)',
-              }}>🧠</div>
+                boxShadow:'0 4px 10px rgba(212,175,55,0.4)',
+              }}>
+                <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
+                  <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
+                  <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
+                  <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
+                  <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </div>
               <span style={{
                 fontFamily:"'DM Serif Display',serif",
                 fontSize:'1.1rem',color:'#f5f0e8',
@@ -375,7 +508,7 @@ export default function Login() {
           {/* Error alert */}
           {error && (
             <div className="alert alert-error" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5' }}>
-              ⚠️ {error}
+              {error}
             </div>
           )}
 
@@ -425,7 +558,7 @@ export default function Login() {
               </div>
 
               <button id="login-submit" className="lp-btn" type="submit" disabled={loading}>
-                {loading ? 'Signing In...' : 'Sign In →'}
+                {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
           ) : (
@@ -512,7 +645,7 @@ export default function Login() {
               </div>
 
               <button id="signup-submit" className="lp-btn" type="submit" disabled={loading}>
-                {loading ? 'Creating account...' : 'Create Account →'}
+                {loading ? 'Creating account...' : 'Create Account'}
               </button>
             </form>
           )}

@@ -74,11 +74,6 @@ a{text-decoration:none;color:inherit;}
   margin-left:220px;
   min-height:100vh;
   padding:36px 40px;
-  animation:fadeUp 0.3s ease;
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(12px);}
-  to{opacity:1;transform:translateY(0);}
 }
 
 /* PAGE HEADER */
@@ -916,6 +911,212 @@ input:checked + .slider:before {
   transform: translateX(22px);
   background-color: var(--gold);
   box-shadow: 0 0 8px var(--gold);
+}
+
+/* ============================================
+   GLOBAL ANIMATION SYSTEM — NEUROLOOP
+   ============================================ */
+
+/* 1. PAGE ENTRANCE */
+.page-wrap{
+  animation:pageEnter 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes pageEnter{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* 2. CARD STAGGER — add index-based delay via inline style */
+/* Usage: <div className="card anim-card" style={{'--i':0}}> */
+.anim-card{
+  animation:cardEnter 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay:calc(var(--i,0) * 80ms);
+}
+@keyframes cardEnter{
+  from{opacity:0;transform:translateY(20px) scale(0.98);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+/* 3. STAT COUNTER — number animate up */
+.stat-val{
+  animation:statPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation-delay:calc(var(--i,0) * 100ms + 200ms);
+}
+@keyframes statPop{
+  from{opacity:0;transform:scale(0.7);}
+  to{opacity:1;transform:scale(1);}
+}
+
+/* 4. SIDEBAR LINK HOVER — slide indicator */
+.sb-link::after{
+  content:'';
+  position:absolute;left:0;top:20%;bottom:20%;
+  width:2px;border-radius:99px;
+  background:var(--gold);
+  transform:scaleY(0);
+  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  transform-origin:center;
+}
+.sb-link.active::after{transform:scaleY(1);}
+.sb-link:hover::after{transform:scaleY(0.5);opacity:0.5;}
+
+/* 5. BUTTON PRESS EFFECT */
+.btn-gold:active,.btn-outline:active,.btn-emerald:active{
+  transform:scale(0.97)!important;
+}
+
+/* 6. INPUT FOCUS LIFT */
+.form-input:focus,.form-textarea:focus,.form-select:focus{
+  transform:translateY(-1px);
+}
+
+/* 7. CARD HOVER GLOW */
+.card{transition:border-color 0.25s,box-shadow 0.25s,transform 0.25s;}
+.card:hover{
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(212,175,55,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* 8. SKELETON LOADING SHIMMER (enhanced) */
+.skeleton{
+  background:linear-gradient(
+    90deg,
+    var(--s2) 0%,
+    var(--s3) 40%,
+    var(--s2) 80%
+  );
+  background-size:200% 100%;
+  animation:shimmer 1.6s ease-in-out infinite;
+  border-radius:8px;
+}
+
+/* 9. GOLD LINE SCAN — top of every page */
+.page-wrap::before{
+  content:'';
+  display:block;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,0.5),transparent);
+  margin-bottom:32px;
+  animation:scanLine 2s ease-in-out;
+}
+@keyframes scanLine{
+  from{opacity:0;background-position:-100% 0;}
+  to{opacity:1;background-position:100% 0;}
+}
+
+/* 10. BADGE APPEAR */
+.badge{
+  animation:badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes badgePop{
+  from{opacity:0;transform:scale(0.6);}
+  to{opacity:1;transform:scale(1);}
+}
+
+/* 11. SEARCH BAR EXPAND */
+.search-bar{
+  transition:box-shadow 0.25s,border-color 0.25s,transform 0.25s;
+}
+.search-bar:focus-within{
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.25),0 0 0 3px rgba(212,175,55,0.1);
+}
+
+/* 12. FILTER BUTTON TRANSITION */
+.filter-btn{
+  transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.filter-btn.active{
+  transform:translateY(-1px);
+}
+
+/* 13. UPLOAD ZONE PULSE */
+.upload-zone{
+  transition:all 0.25s ease;
+  animation:zoneBreathe 4s ease-in-out infinite;
+}
+@keyframes zoneBreathe{
+  0%,100%{border-color:rgba(212,175,55,0.3);}
+  50%{border-color:rgba(212,175,55,0.55);}
+}
+.upload-zone:hover{
+  animation:none;
+  border-color:rgba(212,175,55,0.7);
+}
+
+/* 14. EMPTY STATE FLOAT */
+.empty-icon{
+  animation:emptyFloat 3s ease-in-out infinite;
+}
+@keyframes emptyFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
+
+/* 15. SECTION TITLE DOT PULSE */
+.section-title-dot{
+  animation:dotGlow 2s ease-in-out infinite;
+}
+@keyframes dotGlow{
+  0%,100%{box-shadow:0 0 4px var(--gold);}
+  50%{box-shadow:0 0 12px var(--gold),0 0 20px rgba(212,175,55,0.4);}
+}
+
+/* 16. HEATMAP CELL HOVER */
+.heatmap-cell{
+  transition:transform 0.15s ease,filter 0.15s ease;
+}
+.heatmap-cell:hover{
+  transform:scale(1.4);
+  filter:brightness(1.4);
+  z-index:10;
+  position:relative;
+}
+
+/* 17. STAT CARD ACCENT LINE ANIMATE */
+.stat-card-accent{
+  animation:accentGrow 0.8s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay:calc(var(--i,0) * 100ms + 400ms);
+}
+@keyframes accentGrow{
+  from{transform:scaleX(0);transform-origin:left;}
+  to{transform:scaleX(1);transform-origin:left;}
+}
+
+/* 18. MODAL ENTRANCE */
+.modal-overlay{
+  animation:modalBgIn 0.25s ease;
+}
+@keyframes modalBgIn{
+  from{opacity:0;}to{opacity:1;}
+}
+.modal-card{
+  animation:modalCardIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalCardIn{
+  from{opacity:0;transform:scale(0.85) translateY(20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+
+/* 19. TOAST SLIDE IN */
+.toast{
+  animation:toastSlide 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes toastSlide{
+  from{opacity:0;transform:translateX(100%) scale(0.9);}
+  to{opacity:1;transform:translateX(0) scale(1);}
+}
+
+/* 20. LEADERBOARD ROW STAGGER */
+.lb-row{
+  animation:lbRowIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  animation-delay:calc(var(--i,0) * 60ms);
+}
+@keyframes lbRowIn{
+  from{opacity:0;transform:translateX(-16px);}
+  to{opacity:1;transform:translateX(0);}
 }
 
 /* RESPONSIVE BREAKPOINTS */

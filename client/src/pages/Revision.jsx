@@ -165,22 +165,22 @@ export default function Revision() {
 
         {/* Stats */}
         <div className="stat-grid" style={{ marginBottom: '24px' }}>
-          <div className="stat-card">
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)' }} />
+          <div className="stat-card anim-card" style={{'--i': 0}}>
+            <div className="stat-card-accent" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)', '--i': 0 }} />
             <div className="stat-icon" style={{ background: 'rgba(212,175,55,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiRefreshCw /></div>
-            <div className="stat-val">{dueNotes.length}</div>
+            <div className="stat-val" style={{'--i': 0}}>{dueNotes.length}</div>
             <div className="stat-label">Due Today</div>
           </div>
-          <div className="stat-card">
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--red)' }} />
+          <div className="stat-card anim-card" style={{'--i': 1}}>
+            <div className="stat-card-accent" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--red)', '--i': 1 }} />
             <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--red)' }}><FiAlertTriangle /></div>
-            <div className="stat-val" style={{ color: 'var(--red)' }}>{weakTopics.length}</div>
+            <div className="stat-val" style={{ color: 'var(--red)', '--i': 1 }}>{weakTopics.length}</div>
             <div className="stat-label">Weak Topics</div>
           </div>
-          <div className="stat-card">
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--em)' }} />
+          <div className="stat-card anim-card" style={{'--i': 2}}>
+            <div className="stat-card-accent" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--em)', '--i': 2 }} />
             <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--em)' }}><FiCalendar /></div>
-            <div className="stat-val" style={{ fontSize: '1.25rem', padding: '10px 0' }}>1·3·7·14·30d</div>
+            <div className="stat-val" style={{ fontSize: '1.25rem', padding: '10px 0', '--i': 2 }}>1 - 3 - 7 - 14 - 30d</div>
             <div className="stat-label">Intervals</div>
           </div>
         </div>
@@ -214,8 +214,8 @@ export default function Revision() {
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {dueNotes.map((note) => (
-                  <div key={note._id} className="card" style={{ position: 'relative' }}>
+                {dueNotes.map((note, i) => (
+                  <div key={note._id} className="card anim-card" style={{ position: 'relative', '--i': i }}>
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: note.difficulty === 'easy' ? 'var(--em)' : note.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: '8px' }}>
                       <h3 style={{ fontWeight: 600, fontSize: "1.05rem", color: "var(--t1)" }}>{note.topic}</h3>

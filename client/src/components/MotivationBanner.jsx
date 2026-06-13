@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
+import { FiZap } from 'react-icons/fi'
 
 const quotes = [
-  "🧠 Your brain gets stronger every time you review!",
-  "🔥 Consistency beats perfection — keep your streak alive!",
-  "⚡ 20 minutes of focused study > 2 hours of distracted reading.",
-  "🏆 Top learners review before they forget. You're doing that right now.",
-  "🌱 Every note you write plants a seed in your long-term memory.",
-  "💡 The more connections you make between topics, the deeper you understand.",
-  "🎯 Focus on understanding, not memorizing — mastery follows naturally.",
-  "🚀 You're building compound knowledge — each day multiplies your progress.",
-  "🧩 Struggling with a topic? That's your brain building new neural pathways!",
-  "⭐ Review, quiz, repeat — the NeuroLoop formula for lasting knowledge.",
+  "Your brain gets stronger every time you review!",
+  "Consistency beats perfection -- keep your streak alive!",
+  "20 minutes of focused study > 2 hours of distracted reading.",
+  "Top learners review before they forget. You're doing that right now.",
+  "Every note you write plants a seed in your long-term memory.",
+  "The more connections you make between topics, the deeper you understand.",
+  "Focus on understanding, not memorizing -- mastery follows naturally.",
+  "You're building compound knowledge -- each day multiplies your progress.",
+  "Struggling with a topic? That's your brain building new neural pathways!",
+  "Review, quiz, repeat -- the NeuroLoop formula for lasting knowledge.",
 ]
 
 export default function MotivationBanner({ streak = 0 }) {
@@ -62,7 +63,7 @@ export default function MotivationBanner({ streak = 0 }) {
             alignItems: 'center',
             gap: '4px',
           }}>
-            🔥 {streak} day{streak !== 1 ? 's' : ''}
+            <FiZap size={12} fill="#d4af37" /> {streak} day{streak !== 1 ? 's' : ''}
           </div>
         )}
         <p style={{ margin: 0, color: '#a09880', fontSize: '0.875rem' }}>{quotes[quoteIdx]}</p>
@@ -74,7 +75,7 @@ export default function MotivationBanner({ streak = 0 }) {
           cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center',
           padding: '4px'
         }}
-      >✕</button>
+      >&times;</button>
     </div>
   )
 }

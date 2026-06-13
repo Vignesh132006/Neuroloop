@@ -150,11 +150,11 @@ export default function Dashboard() {
              v:`${masteryScore}%`,l:'Overall Mastery',
              s:masteryScore>=80?'You are a knowledge champion!':'Keep reviewing to boost this!'},
           ].map((s,i)=>(
-            <div key={i} className="stat-card">
-              <div style={{position:'absolute',bottom:0,left:0,right:0,height:'2px',
-                           background:s.bar,borderRadius:'0 0 16px 16px'}}/>
+            <div key={i} className="stat-card anim-card" style={{'--i': i}}>
+              <div className="stat-card-accent" style={{position:'absolute',bottom:0,left:0,right:0,height:'2px',
+                           background:s.bar,borderRadius:'0 0 16px 16px','--i':i}}/>
               <div className="stat-icon" style={{background:s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{s.ic}</div>
-              <div className="stat-val">{s.v}</div>
+              <div className="stat-val" style={{'--i': i}}>{s.v}</div>
               <div className="stat-label">{s.l}</div>
               <div className="stat-sub">{s.s}</div>
             </div>

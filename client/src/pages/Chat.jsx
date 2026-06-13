@@ -86,17 +86,17 @@ export default function Chat() {
 
   const suggestions = [
     {
-      title: "💡 Socratic Dialogue",
+      title: "Socratic Dialogue",
       desc: "Break down a topic using the Socratic method step-by-step.",
       prompt: "Let's explore a topic of my choice. Ask me questions one by one using the Socratic method to test my deep understanding."
     },
     {
-      title: "🤔 Clarify a Concept",
+      title: "Clarify a Concept",
       desc: "Deeply understand a concept you are struggling with.",
       prompt: "I am struggling to understand the difference between deep learning and machine learning. Help me break it down Socrates-style."
     },
     {
-      title: "🔍 Spot Logical Gaps",
+      title: "Spot Logical Gaps",
       desc: "Have Neuro critique your thesis or logic on a topic.",
       prompt: "I have an idea about how spaced repetition prevents memory decay. Let's discuss it, and you point out any flaws in my logic."
     }
