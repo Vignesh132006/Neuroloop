@@ -75,4 +75,38 @@ async function sendWelcomeEmail(userEmail, userName) {
   console.log(`[Email] Welcome email sent to ${userEmail}`);
 }
 
-module.exports = { sendReminderEmail, sendWelcomeEmail };
+async function sendResetOtpEmail(userEmail, userName, otp) {
+  const msg = {
+    to: userEmail,
+    from: { email: process.env.SENDER_EMAIL, name: 'NeuroLoop' },
+    subject: 'Your NeuroLoop password reset code',
+    html: `
+      <div style="font-family:Inter,sans-serif;background:#0a0a0a;color:#f5f0e8;
+                  padding:32px;border-radius:16px;max-width:480px;margin:auto;
+                  border:1px solid rgba(212,175,55,0.2);">
+        <h2 style="color:#d4af37;font-family:Georgia,serif;font-weight:400;">
+          Password Reset
+        </h2>
+        <p style="color:#a09880;margin:12px 0 24px;">
+          Hey ${userName}, here is your 6-digit verification code:
+        </p>
+        <div style="background:#111111;border:1px solid rgba(212,175,55,0.25);
+                    border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;">
+          <div style="font-size:2.5rem;font-weight:800;letter-spacing:0.3em;color:#d4af37;">
+            ${otp}
+          </div>
+          <div style="font-size:0.78rem;color:#5a5040;margin-top:8px;">
+            Valid for 10 minutes
+          </div>
+        </div>
+        <p style="color:#5a5040;font-size:0.78rem;">
+          If you did not request this, ignore this email. Your password will not change.
+        </p>
+      </div>
+    `,
+  };
+  await sgMail.send(msg);
+  console.log('[Email] Reset OTP sent to', userEmail);
+}
+
+module.exports = { sendReminderEmail, sendWelcomeEmail, sendResetOtpEmail };

@@ -154,4 +154,62 @@ router.get("/leaderboard", require("../middleware/authMiddleware"), async (req, 
   }
 })
 
+// BACKEND ROUTES FOR FORGOT PASSWORD
+const crypto = require('crypto');
+const { sendResetOtpEmail } = require('../utils/emailService');
+
+// Step 1 — Send OTP
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'No account found with this email' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetOtp = otp;
+    user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    await user.save();
+
+    await sendResetOtpEmail(email, user.name, otp);
+    res.json({ message: 'Verification code sent to your email' });
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Step 2 — Verify OTP
+router.post('/verify-reset-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'Account not found' });
+    if (user.resetOtp !== otp) return res.status(400).json({ message: 'Incorrect code' });
+    if (new Date() > user.resetOtpExpiry) return res.status(400).json({ message: 'Code expired — request a new one' });
+    res.json({ message: 'Code verified' });
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Step 3 — Reset Password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'Account not found' });
+    if (user.resetOtp !== otp) return res.status(400).json({ message: 'Invalid session — restart the process' });
+    if (new Date() > user.resetOtpExpiry) return res.status(400).json({ message: 'Session expired' });
+
+    const bcrypt = require('bcryptjs');
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetOtp = null;
+    user.resetOtpExpiry = null;
+    await user.save();
+
+    res.json({ message: 'Password reset successfully' });
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router

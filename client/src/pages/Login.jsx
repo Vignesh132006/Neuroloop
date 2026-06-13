@@ -33,6 +33,46 @@ const quotes = [
   {q:'The more that you read, the more things you will know.',a:'Dr. Seuss'},
 ]
 
+// Particle system — 30 floating particles
+const particles = Array.from({ length: 30 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  size: Math.random() * 3 + 1,
+  duration: Math.random() * 15 + 10,
+  delay: Math.random() * 8,
+  opacity: Math.random() * 0.4 + 0.1,
+}));
+
+// Neural network nodes — 8 nodes with connections
+const nodes = [
+  { x: 20, y: 20 }, { x: 45, y: 12 }, { x: 70, y: 25 },
+  { x: 15, y: 50 }, { x: 50, y: 50 }, { x: 80, y: 45 },
+  { x: 30, y: 78 }, { x: 65, y: 75 },
+];
+const connections = [
+  [0,1],[1,2],[0,3],[1,4],[2,5],[3,4],[4,5],[3,6],[4,7],[5,7],[6,7],[1,5],[2,4],
+];
+
+// Eye open SVG icon:
+const EyeOpen = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+// Eye closed SVG icon:
+const EyeClosed = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </svg>
+);
+
 export default function Login() {
   const [activeTab, setActiveTab] = useState('login')
 
@@ -54,8 +94,90 @@ export default function Login() {
   const [quoteIndex, setQuoteIndex] = useState(0)
   const [quoteVisible, setQuoteVisible] = useState(true)
 
+  // Task 1 new states
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Task 2 new states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Task 3 new states
+  const [forgotStep, setForgotStep] = useState(null);
+  // null = hidden, 'email' = enter email, 'otp' = enter otp, 'reset' = new password
+
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+  const [otpTimer, setOtpTimer] = useState(0);
+
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setTimeout(() => setIsLoaded(true), 100);
+    const handleMouse = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouse);
+    return () => window.removeEventListener('mousemove', handleMouse);
+  }, []);
+
+  // OTP countdown timer:
+  useEffect(() => {
+    if (otpTimer <= 0) return;
+    const t = setTimeout(() => setOtpTimer(v => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [otpTimer]);
+
+  // Handlers — wire these to your actual backend routes:
+  const handleForgotSendOtp = async () => {
+    if (!forgotEmail) return;
+    setForgotLoading(true); setForgotError('');
+    try {
+      await api.post('/auth/forgot-password', { email: forgotEmail });
+      setForgotStep('otp');
+      setOtpTimer(60);
+    } catch(err) {
+      setForgotError(err.response?.data?.message || 'Email not found');
+    } finally { setForgotLoading(false); }
+  };
+
+  const handleForgotVerifyOtp = async () => {
+    if (!forgotOtp) return;
+    setForgotLoading(true); setForgotError('');
+    try {
+      await api.post('/auth/verify-reset-otp', { email: forgotEmail, otp: forgotOtp });
+      setForgotStep('reset');
+    } catch(err) {
+      setForgotError(err.response?.data?.message || 'Invalid OTP');
+    } finally { setForgotLoading(false); }
+  };
+
+  const handleForgotReset = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      setForgotError('Password must be at least 8 characters');
+      return;
+    }
+    setForgotLoading(true); setForgotError('');
+    try {
+      await api.post('/auth/reset-password', {
+        email: forgotEmail, otp: forgotOtp, newPassword
+      });
+      setForgotSuccess('Password reset! You can now log in.');
+      setTimeout(() => {
+        setForgotStep(null);
+        setForgotEmail(''); setForgotOtp(''); setNewPassword('');
+        setForgotSuccess('');
+      }, 2500);
+    } catch(err) {
+      setForgotError(err.response?.data?.message || 'Reset failed');
+    } finally { setForgotLoading(false); }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -121,16 +243,20 @@ export default function Login() {
   return (
     <div style={{minHeight:'100vh',display:'flex',background:'#0a0a0a'}}>
       <style>{`
+        :root {
+          --green: #10b981;
+        }
+
         .lp-left{
-          flex:1.2;display:flex;flex-direction:column;
-          justify-content:space-between;padding:0;
-          position:relative;overflow:hidden;
-          border-right:1px solid rgba(255,255,255,0.06);
+          flex:1.2;position:relative;overflow:hidden;
           background:#0a0a0a;
+          display:flex;flex-direction:column;
+          border-right:1px solid rgba(255,255,255,0.06);
         }
         @media (max-width: 900px) {
           .lp-left { display: none; }
         }
+
         .lp-right{
           width:480px;flex-shrink:0;
           display:flex;align-items:center;justify-content:center;
@@ -225,243 +351,601 @@ export default function Login() {
           border-color:rgba(255,255,255,0.16);
         }
 
-        /* Animated neural network background */
-        .lp-canvas-wrap{
-          position:absolute;inset:0;overflow:hidden;
+        /* Parallax spotlight that follows mouse */
+        .lp-spotlight{
+          position:absolute;
+          width:600px;height:600px;
+          border-radius:50%;
+          pointer-events:none;
+          background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 65%);
+          transform:translate(-50%,-50%);
+          transition:left 0.8s cubic-bezier(0.22,1,0.36,1),
+                      top 0.8s cubic-bezier(0.22,1,0.36,1);
+          z-index:1;
         }
 
-        /* Floating orbs */
-        .lp-orb{
-          position:absolute;border-radius:50%;
-          filter:blur(80px);pointer-events:none;
-          animation:orbFloat linear infinite;
-        }
-        .lp-orb-1{
-          width:400px;height:400px;
-          background:rgba(212,175,55,0.12);
-          top:-100px;left:-100px;
-          animation-duration:18s;
-          animation-name:orbFloat1;
-        }
-        .lp-orb-2{
-          width:300px;height:300px;
-          background:rgba(16,185,129,0.08);
-          bottom:-80px;right:-80px;
-          animation-duration:22s;
-          animation-name:orbFloat2;
-        }
-        .lp-orb-3{
-          width:200px;height:200px;
-          background:rgba(212,175,55,0.07);
-          top:40%;left:40%;
-          animation-duration:15s;
-          animation-name:orbFloat3;
-        }
-
-        @keyframes orbFloat1{
-          0%{transform:translate(0,0) scale(1);}
-          33%{transform:translate(60px,40px) scale(1.1);}
-          66%{transform:translate(-30px,70px) scale(0.95);}
-          100%{transform:translate(0,0) scale(1);}
-        }
-        @keyframes orbFloat2{
-          0%{transform:translate(0,0) scale(1);}
-          33%{transform:translate(-50px,-40px) scale(1.08);}
-          66%{transform:translate(30px,-60px) scale(0.92);}
-          100%{transform:translate(0,0) scale(1);}
-        }
-        @keyframes orbFloat3{
-          0%{transform:translate(0,0) scale(1);}
-          50%{transform:translate(-40px,30px) scale(1.15);}
-          100%{transform:translate(0,0) scale(1);}
-        }
-
-        /* Animated grid lines */
+        /* Animated grid */
         .lp-grid{
-          position:absolute;inset:0;
+          position:absolute;inset:0;z-index:0;
           background-image:
-            linear-gradient(rgba(212,175,55,0.04) 1px,transparent 1px),
-            linear-gradient(90deg,rgba(212,175,55,0.04) 1px,transparent 1px);
-          background-size:60px 60px;
-          animation:gridShift 20s linear infinite;
+            linear-gradient(rgba(212,175,55,0.03) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(212,175,55,0.03) 1px,transparent 1px);
+          background-size:48px 48px;
+          animation:gridDrift 30s linear infinite;
         }
-        @keyframes gridShift{
+        @keyframes gridDrift{
           0%{background-position:0 0;}
-          100%{background-position:60px 60px;}
+          100%{background-position:48px 48px;}
         }
 
-        /* Animated dots */
-        .lp-dot{
+        /* Floating particles */
+        .lp-particle{
           position:absolute;border-radius:50%;
           background:var(--gold);
-          animation:dotPulse ease-in-out infinite;
+          pointer-events:none;
+          animation:particleDrift linear infinite;
         }
-        @keyframes dotPulse{
-          0%,100%{opacity:0.15;transform:scale(1);}
-          50%{opacity:0.6;transform:scale(1.5);}
+        @keyframes particleDrift{
+          0%{transform:translateY(0) translateX(0) scale(1);opacity:var(--op);}
+          25%{transform:translateY(-30px) translateX(15px) scale(1.2);}
+          50%{transform:translateY(-15px) translateX(-10px) scale(0.8);opacity:calc(var(--op)*1.5);}
+          75%{transform:translateY(-40px) translateX(20px) scale(1.1);}
+          100%{transform:translateY(0) translateX(0) scale(1);opacity:var(--op);}
         }
 
-        /* Rotating ring */
+        /* Neural network SVG */
+        .lp-neural{
+          position:absolute;inset:0;z-index:1;
+          pointer-events:none;
+        }
+        .neural-line{
+          stroke:rgba(212,175,55,0.12);
+          stroke-width:1;
+          animation:neuralPulse ease-in-out infinite alternate;
+        }
+        @keyframes neuralPulse{
+          from{stroke-opacity:0.06;stroke-width:0.8;}
+          to{stroke-opacity:0.2;stroke-width:1.2;}
+        }
+        .neural-node{
+          fill:rgba(212,175,55,0.25);
+          animation:nodePulse ease-in-out infinite alternate;
+        }
+        @keyframes nodePulse{
+          from{r:3;opacity:0.2;}
+          to{r:5;opacity:0.6;}
+        }
+        .neural-node-glow{
+          fill:none;stroke:rgba(212,175,55,0.15);
+          animation:nodeGlow ease-in-out infinite alternate;
+        }
+        @keyframes nodeGlow{
+          from{r:6;stroke-opacity:0.1;}
+          to{r:10;stroke-opacity:0.3;}
+        }
+
+        /* Rotating rings */
         .lp-ring{
           position:absolute;border-radius:50%;
-          border:1px solid rgba(212,175,55,0.12);
           top:50%;left:50%;
           transform:translate(-50%,-50%);
-          animation:ringRotate linear infinite;
+          border:1px solid;
+          pointer-events:none;z-index:1;
+          animation:ringSpin linear infinite;
         }
-        .lp-ring-1{width:320px;height:320px;animation-duration:25s;}
-        .lp-ring-2{width:480px;height:480px;animation-duration:35s;animation-direction:reverse;}
-        .lp-ring-3{width:620px;height:620px;animation-duration:45s;
-                   border-color:rgba(16,185,129,0.08);}
-        @keyframes ringRotate{
+        .lp-ring-1{
+          width:280px;height:280px;
+          border-color:rgba(212,175,55,0.1);
+          animation-duration:20s;
+        }
+        .lp-ring-2{
+          width:440px;height:440px;
+          border-color:rgba(212,175,55,0.06);
+          animation-duration:30s;
+          animation-direction:reverse;
+        }
+        .lp-ring-3{
+          width:600px;height:600px;
+          border-color:rgba(16,185,129,0.05);
+          animation-duration:42s;
+        }
+        .lp-ring-4{
+          width:760px;height:760px;
+          border-color:rgba(212,175,55,0.03);
+          animation-duration:55s;
+          animation-direction:reverse;
+        }
+        @keyframes ringSpin{
           from{transform:translate(-50%,-50%) rotate(0deg);}
           to{transform:translate(-50%,-50%) rotate(360deg);}
         }
 
-        /* Center logo mark */
-        .lp-center-mark{
+        /* Dot on ring 1 */
+        .lp-ring-dot{
+          position:absolute;top:50%;left:50%;
+          width:6px;height:6px;border-radius:50%;
+          background:var(--gold);
+          box-shadow:0 0 10px var(--gold),0 0 20px rgba(212,175,55,0.5);
+          animation:ringDotOrbit 20s linear infinite;
+          transform-origin:0 0;
+        }
+        @keyframes ringDotOrbit{
+          from{transform:rotate(0deg) translateX(140px) rotate(0deg);}
+          to{transform:rotate(360deg) translateX(140px) rotate(-360deg);}
+        }
+        .lp-ring-dot-2{
+          position:absolute;top:50%;left:50%;
+          width:4px;height:4px;border-radius:50%;
+          background:var(--em);
+          box-shadow:0 0 8px var(--em);
+          animation:ringDotOrbit2 30s linear infinite reverse;
+          transform-origin:0 0;
+        }
+        @keyframes ringDotOrbit2{
+          from{transform:rotate(0deg) translateX(220px) rotate(0deg);}
+          to{transform:rotate(360deg) translateX(220px) rotate(-360deg);}
+        }
+
+        /* Pulsing center orb */
+        .lp-center-orb{
           position:absolute;top:50%;left:50%;
           transform:translate(-50%,-50%);
-          display:flex;flex-direction:column;
-          align-items:center;gap:16px;
-          z-index:2;
+          z-index:2;display:flex;flex-direction:column;
+          align-items:center;gap:14px;
         }
-        .lp-logo-hex{
-          width:72px;height:72px;border-radius:20px;
-          background:linear-gradient(135deg,#d4af37,#a08020);
+        .lp-orb-core{
+          width:80px;height:80px;border-radius:22px;
+          background:linear-gradient(135deg,#d4af37,#8a6f1e);
           display:flex;align-items:center;justify-content:center;
-          box-shadow:0 0 0 1px rgba(212,175,55,0.3),
-                     0 0 40px rgba(212,175,55,0.25),
-                     0 0 80px rgba(212,175,55,0.1);
-          animation:logoPulse 3s ease-in-out infinite;
+          box-shadow:
+            0 0 0 1px rgba(212,175,55,0.4),
+            0 0 30px rgba(212,175,55,0.3),
+            0 0 80px rgba(212,175,55,0.15),
+            0 0 120px rgba(212,175,55,0.08);
+          animation:coreBreath 3s ease-in-out infinite;
         }
-        @keyframes logoPulse{
-          0%,100%{box-shadow:0 0 0 1px rgba(212,175,55,0.3),0 0 40px rgba(212,175,55,0.25),0 0 80px rgba(212,175,55,0.1);}
-          50%{box-shadow:0 0 0 1px rgba(212,175,55,0.5),0 0 60px rgba(212,175,55,0.35),0 0 100px rgba(212,175,55,0.15);}
+        @keyframes coreBreath{
+          0%,100%{
+            box-shadow:0 0 0 1px rgba(212,175,55,0.4),0 0 30px rgba(212,175,55,0.3),
+                       0 0 80px rgba(212,175,55,0.15),0 0 120px rgba(212,175,55,0.08);
+            transform:scale(1);
+          }
+          50%{
+            box-shadow:0 0 0 1px rgba(212,175,55,0.6),0 0 50px rgba(212,175,55,0.4),
+                       0 0 100px rgba(212,175,55,0.2),0 0 150px rgba(212,175,55,0.1);
+            transform:scale(1.05);
+          }
         }
-        .lp-logo-svg{width:36px;height:36px;}
 
-        .lp-brand-name{
+        .lp-brand-word{
           font-family:'DM Serif Display',serif;
-          font-size:1.6rem;color:#f5f0e8;
+          font-size:1.7rem;color:#f5f0e8;
           text-align:center;letter-spacing:-0.01em;
+          animation:brandReveal 1s cubic-bezier(0.22,1,0.36,1) 0.3s both;
         }
-        .lp-brand-name span{color:#d4af37;}
-
-        .lp-brand-tagline{
-          font-size:0.82rem;color:rgba(255,255,255,0.35);
-          text-align:center;letter-spacing:0.06em;
-          text-transform:uppercase;
-        }
-
-        /* Rotating text ring */
-        .lp-text-ring{
-          position:absolute;bottom:48px;left:0;right:0;
-          display:flex;justify-content:center;
-          z-index:2;
-        }
-        .lp-quote-fade{
-          text-align:center;
-          max-width:360px;
-          animation:quoteFade 0.6s ease;
-        }
-        @keyframes quoteFade{
-          from{opacity:0;transform:translateY(8px);}
+        .lp-brand-word span{color:#d4af37;}
+        @keyframes brandReveal{
+          from{opacity:0;transform:translateY(10px);}
           to{opacity:1;transform:translateY(0);}
         }
-        .lp-quote-mark{
-          font-family:'DM Serif Display',serif;
-          font-size:3rem;color:rgba(212,175,55,0.2);
-          line-height:0.5;margin-bottom:12px;display:block;
-        }
-        .lp-quote-q{
-          font-family:'DM Serif Display',serif;
-          font-size:1rem;color:rgba(255,255,255,0.65);
-          font-style:italic;line-height:1.6;margin-bottom:8px;
-        }
-        .lp-quote-a{
-          font-size:0.72rem;color:#d4af37;
-          font-weight:600;letter-spacing:0.08em;
-          text-transform:uppercase;
+
+        .lp-brand-sub{
+          font-size:0.72rem;color:rgba(255,255,255,0.3);
+          text-transform:uppercase;letter-spacing:0.14em;
+          text-align:center;
+          animation:brandReveal 1s cubic-bezier(0.22,1,0.36,1) 0.5s both;
         }
 
-        /* Top left branding */
-        .lp-top-brand{
-          position:absolute;top:32px;left:36px;
-          display:flex;align-items:center;gap:10px;
-          z-index:3;
+        /* Scan line effect */
+        .lp-scan{
+          position:absolute;left:0;right:0;
+          height:1px;
+          background:linear-gradient(90deg,transparent,rgba(212,175,55,0.4),transparent);
+          animation:scanMove 6s linear infinite;
+          pointer-events:none;z-index:3;
         }
-        .lp-top-brand-icon{
-          width:32px;height:32px;border-radius:8px;
-          background:linear-gradient(135deg,#d4af37,#a08020);
-          display:flex;align-items:center;justify-content:center;
+        @keyframes scanMove{
+          0%{top:-1px;opacity:0;}
+          5%{opacity:1;}
+          95%{opacity:1;}
+          100%{top:100%;opacity:0;}
         }
-        .lp-top-brand-name{
+
+        /* Corner accents */
+        .lp-corner{
+          position:absolute;width:32px;height:32px;
+          pointer-events:none;z-index:3;
+        }
+        .lp-corner-tl{
+          top:24px;left:24px;
+          border-top:2px solid rgba(212,175,55,0.4);
+          border-left:2px solid rgba(212,175,55,0.4);
+          border-radius:4px 0 0 0;
+          animation:cornerPulse 3s ease-in-out infinite;
+        }
+        .lp-corner-tr{
+          top:24px;right:24px;
+          border-top:2px solid rgba(212,175,55,0.4);
+          border-right:2px solid rgba(212,175,55,0.4);
+          border-radius:0 4px 0 0;
+          animation:cornerPulse 3s ease-in-out infinite 0.75s;
+        }
+        .lp-corner-bl{
+          bottom:24px;left:24px;
+          border-bottom:2px solid rgba(212,175,55,0.4);
+          border-left:2px solid rgba(212,175,55,0.4);
+          border-radius:0 0 0 4px;
+          animation:cornerPulse 3s ease-in-out infinite 1.5s;
+        }
+        .lp-corner-br{
+          bottom:24px;right:24px;
+          border-bottom:2px solid rgba(212,175,55,0.4);
+          border-right:2px solid rgba(212,175,55,0.4);
+          border-radius:0 0 4px 0;
+          animation:cornerPulse 3s ease-in-out infinite 2.25s;
+        }
+        @keyframes cornerPulse{
+          0%,100%{opacity:0.3;}
+          50%{opacity:0.9;}
+        }
+
+        /* Bottom quote */
+        .lp-bottom-quote{
+          position:absolute;bottom:32px;left:0;right:0;
+          padding:0 48px;z-index:4;text-align:center;
+        }
+        .lp-q-line{
+          width:24px;height:1px;background:var(--gold);
+          margin:0 auto 12px;opacity:0.6;
+        }
+        .lp-q-text{
           font-family:'DM Serif Display',serif;
-          font-size:1.1rem;color:#f5f0e8;
+          font-size:0.92rem;color:rgba(255,255,255,0.5);
+          font-style:italic;line-height:1.6;margin-bottom:6px;
+          transition:opacity 0.4s ease;
         }
-        .lp-top-brand-name span{color:#d4af37;}
+        .lp-q-auth{
+          font-size:0.68rem;color:rgba(212,175,55,0.7);
+          font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+        }
+
+        /* Top brand badge */
+        .lp-top-badge{
+          position:absolute;top:28px;left:28px;
+          display:flex;align-items:center;gap:9px;
+          z-index:5;
+          animation:badgeDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+        }
+        @keyframes badgeDrop{
+          from{opacity:0;transform:translateY(-12px);}
+          to{opacity:1;transform:translateY(0);}
+        }
+        .lp-top-badge-icon{
+          width:30px;height:30px;border-radius:8px;
+          background:linear-gradient(135deg,#d4af37,#8a6f1e);
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 4px 12px rgba(212,175,55,0.35);
+        }
+        .lp-top-badge-name{
+          font-family:'DM Serif Display',serif;
+          font-size:1rem;color:#f5f0e8;
+        }
+        .lp-top-badge-name span{color:#d4af37;}
+
+        /* Right panel enter animation */
+        .lp-right{
+          animation:rightSlide 0.7s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+        }
+        @keyframes rightSlide{
+          from{opacity:0;transform:translateX(24px);}
+          to{opacity:1;transform:translateX(0);}
+        }
+
+        /* Form field shake on error */
+        .lp-inp.error{
+          border-color:var(--red)!important;
+          animation:shake 0.4s ease;
+        }
+        @keyframes shake{
+          0%,100%{transform:translateX(0);}
+          20%{transform:translateX(-6px);}
+          40%{transform:translateX(6px);}
+          60%{transform:translateX(-4px);}
+          80%{transform:translateX(4px);}
+        }
+
+        /* Loading button state */
+        .lp-btn-loading{
+          position:relative;overflow:hidden;
+          pointer-events:none;opacity:0.85;
+        }
+        .lp-btn-loading::after{
+          content:'';
+          position:absolute;inset:0;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+          animation:btnShimmer 1s ease infinite;
+        }
+        @keyframes btnShimmer{
+          from{transform:translateX(-100%);}
+          to{transform:translateX(100%);}
+        }
+
+        /* Password Wrapper styles */
+        .lp-pwd-wrap{
+          position:relative;margin-bottom:14px;
+        }
+        .lp-pwd-wrap .lp-inp{
+          padding-right:44px;
+          margin-bottom:0;
+        }
+        .lp-pwd-toggle{
+          position:absolute;right:14px;top:50%;
+          transform:translateY(-50%);
+          background:none;border:none;
+          color:rgba(255,255,255,0.3);
+          cursor:pointer;padding:4px;
+          display:flex;align-items:center;justify-content:center;
+          transition:color 0.2s;
+          border-radius:4px;
+        }
+        .lp-pwd-toggle:hover{color:var(--gold);}
+
+        /* Inline Forgot Password Panel styles */
+        .fp-wrap{
+          margin-top:4px;
+          border:1px solid rgba(212,175,55,0.2);
+          border-radius:12px;
+          background:rgba(212,175,55,0.03);
+          overflow:hidden;
+          animation:fpExpand 0.35s cubic-bezier(0.22,1,0.36,1);
+        }
+        @keyframes fpExpand{
+          from{opacity:0;transform:translateY(-8px);}
+          to{opacity:1;transform:translateY(0);}
+        }
+
+        .fp-header{
+          display:flex;align-items:center;
+          justify-content:space-between;
+          padding:12px 16px;
+          border-bottom:1px solid rgba(212,175,55,0.12);
+        }
+        .fp-title{
+          font-size:0.8rem;font-weight:600;
+          color:var(--gold);display:flex;
+          align-items:center;gap:7px;
+        }
+        .fp-close{
+          background:none;border:none;
+          color:rgba(255,255,255,0.3);
+          cursor:pointer;font-size:1rem;
+          padding:2px 6px;border-radius:4px;
+          transition:color 0.2s;line-height:1;
+        }
+        .fp-close:hover{color:rgba(255,255,255,0.7);}
+
+        .fp-body{padding:16px;}
+
+        .fp-step-indicator{
+          display:flex;align-items:center;gap:6px;
+          margin-bottom:14px;
+        }
+        .fp-step-dot{
+          width:6px;height:6px;border-radius:50%;
+          background:rgba(255,255,255,0.15);
+          transition:all 0.3s ease;
+        }
+        .fp-step-dot.done{background:var(--green);box-shadow:0 0 6px var(--green);}
+        .fp-step-dot.active{background:var(--gold);box-shadow:0 0 6px var(--gold);
+                            transform:scale(1.3);}
+        .fp-step-line{flex:1;height:1px;background:rgba(255,255,255,0.08);}
+
+        .fp-label{
+          font-size:0.68rem;font-weight:600;
+          color:rgba(255,255,255,0.4);
+          text-transform:uppercase;letter-spacing:0.1em;
+          margin-bottom:7px;display:block;
+        }
+        .fp-inp{
+          width:100%;padding:10px 14px;
+          background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.08);
+          border-radius:9px;color:var(--t1);
+          font-size:0.88rem;transition:all 0.2s;
+          margin-bottom:10px;
+        }
+        .fp-inp:focus{
+          border-color:rgba(212,175,55,0.5);
+          box-shadow:0 0 0 3px rgba(212,175,55,0.1);
+          background:rgba(212,175,55,0.03);
+          outline:none;
+        }
+        .fp-inp-pwd-wrap{position:relative;margin-bottom:10px;}
+        .fp-inp-pwd-wrap .fp-inp{padding-right:40px;margin-bottom:0;}
+        .fp-pwd-eye{
+          position:absolute;right:12px;top:50%;
+          transform:translateY(-50%);
+          background:none;border:none;
+          color:rgba(255,255,255,0.3);cursor:pointer;
+          display:flex;align-items:center;
+          transition:color 0.2s;
+        }
+        .fp-pwd-eye:hover{color:var(--gold);}
+
+        .fp-btn{
+          width:100%;padding:10px;border-radius:9px;
+          border:none;background:var(--gold);
+          color:#0a0a0a;font-size:0.85rem;font-weight:700;
+          transition:all 0.2s;
+          box-shadow:0 3px 12px rgba(212,175,55,0.3);
+        }
+        .fp-btn:hover:not(:disabled){
+          background:var(--goldl);
+          transform:translateY(-1px);
+          box-shadow:0 6px 18px rgba(212,175,55,0.4);
+        }
+        .fp-btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+        .fp-error{
+          font-size:0.75rem;color:#fca5a5;
+          margin-bottom:10px;padding:7px 10px;
+          background:rgba(239,68,68,0.08);
+          border-radius:7px;border-left:2px solid var(--red);
+          animation:fpExpand 0.2s ease;
+        }
+        .fp-success{
+          font-size:0.82rem;color:var(--green);
+          text-align:center;padding:12px;
+          background:rgba(16,185,129,0.08);
+          border-radius:9px;border:1px solid rgba(16,185,129,0.2);
+          animation:fpExpand 0.3s ease;
+        }
+
+        .fp-otp-grid{
+          display:flex;gap:8px;margin-bottom:10px;
+        }
+        .fp-otp-inp{
+          flex:1;padding:12px 6px;
+          background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.08);
+          border-radius:9px;color:var(--t1);
+          font-size:1.1rem;font-weight:700;
+          text-align:center;letter-spacing:0.1em;
+          transition:all 0.2s;
+        }
+        .fp-otp-inp:focus{
+          border-color:rgba(212,175,55,0.5);
+          box-shadow:0 0 0 3px rgba(212,175,55,0.1);
+          outline:none;
+          background:rgba(212,175,55,0.04);
+        }
+
+        .fp-timer{
+          font-size:0.72rem;color:rgba(255,255,255,0.3);
+          text-align:center;margin-bottom:10px;
+        }
+        .fp-timer strong{color:var(--gold);}
+
+        .fp-resend{
+          background:none;border:none;
+          color:var(--gold);font-size:0.75rem;
+          cursor:pointer;text-decoration:underline;
+          transition:opacity 0.2s;
+        }
+        .fp-resend:disabled{color:rgba(255,255,255,0.2);
+          text-decoration:none;cursor:not-allowed;}
+
+        .fp-trigger{
+          display:block;
+          background:none;border:none;
+          color:rgba(255,255,255,0.3);
+          font-size:0.75rem;cursor:pointer;
+          text-align:right;width:100%;
+          margin-top:6px;margin-bottom:2px;
+          transition:color 0.2s;
+        }
+        .fp-trigger:hover{color:var(--gold);}
       `}</style>
 
       {/* LEFT — Animated Visual Panel */}
-      <div className="lp-left" style={{position:'relative',overflow:'hidden',background:'#0a0a0a'}}>
+      <div className="lp-left">
         {/* Grid */}
         <div className="lp-grid"/>
-        {/* Orbs */}
-        <div className="lp-orb lp-orb-1"/>
-        <div className="lp-orb lp-orb-2"/>
-        <div className="lp-orb lp-orb-3"/>
-        {/* Rings */}
+
+        {/* Mouse-following spotlight */}
+        <div className="lp-spotlight" style={{
+          left: mousePos.x,
+          top: mousePos.y,
+        }}/>
+
+        {/* Scan line */}
+        <div className="lp-scan"/>
+
+        {/* Corner accents */}
+        <div className="lp-corner lp-corner-tl"/>
+        <div className="lp-corner lp-corner-tr"/>
+        <div className="lp-corner lp-corner-bl"/>
+        <div className="lp-corner lp-corner-br"/>
+
+        {/* Neural network SVG */}
+        <svg className="lp-neural" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {connections.map(([a,b],i) => (
+            <line
+              key={i}
+              className="neural-line"
+              x1={nodes[a].x} y1={nodes[a].y}
+              x2={nodes[b].x} y2={nodes[b].y}
+              style={{animationDuration:`${2+i*0.3}s`, animationDelay:`${i*0.2}s`}}
+            />
+          ))}
+          {nodes.map((node,i) => (
+            <g key={i}>
+              <circle className="neural-node-glow" cx={node.x} cy={node.y}
+                style={{animationDuration:`${1.5+i*0.25}s`,animationDelay:`${i*0.15}s`}}/>
+              <circle className="neural-node" cx={node.x} cy={node.y}
+                style={{animationDuration:`${1.5+i*0.25}s`,animationDelay:`${i*0.15}s`}}/>
+            </g>
+          ))}
+        </svg>
+
+        {/* Floating particles */}
+        {particles.map(p => (
+          <div key={p.id} className="lp-particle" style={{
+            left:`${p.x}%`, top:`${p.y}%`,
+            width:p.size, height:p.size,
+            '--op': p.opacity,
+            opacity: p.opacity,
+            animationDuration:`${p.duration}s`,
+            animationDelay:`${p.delay}s`,
+          }}/>
+        ))}
+
+        {/* Rotating rings */}
         <div className="lp-ring lp-ring-1"/>
         <div className="lp-ring lp-ring-2"/>
         <div className="lp-ring lp-ring-3"/>
-        {/* Dots */}
-        {dots.map((d,i)=>(
-          <div key={i} className="lp-dot" style={{
-            top:d.top,left:d.left,
-            width:d.size,height:d.size,
-            animationDelay:d.delay,
-            animationDuration:d.dur,
-          }}/>
-        ))}
+        <div className="lp-ring lp-ring-4"/>
+        <div className="lp-ring-dot"/>
+        <div className="lp-ring-dot-2"/>
+
         {/* Top brand */}
-        <div className="lp-top-brand">
-          <div className="lp-top-brand-icon">
-            <svg width="18" height="18" viewBox="0 0 36 36" fill="none">
+        <div className="lp-top-badge">
+          <div className="lp-top-badge-icon">
+            <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
               <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
               <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
               <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
-              <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+              <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
-          <div className="lp-top-brand-name">Neuro<span>Loop</span></div>
+          <div className="lp-top-badge-name">Neuro<span>Loop</span></div>
         </div>
-        {/* Center logo */}
-        <div className="lp-center-mark">
-          <div className="lp-logo-hex">
-            <svg className="lp-logo-svg" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="8" r="3.5" fill="rgba(10,10,10,0.9)"/>
-              <circle cx="28" cy="24" r="3.5" fill="rgba(10,10,10,0.9)"/>
-              <circle cx="8" cy="24" r="3.5" fill="rgba(10,10,10,0.9)"/>
-              <line x1="18" y1="11.5" x2="26" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="18" y1="11.5" x2="10" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="rgba(10,10,10,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+
+        {/* Center logo orb */}
+        <div className="lp-center-orb">
+          <div className="lp-orb-core">
+            <svg width="40" height="40" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="8" r="3.5" fill="rgba(10,10,10,0.85)"/>
+              <circle cx="28" cy="24" r="3.5" fill="rgba(10,10,10,0.85)"/>
+              <circle cx="8" cy="24" r="3.5" fill="rgba(10,10,10,0.85)"/>
+              <line x1="18" y1="11.5" x2="26" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="18" y1="11.5" x2="10" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
-          <div className="lp-brand-name">Neuro<span>Loop</span></div>
-          <div className="lp-brand-tagline">AI Learning Journal</div>
+          <div className="lp-brand-word">Neuro<span>Loop</span></div>
+          <div className="lp-brand-sub">AI-Powered Learning Journal</div>
         </div>
-        {/* Rotating quote */}
-        <div className="lp-text-ring">
-          {quoteVisible && (
-            <div className="lp-quote-fade">
-              <span className="lp-quote-mark">&ldquo;</span>
-              <div className="lp-quote-q">{quotes[quoteIndex].q}</div>
-              <div className="lp-quote-a">&mdash; {quotes[quoteIndex].a}</div>
-            </div>
-          )}
+
+        {/* Bottom rotating quote */}
+        <div className="lp-bottom-quote">
+          <div className="lp-q-line"/>
+          <div className="lp-q-text" style={{opacity: quoteVisible ? 1 : 0}}>
+            {quotes[quoteIndex].q}
+          </div>
+          <div className="lp-q-auth">— {quotes[quoteIndex].a}</div>
         </div>
       </div>
 
@@ -529,19 +1013,225 @@ export default function Login() {
               </div>
               <div className="lp-field">
                 <label className="lp-lbl">Password</label>
-                <input
-                  id="login-password"
-                  className="lp-inp"
-                  type="password"
-                  placeholder="••••••••"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
+                <div className="lp-pwd-wrap">
+                  <input
+                    id="login-password"
+                    className="lp-inp"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="lp-pwd-toggle"
+                    onClick={() => setShowPassword(v => !v)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOpen/> : <EyeClosed/>}
+                  </button>
+                </div>
               </div>
+
+              {/* Forgot trigger — shows only when forgotStep is null */}
+              {isLogin && forgotStep === null && (
+                <button
+                  type="button"
+                  className="fp-trigger"
+                  onClick={() => { setForgotStep('email'); setForgotError(''); }}
+                >
+                  Forgot password?
+                </button>
+              )}
+
+              {/* Inline forgot password panel */}
+              {isLogin && forgotStep !== null && (
+                <div className="fp-wrap">
+                  <div className="fp-header">
+                    <div className="fp-title">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0110 0v4"/>
+                      </svg>
+                      {forgotStep === 'email' && 'Reset your password'}
+                      {forgotStep === 'otp' && 'Enter verification code'}
+                      {forgotStep === 'reset' && 'Set new password'}
+                    </div>
+                    <button type="button" className="fp-close" onClick={() => {
+                      setForgotStep(null); setForgotError('');
+                      setForgotEmail(''); setForgotOtp(''); setNewPassword('');
+                    }}>
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="fp-body">
+                    {/* Step indicator */}
+                    <div className="fp-step-indicator">
+                      <div className={`fp-step-dot ${forgotStep==='email'?'active':['otp','reset'].includes(forgotStep)?'done':''}`}/>
+                      <div className="fp-step-line"/>
+                      <div className={`fp-step-dot ${forgotStep==='otp'?'active':forgotStep==='reset'?'done':''}`}/>
+                      <div className="fp-step-line"/>
+                      <div className={`fp-step-dot ${forgotStep==='reset'?'active':''}`}/>
+                    </div>
+
+                    {/* Error */}
+                    {forgotError && <div className="fp-error">{forgotError}</div>}
+
+                    {/* Success */}
+                    {forgotSuccess && <div className="fp-success">{forgotSuccess}</div>}
+
+                    {/* STEP 1 — Email */}
+                    {forgotStep === 'email' && !forgotSuccess && (
+                      <>
+                        <label className="fp-label">Your account email</label>
+                        <input
+                          className="fp-inp"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={forgotEmail}
+                          onChange={e => setForgotEmail(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && handleForgotSendOtp()}
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          className="fp-btn"
+                          onClick={handleForgotSendOtp}
+                          disabled={forgotLoading || !forgotEmail}
+                        >
+                          {forgotLoading ? 'Sending...' : 'Send Verification Code'}
+                        </button>
+                      </>
+                    )}
+
+                    {/* STEP 2 — OTP */}
+                    {forgotStep === 'otp' && !forgotSuccess && (
+                      <>
+                        <label className="fp-label">6-digit code sent to {forgotEmail}</label>
+                        <input
+                          className="fp-otp-inp"
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          placeholder="000000"
+                          value={forgotOtp}
+                          onChange={e => setForgotOtp(e.target.value.replace(/\D/g,''))}
+                          onKeyDown={e => e.key === 'Enter' && handleForgotVerifyOtp()}
+                          autoFocus
+                          style={{width:'100%',marginBottom:10}}
+                        />
+                        {otpTimer > 0 ? (
+                          <div className="fp-timer">
+                            Resend code in <strong>{otpTimer}s</strong>
+                          </div>
+                        ) : (
+                          <div style={{textAlign:'center',marginBottom:10}}>
+                            <button type="button" className="fp-resend" onClick={() => {
+                              handleForgotSendOtp();
+                              setOtpTimer(60);
+                            }}>
+                              Resend code
+                            </button>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          className="fp-btn"
+                          onClick={handleForgotVerifyOtp}
+                          disabled={forgotLoading || forgotOtp.length !== 6}
+                        >
+                          {forgotLoading ? 'Verifying...' : 'Verify Code'}
+                        </button>
+                      </>
+                    )}
+
+                    {/* STEP 3 — New password */}
+                    {forgotStep === 'reset' && !forgotSuccess && (
+                      <>
+                        <label className="fp-label">New password</label>
+                        <div className="fp-inp-pwd-wrap">
+                          <input
+                            className="fp-inp"
+                            type={showNewPassword ? 'text' : 'password'}
+                            placeholder="Min 8 characters"
+                            value={newPassword}
+                            onChange={e => setNewPassword(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && handleForgotReset()}
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            className="fp-pwd-eye"
+                            onClick={() => setShowNewPassword(v => !v)}
+                          >
+                            {showNewPassword ? (
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                              </svg>
+                            ) : (
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+                                <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                              </svg>
+                            )}
+                          </button>
+                        </div>
+                        {/* Password strength bar */}
+                        {newPassword.length > 0 && (
+                          <div style={{marginBottom:10}}>
+                            <div style={{display:'flex',gap:4,marginBottom:4}}>
+                              {[1,2,3,4].map(i => {
+                                const strength = [
+                                  newPassword.length >= 8,
+                                  /[A-Z]/.test(newPassword),
+                                  /[0-9]/.test(newPassword),
+                                  /[^A-Za-z0-9]/.test(newPassword),
+                                ].filter(Boolean).length;
+                                const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
+                                return (
+                                  <div key={i} style={{
+                                    flex:1,height:3,borderRadius:99,
+                                    background: i <= strength ? colors[strength-1] : 'rgba(255,255,255,0.08)',
+                                    transition:'all 0.3s ease',
+                                  }}/>
+                                );
+                              })}
+                            </div>
+                            <div style={{fontSize:'0.68rem',color:'rgba(255,255,255,0.3)'}}>
+                              {[
+                                newPassword.length >= 8,
+                                /[A-Z]/.test(newPassword),
+                                /[0-9]/.test(newPassword),
+                                /[^A-Za-z0-9]/.test(newPassword),
+                              ].filter(Boolean).length < 2
+                                ? 'Add uppercase, numbers, symbols for stronger password'
+                                : 'Good password strength'}
+                            </div>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          className="fp-btn"
+                          onClick={handleForgotReset}
+                          disabled={forgotLoading || newPassword.length < 8}
+                        >
+                          {forgotLoading ? 'Resetting...' : 'Reset Password'}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
               
-              {/* Remember me + Forgot password */}
+              {/* Remember me */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: '#a09880' }}>
                   <input
@@ -552,9 +1242,6 @@ export default function Login() {
                   />
                   Remember me
                 </label>
-                <span style={{ color: '#d4af37', cursor: 'pointer', fontWeight: 500 }}>
-                  Forgot password?
-                </span>
               </div>
 
               <button id="login-submit" className="lp-btn" type="submit" disabled={loading}>
@@ -591,16 +1278,26 @@ export default function Login() {
               </div>
               <div className="lp-field">
                 <label className="lp-lbl">Password</label>
-                <input
-                  id="signup-password"
-                  className="lp-inp"
-                  type="password"
-                  placeholder="••••••••"
-                  value={signupPassword}
-                  onChange={(e) => setSignupPassword(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                />
+                <div className="lp-pwd-wrap">
+                  <input
+                    id="signup-password"
+                    className="lp-inp"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="lp-pwd-toggle"
+                    onClick={() => setShowPassword(v => !v)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOpen/> : <EyeClosed/>}
+                  </button>
+                </div>
               </div>
 
               {/* Password strength meter */}
