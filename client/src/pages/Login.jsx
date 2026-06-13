@@ -114,6 +114,7 @@ export default function Login() {
   const [forgotError, setForgotError] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState('');
   const [otpTimer, setOtpTimer] = useState(0);
+  const [forgotIsFirstTime, setForgotIsFirstTime] = useState(false);
 
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -139,7 +140,8 @@ export default function Login() {
     if (!forgotEmail) return;
     setForgotLoading(true); setForgotError('');
     try {
-      await api.post('/auth/forgot-password', { email: forgotEmail });
+      const response = await api.post('/auth/forgot-password', { email: forgotEmail });
+      setForgotIsFirstTime(!!response.data.isFirstTime);
       setForgotStep('otp');
       setOtpTimer(60);
     } catch(err) {
@@ -173,6 +175,7 @@ export default function Login() {
         setForgotStep(null);
         setForgotEmail(''); setForgotOtp(''); setNewPassword('');
         setForgotSuccess('');
+        setForgotIsFirstTime(false);
       }, 2500);
     } catch(err) {
       setForgotError(err.response?.data?.message || 'Reset failed');
@@ -800,6 +803,14 @@ export default function Login() {
           border-radius:9px;border:1px solid rgba(16,185,129,0.2);
           animation:fpExpand 0.3s ease;
         }
+        .fp-notice{
+          font-size:0.78rem;color:#a09880;
+          margin-bottom:12px;padding:8px 12px;
+          background:rgba(212,175,55,0.08);
+          border-radius:8px;border-left:3px solid var(--gold);
+          animation:fpExpand 0.25s ease;
+          line-height:1.4;
+        }
 
         .fp-otp-grid{
           display:flex;gap:8px;margin-bottom:10px;
@@ -1063,6 +1074,7 @@ export default function Login() {
                     <button type="button" className="fp-close" onClick={() => {
                       setForgotStep(null); setForgotError('');
                       setForgotEmail(''); setForgotOtp(''); setNewPassword('');
+                      setForgotIsFirstTime(false);
                     }}>
                       ×
                     </button>
@@ -1112,6 +1124,11 @@ export default function Login() {
                     {forgotStep === 'otp' && !forgotSuccess && (
                       <>
                         <label className="fp-label">6-digit code sent to {forgotEmail}</label>
+                        {forgotIsFirstTime && (
+                          <div className="fp-notice">
+                            ℹ️ Check in spam message and report not a spam and take the code otherwise check the email is valid
+                          </div>
+                        )}
                         <input
                           className="fp-otp-inp"
                           type="text"
