@@ -45,7 +45,7 @@ export default function Notes() {
     setMcqQuestions([])
     setInterviewQuestions([])
     try {
-      const res = await api.post("/ai/mcq", { notes: note.notes, topic: note.topic, count: 5 })
+      const res = await api.post("/ai/mcq", { notes: note.notes, topic: note.topic, count: 10 })
       setMcqQuestions(res.data.questions)
       showToast("MCQ questions generated!")
     } catch (e) {
