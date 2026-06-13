@@ -43,7 +43,7 @@ export default function Quiz() {
       const res = await api.post("/ai/mcq", {
         notes: selectedNote.notes,
         topic: selectedNote.topic,
-        count: 5,
+        count: 10,
       })
       setQuestions(res.data.questions)
       setStartTime(Date.now())
