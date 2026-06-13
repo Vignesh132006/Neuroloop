@@ -222,4 +222,36 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// Step 4 — Customer Support Submission
+router.post('/support', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+    const { sendSupportEmail } = require('../utils/emailService');
+    await sendSupportEmail(name, email, message);
+    res.json({ message: 'Support ticket submitted successfully' });
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Step 5 — Automatic Error Report
+router.post('/report-error', async (req, res) => {
+  try {
+    const { email, url, errorMessage, stack } = req.body;
+    const { sendAdminErrorEmail } = require('../utils/emailService');
+    await sendAdminErrorEmail(
+      email || 'anonymous@example.com',
+      url || 'unknown',
+      errorMessage || 'Unknown error',
+      stack || ''
+    );
+    res.json({ message: 'Error report sent to admin' });
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router
