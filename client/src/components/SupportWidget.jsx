@@ -190,6 +190,43 @@ export default function SupportWidget() {
           background: rgba(16, 185, 129, 0.08);
           border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.15);
         }
+        .support-container {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          justify-content: flex-end;
+        }
+        .support-badge {
+          background: rgba(18, 18, 18, 0.9);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          border-radius: 99px;
+          padding: 8px 16px;
+          color: #d4af37;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+          animation: supportPulse 2s infinite alternate, supportBadgeFadeIn 0.4s ease;
+          pointer-events: auto;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.2s;
+        }
+        .support-badge:hover {
+          background: rgba(212, 175, 55, 0.08);
+          border-color: #d4af37;
+          transform: translateY(-1px);
+        }
+        @keyframes supportBadgeFadeIn {
+          from { opacity: 0; transform: translateX(12px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes supportPulse {
+          from { box-shadow: 0 4px 16px rgba(212, 175, 55, 0.08); }
+          to { box-shadow: 0 4px 24px rgba(212, 175, 55, 0.25); }
+        }
       `}</style>
 
       {/* SUPPORT DRAWER CARD */}
@@ -252,24 +289,31 @@ export default function SupportWidget() {
       )}
 
       {/* FLOATING ACTION BUTTON */}
-      <button
-        className={`support-btn ${isOpen ? "active" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
-        title="Contact Customer Support"
-      >
-        {isOpen ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        ) : (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
+      <div className="support-container">
+        {!isOpen && (
+          <div className="support-badge" onClick={() => setIsOpen(true)}>
+            Support
+          </div>
         )}
-      </button>
+        <button
+          className={`support-btn ${isOpen ? "active" : ""}`}
+          onClick={() => setIsOpen(!isOpen)}
+          title="Contact Customer Support"
+        >
+          {isOpen ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   )
 }
