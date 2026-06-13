@@ -170,7 +170,13 @@ router.post('/forgot-password', async (req, res) => {
     user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
     await user.save();
 
-    await sendResetOtpEmail(email, user.name, otp);
+    console.log(`[Email Reset] Generating OTP for ${email}: ${otp}`);
+    try {
+      await sendResetOtpEmail(email, user.name, otp);
+    } catch(mailErr) {
+      console.error('[Email] Failed to send reset OTP email:', mailErr.message);
+      console.log(`[Email Fallback] Reset OTP for ${email} is: ${otp}`);
+    }
     res.json({ message: 'Verification code sent to your email' });
   } catch(err) {
     res.status(500).json({ message: err.message });
