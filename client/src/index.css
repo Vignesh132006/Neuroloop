@@ -75,6 +75,12 @@ a{text-decoration:none;color:inherit;}
   min-height:100vh;
   padding:36px 40px;
 }
+@media (max-width: 768px) {
+  .page-wrap {
+    margin-left: 0 !important;
+    padding: 80px 16px 24px !important;
+  }
+}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:32px;}
