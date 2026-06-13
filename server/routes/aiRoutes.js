@@ -53,7 +53,7 @@ router.post("/summary", authMiddleware, async (req, res) => {
     const text = await groqComplete([
       {
         role: "system",
-        content: "You are a helpful study assistant. Summarise the learning notes clearly and concisely in 3-5 bullet points. Focus on key concepts. Respond only with the bullet points, no extra text. Do not include any emojis in your response. Keep the tone completely professional, informative, and precise.",
+        content: "You are a helpful study assistant. Summarise the learning notes clearly and concisely in exactly 10 key points (bullet points). Focus on key concepts. Respond only with the bullet points, no extra text. Do not include any emojis in your response. Keep the tone completely professional, informative, and precise.",
       },
       { role: "user", content: notes },
     ])
@@ -67,7 +67,7 @@ router.post("/summary", authMiddleware, async (req, res) => {
 // POST /api/ai/mcq — Generate MCQ quiz questions
 router.post("/mcq", authMiddleware, async (req, res) => {
   try {
-    const { notes, topic, count = 5 } = req.body
+    const { notes, topic, count = 10 } = req.body
     if (!notes) return res.status(400).json({ error: "Notes are required" })
 
     const prompt = `Based on these notes about "${topic || "the topic"}", generate exactly ${count} multiple choice questions.
