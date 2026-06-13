@@ -12,7 +12,7 @@ const S = `
     border-right:1px solid rgba(255,255,255,0.06);
     display:flex;flex-direction:column;
     padding:20px 12px;
-    position:fixed;left:0;top:0;z-index:100;
+    position:fixed;left:0;top:0;z-index:900;
   }
 
   .sb-logo{
