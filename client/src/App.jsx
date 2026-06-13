@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
 import PrivateRoute from "./components/PrivateRoute"
+import SupportWidget from "./components/SupportWidget"
 import "./index.css"
 
 import Login     from "./pages/Login"
@@ -37,6 +38,7 @@ export default function App() {
           {/* Redirect */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        <SupportWidget />
       </AuthProvider>
     </BrowserRouter>
   )
