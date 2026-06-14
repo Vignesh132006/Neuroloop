@@ -171,10 +171,38 @@ async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {
   console.log(`[Email] System error alert for ${userEmail} sent to admin`);
 }
 
-module.exports = { 
-  sendReminderEmail, 
-  sendWelcomeEmail, 
+async function sendStudyPlanToAdmin(userEmail, userName, topic, plan) {
+  const adminEmail = process.env.ADMIN_EMAIL || "youradmin@gmail.com";
+  const mailOptions = {
+    to: adminEmail,
+    from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
+    subject: `🧠 New Study Plan Generated: ${topic}`,
+    html: `
+      <div style="font-family:sans-serif;background:#0a0a0a;color:#f5f0e8;
+                  padding:32px;border-radius:16px;max-width:550px;margin:auto;
+                  border:1px solid rgba(212,175,55,0.25);">
+        <h2 style="color:#d4af37;margin-bottom:16px;">New Study Plan Generated</h2>
+        <p style="margin:8px 0;color:#f5f0e8;"><strong>User Name:</strong> ${userName}</p>
+        <p style="margin:8px 0;color:#f5f0e8;"><strong>User Email:</strong> ${userEmail}</p>
+        <p style="margin:8px 0;color:#f5f0e8;"><strong>Topic:</strong> ${topic}</p>
+        <div style="background:#111111;border:1px solid rgba(255,255,255,0.06);
+                    border-radius:8px;padding:16px;margin:16px 0;line-height:1.6;color:#a09880;white-space:pre-wrap;">${plan}</div>
+        <p style="color:#5a5040;font-size:0.75rem;margin-top:16px;">
+          Sent from NeuroLoop Automated Admin Notification System
+        </p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+  console.log(`[Email] Study plan notification for ${userEmail} sent to admin at ${adminEmail}`);
+}
+
+module.exports = {
+  sendReminderEmail,
+  sendWelcomeEmail,
   sendResetOtpEmail,
   sendSupportEmail,
-  sendAdminErrorEmail
+  sendAdminErrorEmail,
+  sendStudyPlanToAdmin
 };

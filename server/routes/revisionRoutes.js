@@ -134,40 +134,68 @@ router.post("/send-reminders", authMiddleware, async (req, res) => {
 router.post("/study-plan", authMiddleware, async (req, res) => {
   try {
     const { topic, noteContent } = req.body
-    if (!topic || !noteContent) {
-      return res.status(400).json({ error: "Topic and noteContent are required" })
+
+    // Validate request body
+    if (!topic || typeof topic !== "string" || !topic.trim()) {
+      return res.status(400).json({ message: "Topic is required" })
+    }
+    if (!noteContent || typeof noteContent !== "string" || !noteContent.trim()) {
+      return res.status(400).json({ message: "Note content is required" })
     }
 
-    const prompt = `A student needs to revise this specific topic: ${topic}. Their note content is: ${noteContent}. Create a focused 3-day revision plan with: Day 1 (re-read and summarise), Day 2 (practice questions), Day 3 (test yourself). Keep it specific to this topic only. Be practical and encouraging.`
+    const trimmedTopic = topic.trim()
+    const trimmedNoteContent = noteContent.trim()
 
-    const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful study assistant. Create a focused, practical, and encouraging 3-day revision plan.",
-        },
-        { role: "user", content: prompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 2048,
-    })
+    const prompt = `A student needs to revise this specific topic: ${trimmedTopic}. Their note content is: ${trimmedNoteContent}. Create a focused 3-day revision plan with: Day 1 (re-read and summarise), Day 2 (practice questions), Day 3 (test yourself). Keep it specific to this topic only. Be practical and encouraging.`
 
-    const plan = completion.choices[0]?.message?.content ?? ""
+    let completion
+    try {
+      completion = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful study assistant. Create a focused, practical, and encouraging 3-day revision plan. Always format the plan using a clear bulleted list structure.",
+          },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 2048,
+      })
+    } catch (aiError) {
+      throw new Error(`AI API failed: ${aiError.message}`)
+    }
+
+    const plan = completion?.choices?.[0]?.message?.content ?? ""
+    if (!plan.trim()) {
+      throw new Error("AI API returned an empty plan")
+    }
 
     // Save to StudyPlan collection automatically
     const savedPlan = new StudyPlan({
       user: req.user.id,
-      title: `Revision Plan — ${topic}`,
-      weakTopics: [topic],
+      title: `Revision Plan — ${trimmedTopic}`,
+      topic: trimmedTopic,
+      weakTopics: [trimmedTopic],
+      weakSubtopics: [trimmedTopic],
       plan: plan,
     })
     await savedPlan.save()
 
-    res.json({ plan })
+    // Send email ONLY to admin Gmail (do NOT crash or fail request if email sending fails)
+    try {
+      const { sendStudyPlanToAdmin } = require("../utils/emailService")
+      const userEmail = req.user.email || "unknown@neuroloop.com"
+      const userName = req.user.name || "Anonymous User"
+      await sendStudyPlanToAdmin(userEmail, userName, trimmedTopic, plan)
+    } catch (emailError) {
+      console.error("Admin Email Sending Error:", emailError)
+    }
+
+    return res.json({ plan })
   } catch (error) {
-    console.error("Revision study plan error:", error)
-    res.status(500).json({ error: error.message })
+    console.error("Study Plan Error:", error)
+    return res.status(500).json({ message: "Server issue, please try again later" })
   }
 })
 

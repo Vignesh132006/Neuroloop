@@ -27,19 +27,13 @@ Be specific, practical and encouraging. Keep it under 300 words.`
     let completion
     try {
       completion = await groq.chat.completions.create({
-        model: "llama3-70b-8192",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.7,
-        max_tokens: 1024,
-      })
-    } catch (e) {
-      console.warn("llama3-70b-8192 failed or decommissioned. Trying fallback model: llama-3.3-70b-versatile...")
-      completion = await groq.chat.completions.create({
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.7,
         max_tokens: 1024,
       })
+    } catch (e) {
+      throw new Error(`AI API failed: ${e.message}`)
     }
 
     const planText = completion.choices[0]?.message?.content ?? ""

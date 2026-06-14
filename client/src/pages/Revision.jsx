@@ -112,9 +112,9 @@ export default function Revision() {
         noteContent: note.notes,
       })
       setNotePlans((p) => ({ ...p, [note._id]: res.data.plan }))
-      showToast("Revision plan generated!")
+      showToast("Study plan generated successfully")
     } catch (e) {
-      showToast("Failed to generate plan", "error")
+      showToast("Server issue, try again later", "error")
     } finally {
       setNotePlanLoading((p) => ({ ...p, [note._id]: false }))
     }
