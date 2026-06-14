@@ -3,6 +3,7 @@ const router = express.Router()
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
+const { sendWelcomeEmail } = require('../utils/emailService')
 
 // POST /api/auth/signup
 router.post("/signup", async (req, res) => {
@@ -22,6 +23,11 @@ router.post("/signup", async (req, res) => {
 
     const newUser = new User({ name, email, password: hashedPassword })
     await newUser.save()
+
+    // Send welcome email — non-blocking, don't await
+    sendWelcomeEmail(newUser.email, newUser.name).catch(err =>
+      console.error('[Auth] Welcome email failed:', err.message)
+    )
 
     const token = jwt.sign(
       { id: newUser._id, name: newUser.name, email: newUser.email },
