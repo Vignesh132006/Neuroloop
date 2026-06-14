@@ -119,7 +119,7 @@ async function sendResetOtpEmail(userEmail, userName, otp) {
 
 async function sendSupportEmail(name, email, message, ticketId = "Unknown") {
   const mailOptions = {
-    to: process.env.ADMIN_EMAIL || process.env.GMAIL_USER || process.env.SENDER_EMAIL,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     replyTo: email,
     subject: `🚨 [NeuroLoop Support Ticket ${ticketId}] Message from ${name}`,
