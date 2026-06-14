@@ -117,17 +117,18 @@ async function sendResetOtpEmail(userEmail, userName, otp) {
   console.log('[Email] Reset OTP sent to', userEmail);
 }
 
-async function sendSupportEmail(name, email, message) {
+async function sendSupportEmail(name, email, message, ticketId = "Unknown") {
   const mailOptions = {
-    to: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
+    to: process.env.ADMIN_EMAIL || process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     replyTo: email,
-    subject: `🚨 [NeuroLoop Support Ticket] Message from ${name}`,
+    subject: `🚨 [NeuroLoop Support Ticket ${ticketId}] Message from ${name}`,
     html: `
       <div style="font-family:sans-serif;background:#0a0a0a;color:#f5f0e8;
                   padding:32px;border-radius:16px;max-width:500px;margin:auto;
                   border:1px solid rgba(212,175,55,0.25);">
         <h2 style="color:#d4af37;margin-bottom:16px;">New Support Ticket</h2>
+        <p style="margin:8px 0;"><strong>Ticket ID:</strong> ${ticketId}</p>
         <p style="margin:8px 0;"><strong>Name:</strong> ${name}</p>
         <p style="margin:8px 0;"><strong>Email:</strong> ${email}</p>
         <div style="background:#111111;border:1px solid rgba(255,255,255,0.06);
@@ -140,7 +141,7 @@ async function sendSupportEmail(name, email, message) {
   };
 
   await transporter.sendMail(mailOptions);
-  console.log(`[Email] Support ticket from ${email} sent to admin`);
+  console.log(`[Email] Support ticket ${ticketId} from ${email} sent to admin`);
 }
 
 async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {

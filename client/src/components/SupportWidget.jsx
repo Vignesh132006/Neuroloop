@@ -79,13 +79,13 @@ export default function SupportWidget() {
     setSuccess("")
 
     try {
-      await api.post("/auth/support", { name, email, message })
-      setSuccess("Support ticket sent! Admin has been notified.")
+      const res = await api.post("/auth/support", { name, email, message })
+      setSuccess(res.data.message)
       setMessage("")
       setTimeout(() => {
         setIsOpen(false)
         setSuccess("")
-      }, 3000)
+      }, 5000) // Keep it visible a bit longer so user can note the ID
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit ticket. Please try again.")
     } finally {

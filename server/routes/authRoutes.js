@@ -297,9 +297,25 @@ router.post('/support', async (req, res) => {
     if (!name || !email || !message) {
       return res.status(400).json({ message: 'All fields are required' });
     }
+    
+    // Generate a unique ticket ID formatted as NL-XXXXX
+    const ticketId = 'NL-' + Math.floor(10000 + Math.random() * 90000);
+    
+    // Save to MongoDB
+    const SupportTicket = require("../models/SupportTicket");
+    const newTicket = new SupportTicket({
+      ticketId,
+      name,
+      email,
+      message
+    });
+    await newTicket.save();
+
+    // Send email ONLY to admin Gmail (neuroloopadmin@gmail.com) with full ticket details
     const { sendSupportEmail } = require('../utils/emailService');
-    await sendSupportEmail(name, email, message);
-    res.json({ message: 'Support ticket submitted successfully' });
+    await sendSupportEmail(name, email, message, ticketId);
+    
+    res.json({ message: `Ticket submitted! ID: ${ticketId}`, ticketId });
   } catch(err) {
     const { sendAdminAlert } = require("../utils/adminAlert")
     console.error("[RouteError]", err)
