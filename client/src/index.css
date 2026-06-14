@@ -116,6 +116,7 @@ a{text-decoration:none;color:inherit;}
   height:1px;
   background:linear-gradient(90deg,transparent,rgba(212,175,55,0.3),transparent);
   opacity:0;transition:opacity 0.22s;
+  pointer-events:none;z-index:0;
 }
 .card:hover{
   border-color:rgba(212,175,55,0.2);
