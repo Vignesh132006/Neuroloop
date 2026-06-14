@@ -6,6 +6,7 @@ const authMiddleware = require("../middleware/authMiddleware")
 const User = require("../models/User")
 const Groq = require("groq-sdk")
 const StudyPlan = require("../models/StudyPlan")
+const { sendRevisionReminderEmail } = require("../utils/emailService")
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_to_allow_server_startup" })
 
@@ -222,6 +223,42 @@ Rules:
       userEmail: req.user?.email || null
     })
     res.status(500).json({ error: "Something went wrong. Our team has been notified." })
+  }
+})
+
+// POST /api/revision/send-reminders — Trigger revision reminder emails
+router.post("/send-reminders", authMiddleware, async (req, res) => {
+  try {
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    const dueNotes = await Note.find({
+      user: req.user.id,
+      nextRevision: { $lte: today },
+    }).sort({ nextRevision: 1 })
+
+    if (dueNotes.length === 0) {
+      return res.json({ message: "No notes due for revision today", sent: false })
+    }
+
+    const user = await User.findById(req.user.id)
+    const topicList = dueNotes.map(n => ({
+      topic: n.topic,
+      difficulty: n.difficulty || null
+    }))
+
+    // Send revision reminder — non-blocking
+    sendRevisionReminderEmail(user.email, user.name, topicList)
+      .catch(err => console.error('[Revision] Reminder email failed:', err.message))
+
+    res.json({
+      message: `Revision reminder sent for ${dueNotes.length} note(s)`,
+      sent: true,
+      count: dueNotes.length
+    })
+  } catch (error) {
+    console.error("[Revision Reminder Error]", error)
+    res.status(500).json({ error: "Failed to send reminders" })
   }
 })
 
