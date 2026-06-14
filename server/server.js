@@ -1,5 +1,5 @@
 require("dotenv").config()
-const { sendAdminAlert } = require("./utils/adminAlert")
+const { sendServerErrorAlert } = require("./utils/emailService")
 
 const express = require("express")
 const mongoose = require("mongoose")
@@ -66,16 +66,18 @@ app.get("/", (req, res) => {
 app.use(async (err, req, res, next) => {
   console.error("[Server Error]", err.stack)
 
-  // Send alert to admin email — errors only, never success
-  await sendAdminAlert({
+  // Alert admin — non-blocking
+  sendServerErrorAlert({
     route: req.originalUrl,
     method: req.method,
     error: err,
     userId: req.user?.id || null,
     userEmail: req.user?.email || null
-  })
+  }).catch(e => console.error('[Email] Error alert failed:', e.message))
 
-  res.status(500).json({ error: "Internal server error. Our team has been notified." })
+  res.status(500).json({
+    error: 'Something went wrong on our end. Our team has been notified.'
+  })
 })
 
 const PORT = process.env.PORT || 5000
