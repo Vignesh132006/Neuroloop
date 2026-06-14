@@ -16,7 +16,16 @@ router.post("/", authMiddleware, async (req, res) => {
     await topic.save()
     res.status(201).json({ message: "Topic created", topic })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -26,7 +35,16 @@ router.get("/", authMiddleware, async (req, res) => {
     const topics = await Topic.find({ user: req.user.id }).sort({ createdAt: -1 })
     res.json(topics)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -41,7 +59,16 @@ router.put("/:id", authMiddleware, async (req, res) => {
     if (!updated) return res.status(404).json({ message: "Topic not found" })
     res.json({ message: "Topic updated", topic: updated })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -51,7 +78,16 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     await Topic.findOneAndDelete({ _id: req.params.id, user: req.user.id })
     res.json({ message: "Topic deleted" })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 

@@ -42,8 +42,16 @@ router.post("/signup", async (req, res) => {
       user: { id: newUser._id, name: newUser.name, email: newUser.email },
     })
   } catch (error) {
-    console.error("Signup error:", error)
-    res.status(500).json({ error: "Signup failed" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -93,8 +101,16 @@ router.post("/login", async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email, streak: user.streak },
     })
   } catch (error) {
-    console.error("Login error:", error)
-    res.status(500).json({ error: "Login failed" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -105,7 +121,16 @@ router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" })
     res.json(user)
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -135,8 +160,16 @@ router.put("/profile", require("../middleware/authMiddleware"), async (req, res)
 
     res.json({ message: "Profile updated successfully", user: updatedUser })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: "Failed to update profile" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -149,8 +182,16 @@ router.get("/leaderboard", require("../middleware/authMiddleware"), async (req, 
       .limit(20)
     res.json(users)
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: "Failed to fetch leaderboard" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -182,7 +223,16 @@ router.post('/forgot-password', async (req, res) => {
       isFirstTime: !user.hasResetPasswordBefore
     });
   } catch(err) {
-    res.status(500).json({ message: err.message });
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 });
 
@@ -196,7 +246,16 @@ router.post('/verify-reset-otp', async (req, res) => {
     if (new Date() > user.resetOtpExpiry) return res.status(400).json({ message: 'Code expired — request a new one' });
     res.json({ message: 'Code verified' });
   } catch(err) {
-    res.status(500).json({ message: err.message });
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 });
 
@@ -218,7 +277,16 @@ router.post('/reset-password', async (req, res) => {
 
     res.json({ message: 'Password reset successfully' });
   } catch(err) {
-    res.status(500).json({ message: err.message });
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 });
 
@@ -233,7 +301,16 @@ router.post('/support', async (req, res) => {
     await sendSupportEmail(name, email, message);
     res.json({ message: 'Support ticket submitted successfully' });
   } catch(err) {
-    res.status(500).json({ message: err.message });
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 });
 
@@ -250,7 +327,16 @@ router.post('/report-error', async (req, res) => {
     );
     res.json({ message: 'Error report sent to admin' });
   } catch(err) {
-    res.status(500).json({ message: err.message });
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 });
 

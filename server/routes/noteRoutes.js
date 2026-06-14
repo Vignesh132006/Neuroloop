@@ -73,7 +73,16 @@ router.get("/stats/heatmap", authMiddleware, async (req, res) => {
     const result = Object.entries(heatmap).map(([date, count]) => ({ date, count }))
     res.json(result)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -142,8 +151,16 @@ router.get("/stats/weekly", authMiddleware, async (req, res) => {
       dailyStats
     })
   } catch (error) {
-    console.error("Weekly stats error:", error)
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -183,8 +200,16 @@ router.post("/upload-pdf", authMiddleware, upload.single("pdf"), async (req, res
       text: extractedText
     })
   } catch (error) {
-    console.error("PDF upload error:", error)
-    res.status(500).json({ error: "Failed to parse PDF and generate summary: " + error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -194,7 +219,16 @@ router.get("/", authMiddleware, async (req, res) => {
     const notes = await Note.find({ user: req.user.id }).sort({ createdAt: -1 })
     res.status(200).json(notes)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -225,8 +259,16 @@ router.post("/add", authMiddleware, async (req, res) => {
 
     res.status(201).json({ message: "Note saved successfully", note: newNote })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -245,7 +287,16 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
     res.status(200).json({ message: "Note updated successfully", note: updated })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -256,7 +307,16 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     if (!deleted) return res.status(404).json({ message: "Note not found" })
     res.status(200).json({ message: "Note deleted successfully" })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -267,7 +327,16 @@ router.get("/:id", authMiddleware, async (req, res) => {
     if (!note) return res.status(404).json({ message: "Note not found" })
     res.json(note)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -286,7 +355,16 @@ router.patch('/:id/reschedule', authMiddleware, async (req, res) => {
     if (!note) return res.status(404).json({ message: 'Note not found' })
     res.json({ message: 'Revision date updated', note })
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", err)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: err,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 

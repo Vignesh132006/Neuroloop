@@ -54,8 +54,16 @@ Be specific, practical and encouraging. Keep it under 300 words.`
       createdAt: newPlan.createdAt,
     })
   } catch (error) {
-    console.error("Generate Study Plan Error:", error)
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -71,7 +79,16 @@ router.get("/", authMiddleware, async (req, res) => {
       createdAt: p.createdAt
     })))
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -84,7 +101,16 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     }
     res.json({ message: "Study plan deleted" })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 

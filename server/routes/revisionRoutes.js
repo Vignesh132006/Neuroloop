@@ -26,7 +26,16 @@ router.get("/", authMiddleware, async (req, res) => {
 
     res.json(dueNotes)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -38,7 +47,16 @@ router.get("/schedule", authMiddleware, async (req, res) => {
       .sort({ nextRevisionDate: 1 })
     res.json(logs)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -89,7 +107,16 @@ router.put("/:id", authMiddleware, async (req, res) => {
       masteryScore: note.masteryScore,
     })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -125,8 +152,16 @@ router.post("/send-reminders", authMiddleware, async (req, res) => {
       skipped,
     })
   } catch (error) {
-    console.error("Reminder job failed:", error)
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -194,8 +229,16 @@ router.post("/study-plan", authMiddleware, async (req, res) => {
 
     return res.json({ plan })
   } catch (error) {
-    console.error("Study Plan Error:", error)
-    return res.status(500).json({ message: "Server issue, please try again later" })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 

@@ -77,8 +77,16 @@ router.post("/submit", authMiddleware, async (req, res) => {
       weakAreas,
     })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -90,7 +98,16 @@ router.get("/history", authMiddleware, async (req, res) => {
       .limit(20)
     res.json(results)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 
@@ -149,7 +166,16 @@ router.get("/weakness", authMiddleware, async (req, res) => {
 
     res.json(weakTopics)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const { sendAdminAlert } = require("../utils/adminAlert")
+    console.error("[RouteError]", error)
+    await sendAdminAlert({
+      route: req.originalUrl,
+      method: req.method,
+      error: error,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || null
+    })
+    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
 

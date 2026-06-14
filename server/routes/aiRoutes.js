@@ -9,7 +9,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_groq_api_key_
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 
 // Unified error handler for Groq AI rate limits & general failures
-function handleAIError(error, res, contextMessage) {
+async function handleAIError(error, res, contextMessage, req) {
   console.error(`${contextMessage} error:`, error.message)
 
   const isRateLimit =
@@ -30,7 +30,17 @@ function handleAIError(error, res, contextMessage) {
     })
   }
 
-  res.status(500).json({ error: `${contextMessage} failed` })
+  const { sendAdminAlert } = require("../utils/adminAlert")
+  console.error("[RouteError]", error)
+  await sendAdminAlert({
+    route: req.originalUrl,
+    method: req.method,
+    error: error,
+    userId: req.user?.id || null,
+    userEmail: req.user?.email || null
+  })
+
+  res.status(500).json({ error: "Something went wrong. Our team has been notified." })
 }
 
 // Helper: call Groq chat completions
@@ -60,7 +70,7 @@ router.post("/summary", authMiddleware, async (req, res) => {
 
     res.json({ summary: text.trim() })
   } catch (error) {
-    handleAIError(error, res, "AI summarisation")
+    await handleAIError(error, res, "AI summarisation", req)
   }
 })
 
@@ -108,7 +118,7 @@ ${notes}`
     }))
     res.json({ questions })
   } catch (error) {
-    handleAIError(error, res, "MCQ generation")
+    await handleAIError(error, res, "MCQ generation", req)
   }
 })
 
@@ -146,7 +156,7 @@ ${notes}`
     const questions = JSON.parse(text)
     res.json({ questions })
   } catch (error) {
-    handleAIError(error, res, "Interview question generation")
+    await handleAIError(error, res, "Interview question generation", req)
   }
 })
 
@@ -199,7 +209,7 @@ Return ONLY valid JSON (no markdown, no code fences) in this format:
 
     res.json({ plan, savedId: savedPlan._id })
   } catch (error) {
-    handleAIError(error, res, "Study plan generation")
+    await handleAIError(error, res, "Study plan generation", req)
   }
 })
 
@@ -235,7 +245,7 @@ Keep responses concise (2-4 paragraphs max). Use bullet points for lists. Ask on
     const reply = await groqComplete(messages)
     res.json({ reply: reply.trim() })
   } catch (error) {
-    handleAIError(error, res, "AI Socratic chat")
+    await handleAIError(error, res, "AI Socratic chat", req)
   }
 })
 
