@@ -257,16 +257,6 @@ Rules:
     })
     await savedPlan.save()
 
-    // Send email ONLY to admin Gmail (do NOT crash or fail request if email sending fails)
-    try {
-      const { sendStudyPlanToAdmin } = require("../utils/emailService")
-      const userEmail = req.user.email || "unknown@neuroloop.com"
-      const userName = req.user.name || "Anonymous User"
-      await sendStudyPlanToAdmin(userEmail, userName, trimmedTopic, plan)
-    } catch (emailError) {
-      console.error("Admin Email Sending Error:", emailError)
-    }
-
     return res.json({ plan })
   } catch (error) {
     const { sendAdminAlert } = require("../utils/adminAlert")

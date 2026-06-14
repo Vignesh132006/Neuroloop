@@ -14,7 +14,7 @@ async function sendReminderEmail(userEmail, userName, dueTopics) {
     .join('');
 
   const mailOptions = {
-    to: "neuroloopadmin@gmail.com",
+    to: userEmail,
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🔥 ${dueTopics.length} revision(s) due today — keep your streak alive!`,
     html: `
@@ -43,13 +43,17 @@ async function sendReminderEmail(userEmail, userName, dueTopics) {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log(`[Email] Reminder sent to ${userEmail}`);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`[Email] Reminder sent to ${userEmail}`);
+  } catch (error) {
+    console.error(`[Email] Error sending reminder email to ${userEmail}:`, error);
+  }
 }
 
 async function sendWelcomeEmail(userEmail, userName) {
   const mailOptions = {
-    to: "neuroloopadmin@gmail.com",
+    to: userEmail,
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🎉 Welcome to NeuroLoop, ${userName}! Your learning loop starts now.`,
     html: `
@@ -78,13 +82,17 @@ async function sendWelcomeEmail(userEmail, userName) {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log(`[Email] Welcome email sent to ${userEmail}`);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`[Email] Welcome email sent to ${userEmail}`);
+  } catch (error) {
+    console.error(`[Email] Error sending welcome email to ${userEmail}:`, error);
+  }
 }
 
 async function sendResetOtpEmail(userEmail, userName, otp) {
   const mailOptions = {
-    to: "neuroloopadmin@gmail.com",
+    to: userEmail,
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: 'Your NeuroLoop password reset code',
     html: `
@@ -113,8 +121,12 @@ async function sendResetOtpEmail(userEmail, userName, otp) {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log('[Email] Reset OTP sent to', userEmail);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('[Email] Reset OTP sent to', userEmail);
+  } catch (error) {
+    console.error('[Email] Error sending reset OTP email to', userEmail, ':', error);
+  }
 }
 
 async function sendSupportEmail(name, email, message, ticketId = "Unknown") {
@@ -140,8 +152,12 @@ async function sendSupportEmail(name, email, message, ticketId = "Unknown") {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log(`[Email] Support ticket ${ticketId} from ${email} sent to admin`);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`[Email] Support ticket ${ticketId} from ${email} sent to admin`);
+  } catch (error) {
+    console.error(`[Email] Error sending support email for ticket ${ticketId}:`, error);
+  }
 }
 
 async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {
@@ -168,35 +184,12 @@ async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log(`[Email] System error alert for ${userEmail} sent to admin`);
-}
-
-async function sendStudyPlanToAdmin(userEmail, userName, topic, plan) {
-  const adminEmail = process.env.ADMIN_EMAIL || "youradmin@gmail.com";
-  const mailOptions = {
-    to: "neuroloopadmin@gmail.com",
-    from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
-    subject: `🧠 New Study Plan Generated: ${topic}`,
-    html: `
-      <div style="font-family:sans-serif;background:#0a0a0a;color:#f5f0e8;
-                  padding:32px;border-radius:16px;max-width:550px;margin:auto;
-                  border:1px solid rgba(212,175,55,0.25);">
-        <h2 style="color:#d4af37;margin-bottom:16px;">New Study Plan Generated</h2>
-        <p style="margin:8px 0;color:#f5f0e8;"><strong>User Name:</strong> ${userName}</p>
-        <p style="margin:8px 0;color:#f5f0e8;"><strong>User Email:</strong> ${userEmail}</p>
-        <p style="margin:8px 0;color:#f5f0e8;"><strong>Topic:</strong> ${topic}</p>
-        <div style="background:#111111;border:1px solid rgba(255,255,255,0.06);
-                    border-radius:8px;padding:16px;margin:16px 0;line-height:1.6;color:#a09880;white-space:pre-wrap;">${plan}</div>
-        <p style="color:#5a5040;font-size:0.75rem;margin-top:16px;">
-          Sent from NeuroLoop Automated Admin Notification System
-        </p>
-      </div>
-    `,
-  };
-
-  await transporter.sendMail(mailOptions);
-  console.log(`[Email] Study plan notification for ${userEmail} sent to admin at ${adminEmail}`);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`[Email] System error alert for ${userEmail} sent to admin`);
+  } catch (error) {
+    console.error(`[Email] Error sending admin system error alert:`, error);
+  }
 }
 
 module.exports = {
@@ -204,6 +197,5 @@ module.exports = {
   sendWelcomeEmail,
   sendResetOtpEmail,
   sendSupportEmail,
-  sendAdminErrorEmail,
-  sendStudyPlanToAdmin
+  sendAdminErrorEmail
 };
