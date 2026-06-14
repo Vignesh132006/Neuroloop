@@ -163,51 +163,110 @@ ${notes}`
 // POST /api/ai/study-plan — Generate weakness study plan
 router.post("/study-plan", authMiddleware, async (req, res) => {
   try {
-    const { weakTopics, userName } = req.body
+    const { weakTopics } = req.body
     if (!weakTopics || weakTopics.length === 0) {
       return res.status(400).json({ error: "Weak topics are required" })
     }
 
-    const prompt = `The student "${userName || "a student"}" is struggling with these topics: ${weakTopics.join(", ")}.
+    const topics = weakTopics.join(", ")
 
-Create a focused 7-day study plan to strengthen these areas.
+    const prompt = `You are an expert CS tutor. Create a structured 7-day study plan.
 
-Return ONLY valid JSON (no markdown, no code fences) in this format:
-{
-  "overview": "Brief overview of the plan",
-  "days": [
-    {
-      "day": 1,
-      "focus": "Topic focus",
-      "tasks": ["Task 1", "Task 2", "Task 3"],
-      "estimatedTime": "30 mins"
-    }
-  ],
-  "tips": ["Tip 1", "Tip 2", "Tip 3"]
-}`
+Student weak topics: ${topics || "general CS topics"}
+
+Follow this EXACT format:
+
+DAY 1 — FOUNDATION
+Focus: [first weak topic]
+Goal: [specific measurable goal]
+Tasks:
+• [task 1]
+• [task 2]
+• [task 3]
+Time: [e.g. 45 minutes]
+
+DAY 2 — BUILD
+Focus: [second weak topic or continue day 1]
+Goal: [specific measurable goal]
+Tasks:
+• [task 1]
+• [task 2]
+• [task 3]
+Time: [estimated time]
+
+DAY 3 — PRACTICE
+Focus: Problem solving
+Goal: Solve 5 problems without hints
+Tasks:
+• [specific problem types]
+• [timed practice task]
+• [self-check task]
+Time: 60 minutes
+
+DAY 4 — DEEPEN
+Focus: [harder concepts in weak topics]
+Goal: [specific goal]
+Tasks:
+• [task 1]
+• [task 2]
+• [task 3]
+Time: [estimated time]
+
+DAY 5 — CONNECT
+Focus: Linking all topics together
+Goal: See how all weak topics relate to each other
+Tasks:
+• Draw a concept map connecting all topics
+• Write 3 sentences explaining how each topic connects
+• Create one example that uses all topics together
+Time: 45 minutes
+
+DAY 6 — INTERVIEW PREP
+Focus: Interview-style questions
+Goal: Answer 5 interview questions confidently
+Tasks:
+• Answer: "Explain [topic] in simple terms"
+• Answer: "What is the time complexity of [topic] operations?"
+• Write answers as if in a real interview
+Time: 45 minutes
+
+DAY 7 — FINAL TEST
+Focus: Full assessment
+Goal: Score 80%+ across all weak topics
+Tasks:
+• Take a full quiz on all 7 days of material
+• Review only wrong answers
+• Write what you will study next week
+Time: 60 minutes
+
+OVERALL GOAL: [one sentence describing mastery achieved after 7 days]
+
+Rules:
+- Exact format only — DAY headings, bullet tasks, Time field
+- No markdown ** or # symbols — plain text
+- Specific to topics: ${topics}
+- Encouraging but professional tone`
 
     let text = await groqComplete([
       {
         role: "system",
-        content: "You are a personalized learning coach. Return ONLY valid JSON with no markdown or code fences. Do not include any emojis in any fields of the JSON response.",
+        content: "You are an expert CS tutor.",
       },
       { role: "user", content: prompt },
     ])
 
-    text = text.trim().replace(/^```json\n?/, "").replace(/^```\n?/, "").replace(/\n?```$/, "").trim()
-
-    const plan = JSON.parse(text)
+    const cleanText = text.trim()
 
     // Save to StudyPlan collection automatically
     const savedPlan = new StudyPlan({
       user: req.user.id,
       title: `Study Plan for ${weakTopics.join(", ")} - 7 Day`,
       weakTopics,
-      plan: text,
+      plan: cleanText,
     })
     await savedPlan.save()
 
-    res.json({ plan, savedId: savedPlan._id })
+    res.json({ plan: cleanText, savedId: savedPlan._id })
   } catch (error) {
     await handleAIError(error, res, "Study plan generation", req)
   }

@@ -181,7 +181,47 @@ router.post("/study-plan", authMiddleware, async (req, res) => {
     const trimmedTopic = topic.trim()
     const trimmedNoteContent = noteContent.trim()
 
-    const prompt = `A student needs to revise this specific topic: ${trimmedTopic}. Their note content is: ${trimmedNoteContent}. Create a focused 3-day revision plan with: Day 1 (re-read and summarise), Day 2 (practice questions), Day 3 (test yourself). Keep it specific to this topic only. Be practical and encouraging.`
+    const prompt = `You are an expert CS tutor creating a focused 3-day revision plan.
+
+Student topic to revise: ${trimmedTopic}
+Note content summary: ${trimmedNoteContent?.substring(0, 500) || trimmedTopic}
+
+Create a clean 3-day revision plan. Follow this EXACT format:
+
+DAY 1 — RE-LEARN
+Focus: ${trimmedTopic}
+Goal: Rebuild a clear understanding from scratch
+Tasks:
+• Re-read your notes on ${trimmedTopic} slowly and carefully
+• Write a 5-sentence summary in your own words without looking at notes
+• Identify the 3 most important concepts in this topic
+Time: 30-40 minutes
+
+DAY 2 — PRACTICE
+Focus: Apply knowledge of ${trimmedTopic}
+Goal: Solve at least 3 problems without referring to notes
+Tasks:
+• Solve 3 practice problems on ${trimmedTopic}
+• For each problem you get wrong, write the correct solution
+• Create 2 MCQ questions for yourself and answer them
+Time: 45-60 minutes
+
+DAY 3 — TEST
+Focus: Confirm mastery of ${trimmedTopic}
+Goal: Score 80%+ on a self-assessment
+Tasks:
+• Write 5 questions about ${trimmedTopic} from memory
+• Answer all 5 without looking at notes
+• Review only the answers you got wrong
+Time: 30 minutes
+
+RESULT: If you complete all 3 days you will have solidly revised ${trimmedTopic}.
+
+Rules:
+- Use ONLY the exact format above
+- Every task must start with bullet •
+- Plain text only — no markdown ** or # symbols
+- Be specific and practical`
 
     let completion
     try {

@@ -150,13 +150,99 @@ export default function StudyPlans() {
                 </p>
 
                 <div className="ai-output" style={{ background: 'var(--s2)', border: '1px solid var(--bd)', color: 'var(--t2)', fontSize: '0.88rem' }}>
-                  {plan.plan}
+                  {renderStudyPlan(plan.plan)}
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function renderStudyPlan(planText) {
+  if (!planText) return null
+  
+  // Split by DAY sections
+  const days = planText.split(/(?=DAY \d+)/g).filter(s => s.trim())
+  
+  if (days.length <= 1) {
+    // Fallback: render as formatted paragraphs
+    return (
+      <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: 'var(--t2)', fontSize: '13px' }}>
+        {planText}
+      </div>
+    )
+  }
+
+  // Check for special sections at the end
+  const mainDays = days.filter(d => d.startsWith('DAY'))
+  const footer = planText.split(/OVERALL GOAL:|WEEKLY GOAL:|SUCCESS METRIC:/)[1] || ''
+
+  return (
+    <div>
+      {mainDays.map((day, i) => {
+        const lines = day.trim().split('\n')
+        const heading = lines[0] || ''
+        const rest = lines.slice(1).join('\n')
+        
+        const colors = ['#7c3aed','#2563eb','#059669','#d97706','#dc2626','#0891b2','#7c3aed']
+        const color = colors[i % colors.length]
+        
+        return (
+          <div key={i} style={{
+            marginBottom: '16px',
+            background: 'var(--s2)',
+            border: '1px solid var(--bd)',
+            borderLeft: `3px solid ${color}`,
+            borderRadius: '10px',
+            padding: '14px 16px'
+          }}>
+            <div style={{
+              fontSize: '13px',
+              fontWeight: '600',
+              color: color,
+              marginBottom: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em'
+            }}>
+              {heading}
+            </div>
+            {rest.split('\n').map((line, j) => {
+              if (!line.trim()) return null
+              const isBullet = line.trim().startsWith('•') || line.trim().startsWith('-')
+              const isLabel = line.includes(':') && !line.startsWith('•') && line.split(':')[0].length < 20
+              return (
+                <div key={j} style={{
+                  fontSize: '13px',
+                  color: isBullet ? 'var(--t2)' : 'var(--t1)',
+                  fontWeight: isLabel ? '500' : '400',
+                  marginBottom: '4px',
+                  paddingLeft: isBullet ? '8px' : '0',
+                  lineHeight: 1.6
+                }}>
+                  {line.trim()}
+                </div>
+              )
+            })}
+          </div>
+        )
+      })}
+      {footer && (
+        <div style={{
+          background: 'rgba(124,58,237,0.08)',
+          border: '1px solid rgba(124,58,237,0.2)',
+          borderRadius: '10px',
+          padding: '12px 16px',
+          fontSize: '13px',
+          color: '#a78bfa',
+          marginTop: '8px'
+        }}>
+          <span style={{ fontWeight: '600' }}>🎯 Overall Goal: </span>
+          {footer.split('\n')[0]?.trim()}
+        </div>
+      )}
     </div>
   )
 }

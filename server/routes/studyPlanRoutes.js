@@ -14,15 +14,68 @@ router.post("/generate", authMiddleware, async (req, res) => {
       return res.status(400).json({ error: "topic and weakSubtopics are required" })
     }
 
-    const prompt = `A student is weak in the topic '${topic}'. Their specific weak areas are: ${weakSubtopics.join(', ')}.
-Create a focused 5-day study plan to fix these weak areas only.
-Format it clearly:
-Day 1: [what to study]
-Day 2: [what to practice]
-Day 3: [solve problems on]
-Day 4: [review and test]
-Day 5: [mock quiz yourself]
-Be specific, practical and encouraging. Keep it under 300 words.`
+    const prompt = `You are an expert CS tutor creating a structured study plan.
+
+Student weak topics: ${weakSubtopics.join(", ")}
+Main subject: ${topic}
+
+Create a clean 5-day study plan. You MUST follow this EXACT format with no deviation:
+
+DAY 1 — UNDERSTAND THE BASICS
+Focus: [specific subtopic from weak list]
+Goal: [one clear learning goal]
+Tasks:
+• [specific task 1]
+• [specific task 2]  
+• [specific task 3]
+Time: [estimated time, e.g. 45 minutes]
+
+DAY 2 — DEEP DIVE
+Focus: [next subtopic]
+Goal: [one clear learning goal]
+Tasks:
+• [specific task 1]
+• [specific task 2]
+• [specific task 3]
+Time: [estimated time]
+
+DAY 3 — PRACTICE PROBLEMS
+Focus: [problem-solving on weak areas]
+Goal: Solve at least 5 problems on today's topic
+Tasks:
+• [specific problem type 1]
+• [specific problem type 2]
+• [specific problem type 3]
+Time: [estimated time]
+
+DAY 4 — REVIEW AND CONNECT
+Focus: [connecting all weak subtopics together]
+Goal: [integration goal]
+Tasks:
+• [review task 1]
+• [review task 2]
+• [review task 3]
+Time: [estimated time]
+
+DAY 5 — TEST YOURSELF
+Focus: Mock assessment
+Goal: Score above 80% on a self-quiz
+Tasks:
+• Write 5 questions and answer them without notes
+• Identify any remaining gaps
+• Review only the gaps found today
+Time: [estimated time]
+
+WEEKLY GOAL: [one sentence overall goal for the week]
+SUCCESS METRIC: [how the student knows they have mastered this]
+
+Rules you must follow:
+- Use ONLY the exact format above with DAY headings
+- Every task must start with a bullet point •
+- Be specific to the student's weak topics: ${weakSubtopics.join(", ")}
+- Do not add any extra sections or commentary outside the format
+- Do not use markdown asterisks ** or # headers — use plain text only
+- Keep each day section clear and separated`
 
     let completion
     try {
