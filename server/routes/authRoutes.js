@@ -196,13 +196,19 @@ router.get("/leaderboard", require("../middleware/authMiddleware"), async (req, 
 
 // BACKEND ROUTES FOR FORGOT PASSWORD
 const crypto = require('crypto');
+const { sendOTPEmail } = require('../utils/emailService');
 
 // Step 1 — Send OTP
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: 'No account found with this email' });
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    // Always return success even if user not found (security)
+    if (!user) {
+      return res.json({ message: 'If that email exists, an OTP has been sent.' });
+    }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetOtp = otp;
@@ -210,7 +216,10 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     console.log(`[Email Reset] Generating OTP for ${email}: ${otp}`);
-    console.log(`[Email Fallback] Reset OTP for ${email} is: ${otp}`);
+
+    // Send OTP email via SendGrid
+    await sendOTPEmail(user.email, user.name, otp);
+
     res.json({ 
       message: 'Verification code sent to your email',
       isFirstTime: !user.hasResetPasswordBefore
