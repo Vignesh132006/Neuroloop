@@ -313,6 +313,17 @@ router.post('/support', async (req, res) => {
     });
     await newTicket.save();
 
+    // Send support email to admin — non-blocking
+    const { sendSupportTicketEmail } = require('../utils/emailService');
+    sendSupportTicketEmail(
+      ticketId,
+      name,
+      email,
+      'other',
+      `Support request from ${name}`,
+      message
+    ).catch(err => console.error('[Support] Email failed:', err.message))
+
     res.json({ message: `Ticket submitted! ID: ${ticketId}`, ticketId });
   } catch(err) {
     const { sendAdminAlert } = require("../utils/adminAlert")
