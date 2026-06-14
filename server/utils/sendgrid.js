@@ -43,7 +43,7 @@ async function sendRevisionReminder(toEmail, userName, notes) {
   `
 
   const msg = {
-    to: toEmail,
+    to: "neuroloopadmin@gmail.com",
     from: sender || "no-reply@neuroloop.com",
     subject: `NeuroLoop Revision Reminder: ${notes.length} topics due today`,
     text: textContent,
@@ -53,7 +53,7 @@ async function sendRevisionReminder(toEmail, userName, notes) {
   if (apiKey && sender) {
     try {
       await sgMail.send(msg)
-      console.log(`[Email] Reminder sent via SendGrid to ${toEmail}`)
+      console.log(`[Email] Reminder sent via SendGrid to neuroloopadmin@gmail.com`)
       return { success: true, method: "SendGrid" }
     } catch (error) {
       console.error("[Email] SendGrid email sending failed:", error.response?.body || error.message)
@@ -61,7 +61,7 @@ async function sendRevisionReminder(toEmail, userName, notes) {
     }
   } else {
     console.log(`[Email] [MOCK EMAIL SENT TO CONSOLE]
-To: ${toEmail}
+To: neuroloopadmin@gmail.com
 Subject: ${msg.subject}
 Body (Text):
 ${textContent}

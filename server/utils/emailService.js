@@ -14,7 +14,7 @@ async function sendReminderEmail(userEmail, userName, dueTopics) {
     .join('');
 
   const mailOptions = {
-    to: userEmail,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🔥 ${dueTopics.length} revision(s) due today — keep your streak alive!`,
     html: `
@@ -49,7 +49,7 @@ async function sendReminderEmail(userEmail, userName, dueTopics) {
 
 async function sendWelcomeEmail(userEmail, userName) {
   const mailOptions = {
-    to: userEmail,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🎉 Welcome to NeuroLoop, ${userName}! Your learning loop starts now.`,
     html: `
@@ -84,7 +84,7 @@ async function sendWelcomeEmail(userEmail, userName) {
 
 async function sendResetOtpEmail(userEmail, userName, otp) {
   const mailOptions = {
-    to: userEmail,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: 'Your NeuroLoop password reset code',
     html: `
@@ -146,7 +146,7 @@ async function sendSupportEmail(name, email, message, ticketId = "Unknown") {
 
 async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {
   const mailOptions = {
-    to: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `⚠️ [NeuroLoop System Error] Alert on ${url}`,
     html: `
@@ -175,7 +175,7 @@ async function sendAdminErrorEmail(userEmail, url, errorMessage, stack = "") {
 async function sendStudyPlanToAdmin(userEmail, userName, topic, plan) {
   const adminEmail = process.env.ADMIN_EMAIL || "youradmin@gmail.com";
   const mailOptions = {
-    to: adminEmail,
+    to: "neuroloopadmin@gmail.com",
     from: process.env.GMAIL_USER || process.env.SENDER_EMAIL,
     subject: `🧠 New Study Plan Generated: ${topic}`,
     html: `
