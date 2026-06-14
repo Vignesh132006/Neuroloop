@@ -4,7 +4,6 @@ const Note = require("../models/Note")
 const RevisionLog = require("../models/RevisionLog")
 const authMiddleware = require("../middleware/authMiddleware")
 const User = require("../models/User")
-const { sendRevisionReminder } = require("../utils/sendgrid")
 const Groq = require("groq-sdk")
 const StudyPlan = require("../models/StudyPlan")
 
@@ -119,52 +118,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
 })
-
-// POST /api/revision/send-reminders — Scan and send email reminders for due revisions today
-router.post("/send-reminders", authMiddleware, async (req, res) => {
-  try {
-    const today = new Date()
-    today.setHours(23, 59, 59, 999)
-
-    // Find all users who want email notifications
-    const users = await User.find({ emailNotifications: { $ne: false } })
-    let emailsSent = 0
-    let skipped = 0
-
-    for (const user of users) {
-      // Find notes due for revision today for this user
-      const dueNotes = await Note.find({
-        user: user._id,
-        nextRevision: { $lte: today },
-      })
-
-      if (dueNotes.length > 0) {
-        await sendRevisionReminder(user.email, user.name, dueNotes)
-        emailsSent++
-      } else {
-        skipped++
-      }
-    }
-
-    res.json({
-      message: "Email reminder scan complete",
-      emailsSent,
-      skipped,
-    })
-  } catch (error) {
-    const { sendAdminAlert } = require("../utils/adminAlert")
-    console.error("[RouteError]", error)
-    await sendAdminAlert({
-      route: req.originalUrl,
-      method: req.method,
-      error: error,
-      userId: req.user?.id || null,
-      userEmail: req.user?.email || null
-    })
-    res.status(500).json({ error: "Something went wrong. Our team has been notified." })
-  }
-})
-
 // POST /api/revision/study-plan — specific topic the user wants a plan for
 router.post("/study-plan", authMiddleware, async (req, res) => {
   try {

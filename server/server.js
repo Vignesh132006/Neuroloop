@@ -2,7 +2,6 @@ require("dotenv").config()
 const { sendAdminAlert } = require("./utils/adminAlert")
 
 const express = require("express")
-const cron = require('node-cron')
 const mongoose = require("mongoose")
 const cors = require("cors")
 
@@ -82,52 +81,4 @@ app.use(async (err, req, res, next) => {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`[Server] Running on port ${PORT}`)
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-    console.warn('[Warning] GMAIL_USER or GMAIL_PASS not set in environment variables. Emails will not send.')
-  } else {
-    console.log('[Email] Gmail SMTP ready.')
-  }
 })
-
-// Daily revision reminder — runs every day at 8:00 AM
-cron.schedule('0 8 * * *', async () => {
-  try {
-    console.log('[Cron] Running daily revision reminders...')
-    const User = require('./models/User')
-    const Note = require('./models/Note')
-    const { sendReminderEmail } = require('./utils/emailService')
-
-    const today = new Date()
-    today.setHours(23, 59, 59, 999)
-
-    const users = await User.find({ emailNotifications: { $ne: false } })
-    const usersWithDueRevisions = []
-
-    for (const user of users) {
-      const dueNotes = await Note.find({
-        user: user._id,
-        nextRevision: { $lte: today },
-      })
-      if (dueNotes.length > 0) {
-        usersWithDueRevisions.push({
-          email: user.email,
-          name: user.name,
-          dueNotes,
-        })
-      }
-    }
-
-    for (const user of usersWithDueRevisions) {
-      const dueTopics = user.dueNotes.map(n => n.topic)
-      try {
-        await sendReminderEmail(user.email, user.name, dueTopics)
-      } catch (err) {
-        console.error(`[Email] Failed for ${user.email}:`, err.message)
-      }
-    }
-  } catch (err) {
-    console.error('[Cron] Reminder failed:', err.message)
-  }
-})
-
-console.log('[Cron] Daily reminder scheduler started — runs at 8:00 AM')

@@ -23,13 +23,6 @@ router.post("/signup", async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword })
     await newUser.save()
 
-    const { sendWelcomeEmail } = require('../utils/emailService')
-    try {
-      await sendWelcomeEmail(newUser.email, newUser.name)
-    } catch (err) {
-      console.error('[Email] Welcome email failed:', err.message)
-    }
-
     const token = jwt.sign(
       { id: newUser._id, name: newUser.name, email: newUser.email },
       process.env.JWT_SECRET,
@@ -197,7 +190,6 @@ router.get("/leaderboard", require("../middleware/authMiddleware"), async (req, 
 
 // BACKEND ROUTES FOR FORGOT PASSWORD
 const crypto = require('crypto');
-const { sendResetOtpEmail } = require('../utils/emailService');
 
 // Step 1 — Send OTP
 router.post('/forgot-password', async (req, res) => {
@@ -212,12 +204,7 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     console.log(`[Email Reset] Generating OTP for ${email}: ${otp}`);
-    try {
-      await sendResetOtpEmail(email, user.name, otp);
-    } catch(mailErr) {
-      console.error('[Email] Failed to send reset OTP email:', mailErr.message);
-      console.log(`[Email Fallback] Reset OTP for ${email} is: ${otp}`);
-    }
+    console.log(`[Email Fallback] Reset OTP for ${email} is: ${otp}`);
     res.json({ 
       message: 'Verification code sent to your email',
       isFirstTime: !user.hasResetPasswordBefore
@@ -311,10 +298,6 @@ router.post('/support', async (req, res) => {
     });
     await newTicket.save();
 
-    // Send email ONLY to admin Gmail (neuroloopadmin@gmail.com) with full ticket details
-    const { sendSupportEmail } = require('../utils/emailService');
-    await sendSupportEmail(name, email, message, ticketId);
-    
     res.json({ message: `Ticket submitted! ID: ${ticketId}`, ticketId });
   } catch(err) {
     const { sendAdminAlert } = require("../utils/adminAlert")
@@ -334,14 +317,8 @@ router.post('/support', async (req, res) => {
 router.post('/report-error', async (req, res) => {
   try {
     const { email, url, errorMessage, stack } = req.body;
-    const { sendAdminErrorEmail } = require('../utils/emailService');
-    await sendAdminErrorEmail(
-      email || 'anonymous@example.com',
-      url || 'unknown',
-      errorMessage || 'Unknown error',
-      stack || ''
-    );
-    res.json({ message: 'Error report sent to admin' });
+    console.log(`[Error Report Logged] User: ${email}, URL: ${url}, Error: ${errorMessage}`);
+    res.json({ message: 'Error report logged' });
   } catch(err) {
     const { sendAdminAlert } = require("../utils/adminAlert")
     console.error("[RouteError]", err)
