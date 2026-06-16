@@ -2,11 +2,13 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
 import { FiCalendar, FiPrinter, FiTrash2 } from "react-icons/fi"
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal"
 
 export default function StudyPlans() {
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState(null)
+  const [planToDelete, setPlanToDelete] = useState(null)
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type })
@@ -65,15 +67,21 @@ export default function StudyPlans() {
     printWindow.document.close()
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this study plan?")) return
+  const handleDelete = (plan) => {
+    setPlanToDelete(plan)
+  }
+
+  const confirmDelete = async () => {
+    if (!planToDelete) return
     try {
-      await api.delete(`/study-plans/${id}`)
-      setPlans((prev) => prev.filter((p) => p._id !== id))
+      await api.delete(`/study-plans/${planToDelete._id}`)
+      setPlans((prev) => prev.filter((p) => p._id !== planToDelete._id))
       showToast("Study plan deleted")
     } catch (e) {
       console.error(e)
       showToast("Failed to delete study plan", "error")
+    } finally {
+      setPlanToDelete(null)
     }
   }
 
@@ -126,7 +134,7 @@ export default function StudyPlans() {
                   ><FiPrinter /> Print</button>
                   <button
                     className="btn-ghost"
-                    onClick={() => handleDelete(plan._id)}
+                    onClick={() => handleDelete(plan)}
                     title="Delete"
                     style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                   ><FiTrash2 /> Delete</button>
@@ -156,6 +164,14 @@ export default function StudyPlans() {
             ))}
           </div>
         )}
+
+        <ConfirmDeleteModal
+          isOpen={!!planToDelete}
+          title="Delete Study Plan?"
+          message={planToDelete ? `Are you sure you want to delete the study plan for "${planToDelete.topic}"? This action cannot be undone.` : ""}
+          onConfirm={confirmDelete}
+          onCancel={() => setPlanToDelete(null)}
+        />
       </div>
     </div>
   )

@@ -1094,12 +1094,29 @@ input:checked + .slider:before {
 
 /* 18. MODAL ENTRANCE */
 .modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
   animation:modalBgIn 0.25s ease;
 }
 @keyframes modalBgIn{
   from{opacity:0;}to{opacity:1;}
 }
 .modal-card{
+  background: var(--s1);
+  border: 1px solid var(--bd);
+  border-radius: var(--rl);
+  padding: 32px 24px;
+  width: 90%;
+  max-width: 440px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
   animation:modalCardIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
 @keyframes modalCardIn{
