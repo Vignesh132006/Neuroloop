@@ -357,6 +357,8 @@ router.post('/report-error', async (req, res) => {
     })
     res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
+});
+
 // ── ADMIN LOGIN ─────────────────────────────────────
 router.post('/admin/login', async (req, res) => {
   try {
