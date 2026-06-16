@@ -15,6 +15,12 @@ import Leaderboard from "./pages/Leaderboard"
 import StudyPlans from "./pages/StudyPlans"
 import Settings   from "./pages/Settings"
 
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminTickets from './pages/admin/AdminTickets'
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -34,6 +40,14 @@ export default function App() {
           <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
           <Route path="/study-plans" element={<PrivateRoute><StudyPlans /></PrivateRoute>} />
           <Route path="/settings"    element={<PrivateRoute><Settings /></PrivateRoute>} />
+
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="tickets" element={<AdminTickets />} />
+          </Route>
 
           {/* Redirect */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
