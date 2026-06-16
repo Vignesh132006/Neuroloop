@@ -8,10 +8,10 @@ const adminApi = () => axios.create({
 })
 
 const STATUS_COLORS = {
-  open: { bg: 'rgba(59,130,246,0.12)', color: '#93c5fd', border: 'rgba(59,130,246,0.2)' },
-  'in-progress': { bg: 'rgba(245,158,11,0.12)', color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
-  resolved: { bg: 'rgba(16,185,129,0.12)', color: '#6ee7b7', border: 'rgba(16,185,129,0.2)' },
-  closed: { bg: 'rgba(100,116,139,0.12)', color: '#94a3b8', border: 'rgba(100,116,139,0.2)' }
+  open: { bg: 'rgba(212,175,55,0.08)', color: '#d4af37', border: 'rgba(212,175,55,0.2)' },
+  'in-progress': { bg: 'rgba(245,158,11,0.08)', color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
+  resolved: { bg: 'rgba(16,185,129,0.08)', color: '#6ee7b7', border: 'rgba(16,185,129,0.2)' },
+  closed: { bg: 'rgba(100,116,139,0.08)', color: '#94a3b8', border: 'rgba(100,116,139,0.2)' }
 }
 
 export default function AdminTickets() {
@@ -50,61 +50,158 @@ export default function AdminTickets() {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+      <style>{`
+        @keyframes adminFadeInUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes adminModalIn {
+          from { opacity: 0; transform: scale(0.96); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .admin-tickets-header {
+          animation: adminFadeInUp 0.4s ease both;
+        }
+        .admin-filter-btn {
+          padding: 6px 14px;
+          border-radius: 8px;
+          fontSize: 12px;
+          fontWeight: 600;
+          cursor: pointer;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.03);
+          color: #a09880;
+          transition: all 0.2s;
+        }
+        .admin-filter-btn:hover {
+          color: #f5f0e8;
+          border-color: rgba(212,175,55,0.2);
+        }
+        .admin-filter-btn.active {
+          background: linear-gradient(135deg, #d4af37, #8a6f1e);
+          color: #0a0a0a;
+          border-color: transparent;
+          box-shadow: 0 4px 10px rgba(212,175,55,0.2);
+        }
+        .admin-ticket-card {
+          background: #0d0d0d;
+          border: 1px solid rgba(212, 175, 55, 0.08);
+          border-radius: 14px;
+          padding: 18px 22px;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+          animation: adminFadeInUp 0.5s ease both;
+        }
+        .admin-ticket-card:hover {
+          border-color: rgba(212,175,55,0.35);
+          background: #111111;
+          box-shadow: 0 8px 24px rgba(212,175,55,0.05);
+          transform: translateY(-2px);
+        }
+        .admin-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.85);
+          backdrop-filter: blur(8px);
+          zIndex: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .admin-modal-content {
+          background: #0d0d0d;
+          border: 1px solid rgba(212, 175, 55, 0.15);
+          border-radius: 20px;
+          padding: 32px;
+          max-width: 560px;
+          width: 90%;
+          max-height: 85vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(212,175,55,0.05);
+          animation: adminModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .admin-modal-close {
+          background: transparent;
+          border: none;
+          color: #a09880;
+          font-size: 22px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .admin-modal-close:hover {
+          color: #f5f0e8;
+        }
+        .admin-status-option {
+          padding: 6px 14px;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .admin-ticket-delete-btn {
+          width: 100%;
+          padding: 10px;
+          background: rgba(239, 68, 68, 0.06);
+          border: 1px solid rgba(239, 68, 68, 0.15);
+          border-radius: 8px;
+          color: #fca5a5;
+          font-size: 13px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+        .admin-ticket-delete-btn:hover {
+          background: rgba(239, 68, 68, 0.15);
+          color: #ffffff;
+        }
+      `}</style>
+
+      <div className="admin-tickets-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: '22px', fontWeight: '600', margin: '0 0 4px' }}>Support Tickets</h1>
-          <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>{tickets.length} tickets</p>
+          <h1 style={{ color: '#f5f0e8', fontSize: '24px', fontWeight: '400', margin: '0 0 4px', fontFamily: "'DM Serif Display', serif" }}>Support Tickets</h1>
+          <p style={{ color: '#a09880', fontSize: '13px', margin: 0 }}>{tickets.length} tickets</p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           {['', 'open', 'in-progress', 'resolved', 'closed'].map(s => (
             <button key={s} onClick={() => setFilter(s)}
-              style={{
-                padding: '6px 14px', borderRadius: '8px', fontSize: '12px',
-                fontWeight: '500', cursor: 'pointer', border: 'none',
-                background: filter === s ? 'linear-gradient(135deg, #7c3aed, #2563eb)' : 'rgba(255,255,255,0.06)',
-                color: filter === s ? 'white' : '#94a3b8'
-              }}>
-              {s || 'All'}
+              className={`admin-filter-btn ${filter === s ? 'active' : ''}`}>
+              {s ? (s.charAt(0).toUpperCase() + s.slice(1)) : 'All'}
             </button>
           ))}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: '10px' }}>
-        {loading ? <div style={{ color: '#64748b', textAlign: 'center', padding: '40px' }}>Loading...</div>
-        : tickets.length === 0 ? <div style={{ color: '#64748b', textAlign: 'center', padding: '40px' }}>No tickets found</div>
-        : tickets.map(ticket => {
+      <div style={{ display: 'grid', gap: '12px' }}>
+        {loading ? <div style={{ color: '#a09880', textAlign: 'center', padding: '40px', fontSize: '13px' }}>Loading tickets data...</div>
+        : tickets.length === 0 ? <div style={{ color: '#a09880', textAlign: 'center', padding: '40px', fontSize: '13px' }}>No tickets found</div>
+        : tickets.map((ticket, i) => {
           const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open
           return (
             <div key={ticket._id}
               onClick={() => setSelected(ticket)}
-              style={{
-                background: '#111118', border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: '12px', padding: '16px 20px', cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.3)'; e.currentTarget.style.background = '#16161f' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = '#111118' }}>
+              className="admin-ticket-card"
+              style={{ animationDelay: `${i * 0.05}s` }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                    <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#64748b' }}>{ticket.ticketId}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#5a5040', fontWeight: '600' }}>{ticket.ticketId}</span>
                     <span style={{
-                      padding: '2px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: '500',
-                      background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`
+                      padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '600',
+                      background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, textTransform: 'uppercase', letterSpacing: '0.04em'
                     }}>{ticket.status}</span>
-                    <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    <span style={{ fontSize: '11px', color: '#5a5040', fontWeight: '500' }}>
                       {new Date(ticket.createdAt).toLocaleDateString('en-IN')}
                     </span>
                   </div>
-                  <div style={{ color: '#f1f5f9', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                  <div style={{ color: '#f5f0e8', fontSize: '14px', fontWeight: '600', marginBottom: '6px' }}>
                     {ticket.subject}
                   </div>
-                  <div style={{ color: '#64748b', fontSize: '12px' }}>
-                    From: {ticket.userName} ({ticket.userEmail || ticket.user?.email})
+                  <div style={{ color: '#a09880', fontSize: '12px' }}>
+                    From: <span style={{ fontWeight: '500', color: '#f5f0e8' }}>{ticket.userName}</span> ({ticket.userEmail || ticket.user?.email})
                   </div>
                 </div>
-                <div style={{ fontSize: '20px', marginLeft: '12px' }}>›</div>
+                <div style={{ fontSize: '20px', color: '#d4af37', marginLeft: '12px' }}>›</div>
               </div>
             </div>
           )
@@ -113,79 +210,62 @@ export default function AdminTickets() {
 
       {/* Ticket Detail Modal */}
       {selected && (
-        <div onClick={() => setSelected(null)} style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
-          backdropFilter: 'blur(8px)', zIndex: 1000,
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>
-          <div onClick={e => e.stopPropagation()} style={{
-            background: '#111118', border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '20px', padding: '32px',
-            maxWidth: '560px', width: '90%', maxHeight: '80vh', overflowY: 'auto'
-          }}>
+        <div onClick={() => setSelected(null)} className="admin-modal-overlay">
+          <div onClick={e => e.stopPropagation()} className="admin-modal-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
               <div>
-                <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
+                <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#5a5040', fontWeight: '600', marginBottom: '4px' }}>
                   {selected.ticketId}
                 </div>
-                <h2 style={{ color: '#f1f5f9', fontSize: '18px', fontWeight: '600', margin: 0 }}>
+                <h2 style={{ color: '#f5f0e8', fontSize: '20px', fontWeight: '400', margin: 0, fontFamily: "'DM Serif Display', serif" }}>
                   {selected.subject}
                 </h2>
               </div>
-              <button onClick={() => setSelected(null)}
-                style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setSelected(null)} className="admin-modal-close">✕</button>
             </div>
 
-            <div style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '12px',
-                background: 'rgba(124,58,237,0.12)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}>
+            <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
+                background: 'rgba(212,175,55,0.08)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {selected.category}
               </span>
-              <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '12px',
+              <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
                 background: STATUS_COLORS[selected.status]?.bg, color: STATUS_COLORS[selected.status]?.color,
-                border: `1px solid ${STATUS_COLORS[selected.status]?.border}` }}>
+                border: `1px solid ${STATUS_COLORS[selected.status]?.border}`, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {selected.status}
               </span>
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '4px' }}>From</div>
-              <div style={{ color: '#f1f5f9', fontSize: '13px' }}>
-                {selected.userName} — <span style={{ color: '#67e8f9' }}>{selected.userEmail || selected.user?.email}</span>
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>From</div>
+              <div style={{ color: '#f5f0e8', fontSize: '13px' }}>
+                {selected.userName} — <span style={{ color: '#d4af37', fontWeight: '500' }}>{selected.userEmail || selected.user?.email}</span>
               </div>
             </div>
 
-            <div style={{ background: '#0d0d14', borderRadius: '10px', padding: '14px', marginBottom: '20px' }}>
-              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '8px' }}>Message</div>
-              <p style={{ color: '#94a3b8', fontSize: '13px', lineHeight: '1.7', margin: 0, whiteSpace: 'pre-wrap' }}>
+            <div style={{ background: '#070707', border: '1px solid rgba(212,175,55,0.08)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
+              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Message</div>
+              <p style={{ color: '#a09880', fontSize: '13px', lineHeight: '1.7', margin: 0, whiteSpace: 'pre-wrap' }}>
                 {selected.message}
               </p>
             </div>
 
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ color: '#64748b', fontSize: '12px', marginBottom: '8px' }}>Update Status</div>
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>Update Status</div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {['open', 'in-progress', 'resolved', 'closed'].map(s => (
                   <button key={s} onClick={() => updateStatus(selected._id, s)}
+                    className="admin-status-option"
                     style={{
-                      padding: '6px 14px', borderRadius: '8px', fontSize: '12px',
-                      fontWeight: '500', cursor: 'pointer',
                       border: `1px solid ${STATUS_COLORS[s]?.border}`,
-                      background: selected.status === s ? STATUS_COLORS[s]?.bg : 'transparent',
+                      background: selected.status === s ? STATUS_COLORS[s]?.bg : 'rgba(255,255,255,0.02)',
                       color: STATUS_COLORS[s]?.color
-                    }}>{s}</button>
+                    }}>{s.toUpperCase()}</button>
                 ))}
               </div>
             </div>
 
-            <button onClick={() => deleteTicket(selected._id)}
-              style={{
-                width: '100%', padding: '10px',
-                background: 'rgba(239,68,68,0.08)',
-                border: '1px solid rgba(239,68,68,0.2)',
-                borderRadius: '8px', color: '#fca5a5',
-                fontSize: '13px', cursor: 'pointer', fontWeight: '500'
-              }}>
+            <button onClick={() => deleteTicket(selected._id)} className="admin-ticket-delete-btn">
               🗑️ Delete Ticket
             </button>
           </div>
