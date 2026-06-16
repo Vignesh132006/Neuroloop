@@ -920,7 +920,7 @@ export default function Login() {
         <div className="lp-ring-dot-2"/>
 
         {/* Top brand */}
-        <div className="lp-top-badge">
+        <div className="lp-top-badge" onClick={() => navigate('/admin/login')} style={{ cursor: 'pointer' }}>
           <div className="lp-top-badge-icon">
             <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
               <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
