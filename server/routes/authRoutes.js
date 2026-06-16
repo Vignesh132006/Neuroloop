@@ -357,6 +357,32 @@ router.post('/report-error', async (req, res) => {
     })
     res.status(500).json({ error: "Something went wrong. Our team has been notified." })
   }
-});
+// ── ADMIN LOGIN ─────────────────────────────────────
+router.post('/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body
+
+    const ADMIN_EMAIL = 'neuroloopadmin@gmail.com'
+    const ADMIN_PASSWORD = 'Admin@2026'
+
+    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Invalid admin credentials' })
+    }
+
+    const token = jwt.sign(
+      { id: 'admin', email: ADMIN_EMAIL, role: 'admin' },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    )
+
+    res.json({
+      token,
+      admin: { email: ADMIN_EMAIL, role: 'admin', name: 'NeuroLoop Admin' }
+    })
+  } catch (err) {
+    console.error('[Admin] Login error:', err)
+    res.status(500).json({ error: 'Admin login failed' })
+  }
+})
 
 module.exports = router
