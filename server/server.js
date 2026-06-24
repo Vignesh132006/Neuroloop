@@ -5,6 +5,9 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 
+const session  = require('express-session');
+const passport = require('./config/passport');
+
 const authRoutes = require("./routes/authRoutes")
 const noteRoutes = require("./routes/noteRoutes")
 const topicRoutes = require("./routes/topicRoutes")
@@ -42,7 +45,20 @@ app.use(cors({
 }))
 app.use(express.json({ limit: "5mb" }))
 
+app.use(session({
+  secret:            process.env.SESSION_SECRET || 'neuroloop_secret',
+  resave:            false,
+  saveUninitialized: false,
+  cookie: {
+    secure:   false,   // set true in production with HTTPS
+    maxAge:   24 * 60 * 60 * 1000,
+  },
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routes
+app.use('/api/auth/google', require('./routes/googleAuthRoutes'));
 app.use("/api/auth", authRoutes)
 app.use("/api/notes", noteRoutes)
 app.use("/api/topics", topicRoutes)
@@ -81,6 +97,12 @@ app.use(async (err, req, res, next) => {
     error: 'Something went wrong on our end. Our team has been notified.'
   })
 })
+
+if (!process.env.GOOGLE_CLIENT_ID) {
+  console.warn('[Warning] GOOGLE_CLIENT_ID not set. Google OAuth will not work.');
+} else {
+  console.log('[Auth] Google OAuth ready.');
+}
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
