@@ -66,6 +66,21 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    googleId: {
+      type: String,
+      default: null,
+    },
+
+    avatar: {
+      type: String,
+      default: "",
+    },
+
+    isGoogleUser: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
