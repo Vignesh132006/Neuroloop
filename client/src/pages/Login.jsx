@@ -233,8 +233,8 @@ export default function Login() {
   }
 
   const handleGoogleLogin = () => {
-    alert("Google login is coming soon!")
-  }
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
 
   const pwdStrength = getStrength(signupPassword)
   const isLogin = activeTab === 'login'
