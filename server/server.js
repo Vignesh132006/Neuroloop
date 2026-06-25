@@ -32,8 +32,11 @@ const allowedOrigins = [
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
+    // Normalize process.env.FRONTEND_URL (remove trailing slash if present)
+    const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, "") : null;
     const isAllowed = allowedOrigins.includes(origin) || 
-                      origin === process.env.FRONTEND_URL ||
+                      origin === frontendUrl ||
+                      /^https:\/\/.*\.vercel\.app$/.test(origin) ||
                       /^http:\/\/localhost(:\d+)?$/.test(origin) || 
                       /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
     if (isAllowed) {
