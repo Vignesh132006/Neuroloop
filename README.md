@@ -30,7 +30,7 @@ NeuroLoop is a full-stack AI-powered learning platform that combines spaced repe
 **Frontend:** React 19 + Vite + React Router DOM + Vanilla CSS  
 **Backend:** Node.js + Express.js  
 **Database:** MongoDB + Mongoose  
-**AI:** Google Gemini 2.0 Flash (`@google/generative-ai`)  
+**AI:** Groq API (`llama-3.3-70b-versatile`)  
 **Auth:** JWT + bcryptjs  
 
 ---
@@ -78,7 +78,7 @@ Edit `server/.env`:
 ```env
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/neuroloop
 JWT_SECRET=your_jwt_secret_here
-GEMINI_API_KEY=your_google_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 PORT=5000
 ```
 
@@ -170,7 +170,7 @@ Confidence ratings (1-5) adjust mastery scores — lower confidence → topic fl
 
 ## 🤖 AI Integration
 
-All AI features use **Google Gemini 2.0 Flash**:
+All AI features are powered by the **Groq API** (using the `llama-3.3-70b-versatile` model):
 
 - **Summary**: 3-5 bullet point concise summaries
 - **MCQ**: 5 multiple choice questions with correct answers + explanations
@@ -186,7 +186,7 @@ All AI features use **Google Gemini 2.0 Flash**:
 >
 > The app combines a learning journal with spaced repetition, so it automatically schedules revision at the optimal time based on cognitive science (1, 3, 7, 14, 30-day intervals). When you take a quiz, it detects your weak topics and generates a personalised 7-day study plan. The AI tutor, Neuro, uses the Socratic method to guide you to deeper understanding rather than just giving answers.
 >
-> On the technical side, I built a REST API with Node.js and Express, used MongoDB with 5 schemas for complex data relationships, implemented JWT authentication with streak tracking, and integrated Google Gemini AI across 5 different endpoints. The frontend is React with a premium dark-mode design system I built entirely in vanilla CSS."
+> On the technical side, I built a REST API with Node.js and Express, used MongoDB with 5 schemas for complex data relationships, implemented JWT authentication with streak tracking, and integrated the Groq API across 5 different endpoints. The frontend is React with a premium dark-mode design system I built entirely in vanilla CSS."
 
 ---
 
@@ -196,4 +196,4 @@ MIT © Vignesh
 
 ---
 
-*Built with ❤️ using React, Node.js, MongoDB, and Gemini AI*
+*Built with ❤️ using React, Node.js, MongoDB, and Groq API*
