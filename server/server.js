@@ -33,6 +33,7 @@ app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
     const isAllowed = allowedOrigins.includes(origin) || 
+                      origin === process.env.FRONTEND_URL ||
                       /^http:\/\/localhost(:\d+)?$/.test(origin) || 
                       /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
     if (isAllowed) {

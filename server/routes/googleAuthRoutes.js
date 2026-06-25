@@ -17,7 +17,7 @@ router.get('/',
 // Step 2 — Google redirects back here after login
 router.get('/callback',
   passport.authenticate('google', {
-    failureRedirect: 'http://localhost:5173/login?error=google_failed',
+    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=google_failed`,
     session: true,
   }),
   (req, res) => {
@@ -29,10 +29,10 @@ router.get('/callback',
 
       // Send everything to frontend via redirect
       res.redirect(
-        `http://localhost:5173/auth/success?token=${token}&name=${name}&email=${email}&avatar=${avatar}`
+        `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/success?token=${token}&name=${name}&email=${email}&avatar=${avatar}`
       );
     } catch (err) {
-      res.redirect('http://localhost:5173/login?error=token_failed');
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=token_failed`);
     }
   }
 );
