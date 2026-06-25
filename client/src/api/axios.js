@@ -1,7 +1,8 @@
 import axios from "axios"
 
+const backendBase = import.meta.env.VITE_API_URL || "http://localhost:5000"
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: `${backendBase}/api`,
 })
 
 // Attach token to every request
@@ -33,7 +34,8 @@ api.interceptors.response.use(
           } catch (e) {}
         }
         
-        await axios.post("http://localhost:5000/api/auth/report-error", {
+        const reportEndpoint = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/report-error`
+        await axios.post(reportEndpoint, {
           email: userEmail,
           url: window.location.href,
           errorMessage: `[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url} | Status: ${status || 'Network Error'} | Message: ${error.response?.data?.message || error.message || 'Unknown'}`
