@@ -41,7 +41,7 @@ function ActivityHeatmap({ heatmapData }) {
       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.75rem', fontSize: '0.72rem', color: 'var(--t2)' }}>
         <span>Less</span>
         {['', 'level-1', 'level-2', 'level-3', 'level-4'].map((l, i) => (
-          <div key={i} className={`heatmap-cell ${l}`} style={{ width: '12px', height: '12px' }} />
+          <div key={i} className={`heatmap-cell ${l}`} />
         ))}
         <span>More</span>
       </div>
