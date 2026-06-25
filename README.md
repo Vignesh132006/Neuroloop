@@ -1,6 +1,8 @@
 # 🧠 NeuroLoop — AI-Powered Learning Journal
 
 > **Learn Smarter. Remember Longer. Master Anything.**
+>
+> 🌐 **Live Demo:** [neuroloop-7mbx0v9d6-vigneshs-projects-b9dfb200.vercel.app](https://neuroloop-7mbx0v9d6-vigneshs-projects-b9dfb200.vercel.app)
 
 NeuroLoop is a full-stack AI-powered learning platform that combines spaced repetition, AI-generated quizzes, Socratic tutoring, and weakness detection to supercharge how you study.
 
