@@ -73,21 +73,21 @@ a{text-decoration:none;color:inherit;}
 .page-wrap{
   margin-left:220px;
   min-height:100vh;
-  padding:36px 40px;
+  padding:24px 32px;
 }
 @media (max-width: 768px) {
   .page-wrap {
     margin-left: 0 !important;
-    padding: 80px 16px 24px !important;
+    padding: 72px 16px 20px !important;
   }
 }
 
 /* PAGE HEADER */
-.page-header{margin-bottom:32px;}
+.page-header{margin-bottom:20px;}
 .page-eyebrow{
   font-size:0.68rem;font-weight:600;
   letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:8px;
+  color:var(--gold);margin-bottom:4px;
   display:flex;align-items:center;gap:8px;
 }
 .page-eyebrow::before{
@@ -96,17 +96,17 @@ a{text-decoration:none;color:inherit;}
 }
 .page-title{
   font-family:'DM Serif Display',serif;
-  font-size:2rem;color:var(--t1);
-  margin-bottom:6px;font-weight:400;
+  font-size:1.6rem;color:var(--t1);
+  margin-bottom:4px;font-weight:400;
 }
-.page-subtitle{color:var(--t2);font-size:0.9rem;line-height:1.6;}
+.page-subtitle{color:var(--t2);font-size:0.85rem;line-height:1.6;}
 
 /* CARDS */
 .card{
   background:var(--s1);
   border:1px solid var(--bd);
   border-radius:var(--rl);
-  padding:24px;margin-bottom:16px;
+  padding:16px 18px;margin-bottom:12px;
   transition:border-color 0.22s,box-shadow 0.22s,transform 0.22s;
   position:relative;overflow:hidden;
 }
@@ -127,13 +127,13 @@ a{text-decoration:none;color:inherit;}
 
 .card-title{
   font-family:'DM Serif Display',serif;
-  font-size:1.1rem;font-weight:400;
-  color:var(--t1);margin-bottom:18px;
+  font-size:0.95rem;font-weight:400;
+  color:var(--t1);margin-bottom:12px;
   display:flex;align-items:center;gap:10px;
 }
 .card-divider{
   height:1px;background:var(--bd);
-  margin:18px 0;
+  margin:12px 0;
 }
 
 /* FORM ELEMENTS */
@@ -331,13 +331,13 @@ a{text-decoration:none;color:inherit;}
 /* STAT CARDS */
 .stat-grid{
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:16px;margin-bottom:24px;
+  gap:12px;margin-bottom:16px;
 }
 .stat-card{
   background:var(--s1);
   border:1px solid var(--bd);
   border-radius:var(--rl);
-  padding:22px;position:relative;
+  padding:14px 18px;position:relative;
   overflow:hidden;
   transition:all 0.22s;
 }
@@ -351,39 +351,49 @@ a{text-decoration:none;color:inherit;}
   height:2px;
 }
 .stat-icon{
-  width:40px;height:40px;border-radius:10px;
+  width:32px;height:32px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;margin-bottom:16px;
+  font-size:1rem;margin-bottom:10px;
 }
 .stat-val{
   font-family:'DM Serif Display',serif;
-  font-size:2.2rem;font-weight:400;
+  font-size:1.6rem;font-weight:400;
   color:var(--t1);line-height:1;margin-bottom:4px;
 }
 .stat-label{
-  font-size:0.68rem;font-weight:600;
+  font-size:0.62rem;font-weight:600;
   color:var(--t3);text-transform:uppercase;
   letter-spacing:0.1em;
 }
-.stat-sub{font-size:0.78rem;color:var(--t2);margin-top:8px;}
+.stat-sub{font-size:0.7rem;color:var(--t2);margin-top:4px;}
+
+/* GRID CONTAINER STYLES */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media(max-width:768px){
+  .grid-2{grid-template-columns:1fr;}
+}
 
 /* SECTION BLOCK */
 .section{
   background:var(--s1);
   border:1px solid var(--bd);
   border-radius:var(--rl);
-  padding:24px;margin-bottom:20px;
+  padding:16px 20px;margin-bottom:16px;
 }
 .section-head{
   display:flex;align-items:center;
   justify-content:space-between;
-  margin-bottom:20px;
-  padding-bottom:16px;
+  margin-bottom:12px;
+  padding-bottom:10px;
   border-bottom:1px solid var(--bd);
 }
 .section-title{
   font-family:'DM Serif Display',serif;
-  font-size:1.05rem;font-weight:400;color:var(--t1);
+  font-size:0.95rem;font-weight:400;color:var(--t1);
   display:flex;align-items:center;gap:10px;
 }
 .section-title-dot{
@@ -1005,7 +1015,7 @@ input:checked + .slider:before {
   display:block;
   height:1px;
   background:linear-gradient(90deg,transparent,rgba(212,175,55,0.5),transparent);
-  margin-bottom:32px;
+  margin-bottom:20px;
   animation:scanLine 2s ease-in-out;
 }
 @keyframes scanLine{
