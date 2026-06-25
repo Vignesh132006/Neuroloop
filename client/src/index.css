@@ -1071,15 +1071,43 @@ input:checked + .slider:before {
   50%{box-shadow:0 0 12px var(--gold),0 0 20px rgba(212,175,55,0.4);}
 }
 
-/* 16. HEATMAP CELL HOVER */
-.heatmap-cell{
-  transition:transform 0.15s ease,filter 0.15s ease;
+/* 16. HEATMAP CELL HOVER & GRID */
+.heatmap-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 13px);
+  grid-auto-columns: 13px;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px 0;
+  max-width: 100%;
 }
-.heatmap-cell:hover{
-  transform:scale(1.4);
-  filter:brightness(1.4);
-  z-index:10;
-  position:relative;
+.heatmap-cell {
+  width: 13px;
+  height: 13px;
+  background-color: var(--s3);
+  border-radius: 3px;
+  transition: transform 0.15s ease, filter 0.15s ease, background-color 0.2s;
+  cursor: pointer;
+}
+.heatmap-cell:hover {
+  transform: scale(1.3);
+  filter: brightness(1.3);
+  z-index: 10;
+  position: relative;
+}
+.heatmap-cell.level-1 {
+  background-color: #3b2f15;
+}
+.heatmap-cell.level-2 {
+  background-color: #6a5323;
+}
+.heatmap-cell.level-3 {
+  background-color: #a48135;
+}
+.heatmap-cell.level-4 {
+  background-color: var(--gold);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
 }
 
 /* 17. STAT CARD ACCENT LINE ANIMATE */
