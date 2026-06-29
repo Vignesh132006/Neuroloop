@@ -80,9 +80,22 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("[Database] MongoDB Connected"))
   .catch((err) => console.error("[Database] MongoDB Error:", err))
 
-app.get("/", (req, res) => {
-  res.json({ message: "NeuroLoop API Running", version: "2.0.0" })
-})
+const path = require("path")
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")))
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api/")) {
+      return next()
+    }
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"))
+  })
+} else {
+  app.get("/", (req, res) => {
+    res.json({ message: "NeuroLoop API Running", version: "2.0.0" })
+  })
+}
+
 
 // Global error handler
 app.use(async (err, req, res, next) => {

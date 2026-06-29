@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
 import { FiAward, FiRefreshCw, FiZap } from "react-icons/fi"
+import Loader from "../components/Loader"
 
 function PodiumSection({ top3 }) {
   if (!top3 || top3.length < 3) return null
@@ -93,7 +94,7 @@ export default function Leaderboard() {
         </div>
 
         {loading ? (
-          <div className="loading-screen"><div className="spinner" /><p>Loading leaderboard...</p></div>
+          <Loader text="Loading leaderboard..." />
         ) : (
           <>
             {/* Podium */}

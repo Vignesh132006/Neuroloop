@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
 import { FiSettings, FiUser, FiZap, FiSliders, FiLock, FiCheck } from "react-icons/fi"
+import Loader from "../components/Loader"
 
 export default function Settings() {
   const [user, setUser] = useState(null)
@@ -72,7 +73,7 @@ export default function Settings() {
         </div>
 
         {loading ? (
-          <div className="loading-screen"><div className="spinner" /><p>Loading settings...</p></div>
+          <Loader text="Loading settings..." />
         ) : (
           <div className="settings-grid">
 
