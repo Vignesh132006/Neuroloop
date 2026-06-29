@@ -9,9 +9,116 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
     <title>NeuroLoop — AI Learning Journal</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0a0a0a;
+      }
+      .initial-loader-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0a0a0a;
+        z-index: 99999;
+        font-family: system-ui, -apple-system, sans-serif;
+        gap: 24px;
+      }
+      .initial-loader-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+      }
+      .initial-loader-logo {
+        animation: initialLogoPulse 2s ease-in-out infinite;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .initial-loader-ring-outer {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        border: 2px solid transparent;
+        border-top-color: #d4af37;
+        border-bottom-color: #d4af37;
+        border-radius: 50%;
+        animation: initialSpinClockwise 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        z-index: 1;
+      }
+      .initial-loader-ring-inner {
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        border: 2px solid transparent;
+        border-left-color: #10b981;
+        border-right-color: #10b981;
+        border-radius: 50%;
+        animation: initialSpinCounterClockwise 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        opacity: 0.8;
+        z-index: 1;
+      }
+      .initial-loader-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        color: #a09880;
+        text-transform: uppercase;
+        text-align: center;
+        animation: initialTextFade 1.6s ease-in-out infinite alternate;
+      }
+      @keyframes initialLogoPulse {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.2)); }
+        50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.6)); }
+      }
+      @keyframes initialSpinClockwise {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @keyframes initialSpinCounterClockwise {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(-360deg); }
+      }
+      @keyframes initialTextFade {
+        0% { opacity: 0.5; color: #a09880; }
+        100% { opacity: 1; color: #d4af37; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="initial-loader-screen">
+        <div class="initial-loader-container">
+          <div class="initial-loader-ring-outer"></div>
+          <div class="initial-loader-ring-inner"></div>
+          <div class="initial-loader-logo">
+            <svg width="56" height="56" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="16" stroke="url(#init-grad-logo)" stroke-width="2.5" fill="none" stroke-dasharray="70 30" stroke-linecap="round"/>
+              <circle cx="18" cy="8" r="2.5" fill="#d4af37"/>
+              <circle cx="27" cy="22" r="2.5" fill="#10b981"/>
+              <circle cx="9" cy="22" r="2.5" fill="#f0d060"/>
+              <line x1="18" y1="10.5" x2="25" y2="20" stroke="#d4af37" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <line x1="18" y1="10.5" x2="11" y2="20" stroke="#f0d060" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <line x1="11" y1="22" x2="25" y2="22" stroke="#10b981" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <defs>
+                <linearGradient id="init-grad-logo" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#d4af37"/>
+                  <stop offset="50%" stop-color="#10b981"/>
+                  <stop offset="100%" stop-color="#f0d060"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        <p class="initial-loader-text">Loading NeuroLoop...</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
