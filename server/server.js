@@ -76,9 +76,20 @@ app.use("/api", testRoutes)
 // Keep backward-compat alias for old /api/journal routes
 app.use("/api/journal", noteRoutes)
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("[Database] MongoDB Connected"))
-  .catch((err) => console.error("[Database] MongoDB Error:", err))
+console.log("[Database] Connecting to MongoDB...");
+if (!process.env.MONGO_URI) {
+  console.error("[Database] ERROR: MONGO_URI is not defined in environment variables!");
+  process.exit(1);
+}
+
+try {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("[Database] MongoDB Connected"))
+    .catch((err) => console.error("[Database] MongoDB Error:", err))
+} catch (err) {
+  console.error("[Database] MongoDB synchronous connection error:", err);
+  process.exit(1);
+}
 
 const path = require("path")
 
