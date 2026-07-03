@@ -1,5 +1,4 @@
-try {
-  console.log("[Diagnostic] Starting server initialization...");
+console.log("[Diagnostic] Starting server initialization...");
   require("dotenv").config()
   console.log("[Diagnostic] dotenv loaded");
   
@@ -102,10 +101,6 @@ try {
     process.exit(1);
   }
 
-  mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("[Database] MongoDB Connected"))
-    .catch((err) => console.error("[Database] MongoDB Error:", err))
-
   const path = require("path")
 
   if (process.env.NODE_ENV === "production") {
@@ -145,11 +140,15 @@ try {
   }
 
   const PORT = process.env.PORT || 5000
-  app.listen(PORT, () => {
-    console.log(`[Server] Running on port ${PORT}`)
-  })
 
-} catch (err) {
-  console.error("[Diagnostic] CRITICAL STARTUP ERROR AT OUTER LAYER:", err);
-  process.exit(1);
-}
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log('[Database] MongoDB Connected')
+      app.listen(PORT, '0.0.0.0', () => {
+        console.log(`[Server] Running on port ${PORT}`)
+      })
+    })
+    .catch((err) => {
+      console.error('[Database] MongoDB connection failed:', err.message)
+      process.exit(1)
+    })

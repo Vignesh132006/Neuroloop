@@ -5,7 +5,7 @@ const User = require('../models/User');
 passport.use(new GoogleStrategy({
   clientID:     process.env.GOOGLE_CLIENT_ID || 'placeholder_client_id',
   clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder_client_secret',
-  callbackURL:  process.env.GOOGLE_CALLBACK_URL || 'placeholder_callback_url',
+  callbackURL:  process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     // Case 1: user already exists with this Google ID
