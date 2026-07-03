@@ -39,31 +39,13 @@ console.log("[Diagnostic] Starting server initialization...");
   const app = express()
   console.log("[Diagnostic] express app created");
 
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-    "http://127.0.0.1:5175"
-  ]
-
   app.use(cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, "") : null;
-      const isAllowed = allowedOrigins.includes(origin) || 
-                        origin === frontendUrl ||
-                        /^https:\/\/.*\.vercel\.app$/.test(origin) ||
-                        /^http:\/\/localhost(:\d+)?$/.test(origin) || 
-                        /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+    origin: [
+      'http://localhost:5173',
+      'https://neuroloop-wine.vercel.app',
+      process.env.FRONTEND_URL
+    ].filter(Boolean),
+    credentials: true
   }))
   app.use(express.json({ limit: "5mb" }))
 
@@ -101,21 +83,13 @@ console.log("[Diagnostic] Starting server initialization...");
     process.exit(1);
   }
 
-  const path = require("path")
+  app.get("/", (req, res) => {
+    res.json({ message: "NeuroLoop API Running", version: "2.0.0" })
+  })
 
-  if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../client/dist")))
-    app.get("/{*path}", (req, res, next) => {
-      if (req.path.startsWith("/api/")) {
-        return next()
-      }
-      res.sendFile(path.join(__dirname, "../client/dist/index.html"))
-    })
-  } else {
-    app.get("/", (req, res) => {
-      res.json({ message: "NeuroLoop API Running", version: "2.0.0" })
-    })
-  }
+  app.use((req, res) => {
+    res.status(404).json({ error: 'API route not found' })
+  })
 
   // Global error handler
   app.use(async (err, req, res, next) => {
