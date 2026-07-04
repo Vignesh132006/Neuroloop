@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import Sidebar from "../components/Sidebar"
-import MotivationBanner from "../components/MotivationBanner"
 import { useAuth } from "../context/AuthContext"
 import api from "../api/axios"
-import { FiFileText, FiCheckSquare, FiRefreshCw, FiAward, FiSmile } from "react-icons/fi"
 
 function ActivityHeatmap({ heatmapData }) {
   const today = new Date()
@@ -56,22 +54,25 @@ export default function Dashboard() {
   const [quizHistory, setQuizHistory] = useState([])
   const [weeklyStats, setWeeklyStats] = useState(null)
   const [heatmapData, setHeatmapData] = useState([])
+  const [weakTopics, setWeakTopics] = useState([])
   const [loading, setLoading] = useState(true)
 
   const loadData = async () => {
     try {
-      const [notesRes, revRes, quizRes, weeklyRes, heatmapRes] = await Promise.all([
+      const [notesRes, revRes, quizRes, weeklyRes, heatmapRes, weaknessRes] = await Promise.all([
         api.get("/notes"),
         api.get("/revision"),
         api.get("/quiz/history"),
         api.get("/notes/stats/weekly"),
         api.get("/notes/stats/heatmap"),
+        api.get("/quiz/weakness"),
       ])
       setNotes(notesRes.data)
       setDueRevisions(revRes.data)
       setQuizHistory(quizRes.data)
       setWeeklyStats(weeklyRes.data)
       setHeatmapData(heatmapRes.data)
+      setWeakTopics(weaknessRes.data || [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -121,216 +122,511 @@ export default function Dashboard() {
     ? Math.round(notes.reduce((sum, n) => sum + (n.masteryScore || 0), 0) / notes.length)
     : 0
 
+  const stats = {
+    notesCount: notes.length,
+    quizzesCount: quizHistory.length,
+    revisionsCount: totalRevisions,
+    averagePercentage: avgQuizScore
+  }
+
+  const xp = (stats.notesCount * 50) + (stats.quizzesCount * 30) + (stats.revisionsCount * 20)
+  const xpPercent = Math.min((xp / 1000) * 100, 100)
+  const overallMastery = masteryScore
+
+  // Get motivational mastery message
+  const getMasteryText = (val) => {
+    if (val < 30) return "Keep reviewing to boost this!"
+    if (val <= 60) return "You are making real progress!"
+    if (val <= 80) return "Almost there — push to 80%!"
+    return "Outstanding mastery level!"
+  }
+
+  // Daily Quote Selection
+  const quotes = [
+    { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
+    { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+    { text: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Gandhi" },
+    { text: "The more that you read, the more things you will know.", author: "Dr. Seuss" },
+    { text: "Education is not the filling of a pail but the lighting of a fire.", author: "W.B. Yeats" },
+    { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+    { text: "Success is the sum of small efforts repeated day in and day out.", author: "Robert Collier" }
+  ]
+  const quote = quotes[new Date().getDay()]
+
+  // Topic mastery bar color helper
+  const getTopicColor = (index) => {
+    switch (index) {
+      case 0: return "#7F77DD"
+      case 1: return "#1D9E75"
+      case 2: return "#D85A30"
+      case 3: return "#378ADD"
+      default: return "#EF9F27"
+    }
+  }
+
+  // Goal calculations
+  const goals = [
+    { text: "Write a note", done: stats.notesCount > 0 },
+    { text: "Take a quiz", done: stats.quizzesCount > 0 },
+    { text: "Complete all revisions", done: dueRevisions.length === 0 }
+  ]
+  const doneCount = goals.filter(g => g.done).length
+  const donePercent = (doneCount / 3) * 100
+
+  // Neuro Tip Content Logic
+  let neuroTip = ""
+  if (weakTopics && weakTopics.length > 0) {
+    const topSubtopic = weakTopics[0].weakSubtopics?.[0]?.name || "this area"
+    neuroTip = `You are weak in ${weakTopics[0].topic}. Focus on ${topSubtopic} before your next quiz!`
+  } else if (stats.revisionsCount === 0) {
+    neuroTip = "No revisions done today. Check your revision queue — spaced repetition is your superpower!"
+  } else if (stats.averagePercentage < 50) {
+    neuroTip = `Your quiz average is ${stats.averagePercentage}%. Try reviewing notes before taking quizzes.`
+  } else {
+    neuroTip = `Great momentum today, ${user?.name || "learner"}! Keep writing notes and taking quizzes to boost your mastery.`
+  }
+
   return (
     <div className="app-layout">
+      <style>{`
+        @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
+
+        :root {
+          --text-primary: var(--t1, #f5f0e8);
+          --text-secondary: var(--t2, #a09880);
+          --text-muted: var(--t3, #5a5040);
+          --border: var(--bd, rgba(255,255,255,0.08));
+          --border-strong: rgba(255,255,255,0.18);
+          
+          --bg-pro: var(--s2, #1a1a1a);
+          --border-pro: var(--bd, rgba(255,255,255,0.08));
+          --text-pro: var(--t1, #f5f0e8);
+          
+          --bg-warning: rgba(239, 159, 39, 0.15);
+          --text-warning: #EF9F27;
+          --border-warning: rgba(239, 159, 39, 0.3);
+          
+          --fill-success: #1D9E75;
+          --surface-1: var(--s1, #111111);
+        }
+
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+
+        .pulse-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #EF9F27;
+          display: inline-block;
+          animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes xp-fill {
+          from { width: 0; }
+          to { width: var(--target-width); }
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .command-centre-header {
+          padding: 24px;
+          border-bottom: 0.5px solid var(--border);
+          margin-bottom: 20px;
+        }
+
+        .stats-grid-row {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 14px;
+          padding: 0 24px;
+          margin-bottom: 24px;
+        }
+
+        .stat-card-custom {
+          background: var(--surface-1);
+          border: 0.5px solid var(--border);
+          border-radius: 12px;
+          padding: 16px;
+          position: relative;
+          transition: border-color 0.2s ease, transform 0.2s ease;
+          overflow: hidden;
+        }
+
+        .stat-card-custom:hover {
+          border-color: var(--border-strong);
+          transform: translateY(-2px);
+        }
+
+        .stat-card-top-border {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+        }
+
+        .stat-icon-container {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+
+        .stat-number-large {
+          font-size: 24px;
+          font-weight: 500;
+          color: var(--text-primary);
+          line-height: 1.2;
+          margin-bottom: 2px;
+        }
+
+        .stat-label-caps {
+          font-size: 11px;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          margin-bottom: 6px;
+        }
+
+        .stat-trend-text {
+          font-size: 11px;
+          color: var(--text-secondary);
+        }
+
+        .two-column-layout {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 14px;
+          padding: 0 24px 24px 24px;
+        }
+
+        .layout-col-left {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .layout-col-right {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        @media (max-width: 768px) {
+          .two-column-layout {
+            grid-template-columns: 1fr;
+          }
+          .stats-grid-row {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .stats-grid-row {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
       <Sidebar />
       <div className="page-wrap">
-        {/* Motivation Banner */}
-        <MotivationBanner streak={streak} />
-
-        {/* Header */}
-        <div className="page-header">
-          <div className="page-eyebrow">Your Learning Command Centre</div>
-          <h1 className="page-title">Welcome back, {user?.name?.split(" ")[0]}!</h1>
-          <p className="page-subtitle">
-            {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} — Keep your streak alive today
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="stat-grid">
-          {[
-            {ic:<FiFileText size={18} style={{ color: '#d4af37' }} />,bg:'rgba(212,175,55,0.1)',bar:'linear-gradient(90deg,#d4af37,#f0d060)',
-             v:notes.length,l:'Notes Written',s:'Your knowledge base is growing'},
-            {ic:<FiCheckSquare size={18} style={{ color: '#10b981' }} />,bg:'rgba(16,185,129,0.1)',bar:'linear-gradient(90deg,#10b981,#34d399)',
-             v:quizHistory.length,l:'Quizzes Taken',s:`Avg score: ${avgQuizScore}%`},
-            {ic:<FiRefreshCw size={18} style={{ color: '#3b82f6' }} />,bg:'rgba(59,130,246,0.1)',bar:'linear-gradient(90deg,#3b82f6,#60a5fa)',
-             v:totalRevisions,l:'Revisions Done',s:'Spaced repetition mastery'},
-            {ic:<FiAward size={18} style={{ color: '#d4af37' }} />,bg:'rgba(212,175,55,0.08)',bar:'linear-gradient(90deg,#d4af37,#10b981)',
-             v:`${masteryScore}%`,l:'Overall Mastery',
-             s:masteryScore>=80?'You are a knowledge champion!':'Keep reviewing to boost this!'},
-          ].map((s,i)=>(
-            <div key={i} className="stat-card anim-card" style={{'--i': i}}>
-              <div className="stat-card-accent" style={{position:'absolute',bottom:0,left:0,right:0,height:'2px',
-                           background:s.bar,borderRadius:'0 0 16px 16px','--i':i}}/>
-              <div className="stat-icon" style={{background:s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{s.ic}</div>
-              <div className="stat-val" style={{'--i': i}}>{s.v}</div>
-              <div className="stat-label">{s.l}</div>
-              <div className="stat-sub">{s.s}</div>
+        <div style={{ animation: "fadeUp 0.4s ease both" }}>
+          
+          {/* Section A: HERO HEADER */}
+          <div className="command-centre-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span className="pulse-dot" />
+              <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', fontWeight: 600 }}>
+                YOUR LEARNING COMMAND CENTRE
+              </span>
             </div>
-          ))}
-        </div>
 
-        {/* Heatmap */}
-        <div className="section" style={{ marginTop: '20px' }}>
-          <div className="section-head">
-            <div className="section-title">
-              <div className="section-title-dot"/>
-              Activity Heatmap
-            </div>
-            <span className="badge badge-neutral">Last 90 Days</span>
-          </div>
-          <ActivityHeatmap heatmapData={heatmapData} />
-        </div>
-
-        {/* Weekly Report */}
-        {weeklyStats && (
-          <div className="section mb-6">
-            <div className="section-head">
-              <div className="section-title">
-                <div className="section-title-dot"/>
-                Weekly Progress Report
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+              <h1 style={{ fontSize: '26px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
+                Welcome back, {user?.name}!
+              </h1>
+              <div style={{
+                background: 'var(--bg-warning)',
+                color: 'var(--text-warning)',
+                border: '0.5px solid var(--border-warning)',
+                padding: '3px 10px',
+                borderRadius: '20px',
+                fontSize: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontWeight: 500
+              }}>
+                <span>🔥</span> {streak} day streak
               </div>
-              <span className="badge badge-em">Last 7 Days</span>
             </div>
-            <p style={{ color: 'var(--t2)', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
-              You wrote <strong style={{ color: 'var(--t1)' }}>{weeklyStats.notesCount}</strong> notes, finished{' '}
-              <strong style={{ color: 'var(--t1)' }}>{weeklyStats.revisionsCount}</strong> revisions, and took{' '}
-              <strong style={{ color: 'var(--t1)' }}>{weeklyStats.quizzesCount}</strong> quizzes with an average of{' '}
-              <strong style={{ color: 'var(--t1)' }}>{weeklyStats.averagePercentage}%</strong>.
+
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
+              {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} — Keep your streak alive today
             </p>
 
-            {/* Bar chart */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '120px', borderBottom: '1px solid var(--bd)', paddingBottom: '0.5rem' }}>
-              {weeklyStats.dailyStats.map((day, idx) => {
-                const maxVal = Math.max(...weeklyStats.dailyStats.map(d => d.notes + d.quizzes)) || 1
-                const notesH = (day.notes / maxVal) * 100
-                const quizzesH = (day.quizzes / maxVal) * 100
-                return (
-                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%', gap: '0.25rem' }}>
-                    <div style={{ display: 'flex', gap: '3px', width: '100%', height: '90px', alignItems: 'flex-end', justifyContent: 'center' }}>
-                      <div style={{ width: '8px', height: `${notesH}%`, background: 'var(--gold)', borderRadius: '2px 2px 0 0', transition: 'height 0.3s ease', minHeight: day.notes > 0 ? '4px' : '0' }} title={`Notes: ${day.notes}`} />
-                      <div style={{ width: '8px', height: `${quizzesH}%`, background: 'var(--em)', borderRadius: '2px 2px 0 0', transition: 'height 0.3s ease', minHeight: day.quizzes > 0 ? '4px' : '0' }} title={`Quizzes: ${day.quizzes}`} />
-                    </div>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--t2)' }}>{day.day}</span>
-                  </div>
-                )
-              })}
-            </div>
-            <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.72rem', color: 'var(--t2)', justifyContent: 'center', marginTop: '0.5rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <div style={{ width: '8px', height: '8px', background: 'var(--gold)', borderRadius: '50%' }} /> Notes
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <div style={{ width: '8px', height: '8px', background: 'var(--em)', borderRadius: '50%' }} /> Quizzes
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '14px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>XP Progress</span>
+              <div style={{ flex: 1, height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #7F77DD, #1D9E75)',
+                  borderRadius: '3px',
+                  width: `${xpPercent}%`,
+                  transition: 'width 1.2s ease'
+                }} />
+              </div>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                {xp} / 1000 XP
               </span>
             </div>
           </div>
-        )}
 
-        {/* Due Revisions + Recent Notes */}
-        <div className="grid-2">
-          {/* Due Revisions */}
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>
-                <FiRefreshCw style={{ color: 'var(--gold)' }} /> Due for Revision
-              </h3>
-              <span className="badge badge-gold">{dueRevisions.length} due</span>
+          {/* Section B: STAT CARDS ROW */}
+          <div className="stats-grid-row">
+            {/* Card 1: Notes Written */}
+            <div className="stat-card-custom">
+              <div className="stat-card-top-border" style={{ backgroundColor: '#AFA9EC' }} />
+              <div className="stat-icon-container" style={{ background: 'var(--bg-pro)' }}>
+                <i className="ti ti-notebook" style={{ color: '#AFA9EC', fontSize: '16px' }} />
+              </div>
+              <div className="stat-number-large">{stats.notesCount}</div>
+              <div className="stat-label-caps">Notes Written</div>
+              <div className="stat-trend-text">Your knowledge base is growing</div>
             </div>
-            {dueRevisions.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--em)' }}><FiSmile /></div>
-                <h3 className="empty-title">All caught up!</h3>
-                <p className="empty-sub">No revisions due today. Keep learning!</p>
+
+            {/* Card 2: Quizzes Taken */}
+            <div className="stat-card-custom">
+              <div className="stat-card-top-border" style={{ backgroundColor: '#5DCAA5' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(29, 158, 117, 0.15)' }}>
+                <i className="ti ti-brain" style={{ color: '#5DCAA5', fontSize: '16px' }} />
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {dueRevisions.slice(0, 5).map((n) => (
-                  <div key={n._id} style={{
-                    padding: '12px 14px',
-                    background: 'var(--s2)',
-                    borderRadius: '10px',
-                    border: '1px solid var(--bd)',
-                    borderLeft: '3px solid var(--gold)',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--t1)' }}>{n.topic}</span>
-                      <span className="badge badge-gold">Rev #{n.revisionCount + 1}</span>
-                    </div>
-                    <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden', marginTop: '8px' }}>
-                      <div style={{ height: '100%', background: 'var(--gold)', width: `${n.masteryScore}%`, transition: 'width 0.4s' }} />
-                    </div>
-                    <p style={{ color: 'var(--t2)', fontSize: '0.72rem', marginTop: '4px' }}>
-                      Mastery: {n.masteryScore}%
-                    </p>
-                  </div>
-                ))}
+              <div className="stat-number-large">{stats.quizzesCount}</div>
+              <div className="stat-label-caps">Quizzes Taken</div>
+              <div className="stat-trend-text">Avg score: {stats.averagePercentage}%</div>
+            </div>
+
+            {/* Card 3: Revisions Done */}
+            <div className="stat-card-custom">
+              <div className="stat-card-top-border" style={{ backgroundColor: '#85B7EB' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(55, 138, 221, 0.15)' }}>
+                <i className="ti ti-refresh" style={{ color: '#85B7EB', fontSize: '16px' }} />
               </div>
-            )}
+              <div className="stat-number-large">{stats.revisionsCount}</div>
+              <div className="stat-label-caps">Revisions Done</div>
+              <div className="stat-trend-text">Spaced repetition mastery</div>
+            </div>
+
+            {/* Card 4: Overall Mastery */}
+            <div className="stat-card-custom">
+              <div className="stat-card-top-border" style={{ backgroundColor: '#EF9F27' }} />
+              <div className="stat-icon-container" style={{ background: 'var(--bg-warning)' }}>
+                <i className="ti ti-star" style={{ color: '#EF9F27', fontSize: '16px' }} />
+              </div>
+              <div className="stat-number-large">{overallMastery}%</div>
+              <div className="stat-label-caps">Overall Mastery</div>
+              <div className="stat-trend-text">{getMasteryText(overallMastery)}</div>
+            </div>
           </div>
 
-          {/* Recent Notes */}
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', color: 'var(--t1)' }}>
-                <FiFileText style={{ color: 'var(--em)' }} /> Recent Notes
-              </h3>
-              <span className="badge badge-em">{notes.length} total</span>
-            </div>
-            {notes.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiFileText /></div>
-                <h3 className="empty-title">Your learning journey starts here!</h3>
-                <p className="empty-sub">Write your first journal entry to begin</p>
+          {/* Section C: TWO COLUMN LAYOUT */}
+          <div className="two-column-layout">
+            
+            {/* Left Column */}
+            <div className="layout-col-left">
+              
+              {/* Element 1: Daily Quote Card */}
+              <div style={{
+                background: 'var(--bg-pro)',
+                border: '0.5px solid var(--border-pro)',
+                borderRadius: '12px',
+                padding: '14px 16px'
+              }}>
+                <p style={{
+                  fontSize: '13px',
+                  color: 'var(--text-pro)',
+                  fontStyle: 'italic',
+                  lineHeight: '1.6',
+                  margin: 0
+                }}>
+                  "{quote.text}"
+                </p>
+                <p style={{
+                  fontSize: '11px',
+                  color: 'var(--text-muted)',
+                  marginTop: '6px',
+                  margin: '6px 0 0 0',
+                  fontWeight: 500
+                }}>
+                  — {quote.author}
+                </p>
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {notes.slice(0, 5).map((n) => (
-                  <div key={n._id} style={{
-                    padding: '12px 14px',
-                    background: 'var(--s2)',
-                    borderRadius: '10px',
-                    border: '1px solid var(--bd)',
-                    borderLeft: '3px solid var(--em)',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--t1)' }}>{n.topic}</span>
-                      <span className={`badge ${n.difficulty === 'easy' ? 'badge-em' : n.difficulty === 'hard' ? 'badge-red' : 'badge-gold'}`}>
-                        {n.difficulty}
+
+              {/* Element 2: Topic Mastery Panel */}
+              <div style={{
+                background: 'var(--surface-1)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '12px',
+                padding: '16px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Topic mastery</h3>
+                  <span className="badge badge-em" style={{ fontSize: '10px' }}>This Week</span>
+                </div>
+
+                <div>
+                  {weakTopics && weakTopics.length > 0 ? (
+                    weakTopics.map((topic, index) => {
+                      const scoreVal = Math.max(10, 100 - topic.totalFails * 10)
+                      return (
+                        <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 0', borderBottom: '0.5px solid var(--border)' }}>
+                          <span style={{ fontSize: '13px', color: 'var(--text-primary)', flex: 1 }}>{topic.topic}</span>
+                          <div style={{ width: '80px', height: '4px', background: 'var(--border)', borderRadius: '2px' }}>
+                            <div style={{
+                              width: `${scoreVal}%`,
+                              height: '100%',
+                              borderRadius: '2px',
+                              backgroundColor: getTopicColor(index)
+                            }} />
+                          </div>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', minWidth: '28px', textAlign: 'right' }}>
+                            {scoreVal}%
+                          </span>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div style={{ color: '#1D9E75', fontSize: '13px', fontWeight: '500', padding: '12px 0' }}>
+                      All topics looking strong! Keep it up.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Element 3: Heatmap */}
+              <div style={{
+                background: 'var(--surface-1)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '12px',
+                padding: '16px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Activity heatmap</h3>
+                  <span className="badge badge-neutral" style={{ fontSize: '10px' }}>Last 90 days</span>
+                </div>
+                <ActivityHeatmap heatmapData={heatmapData} />
+              </div>
+
+            </div>
+
+            {/* Right Column */}
+            <div className="layout-col-right">
+              
+              {/* Element 1: Daily Goals Checklist */}
+              <div style={{
+                background: 'var(--surface-1)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '12px',
+                padding: '16px'
+              }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px 0' }}>Today's goals</h3>
+                <div>
+                  {goals.map((g, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 0', borderBottom: '0.5px solid var(--border)' }}>
+                      <div style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        background: g.done ? 'var(--fill-success)' : 'transparent',
+                        border: g.done ? '1.5px solid var(--fill-success)' : '1.5px solid var(--border-strong)',
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        {g.done && <i className="ti ti-check" style={{ fontSize: '10px' }} />}
+                      </div>
+                      <span style={{
+                        fontSize: '13px',
+                        color: g.done ? 'var(--text-muted)' : 'var(--text-secondary)',
+                        textDecoration: g.done ? 'line-through' : 'none',
+                        flex: 1
+                      }}>
+                        {g.text}
                       </span>
                     </div>
-                    <p style={{ color: 'var(--t2)', fontSize: '0.72rem', marginTop: '4px' }}>
-                      {new Date(n.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Quiz History */}
-        {quizHistory.length > 0 && (
-          <div className="card" style={{ marginTop: '16px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '1.05rem', marginBottom: '16px', color: 'var(--t1)' }}>
-              <FiCheckSquare style={{ color: 'var(--gold)' }} /> Recent Quiz Performance
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              {quizHistory.slice(0, 5).map((q) => (
-                <div key={q._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span style={{ flex: 1, fontWeight: 600, fontSize: '0.85rem', color: 'var(--t1)' }}>{q.topic}</span>
-                  <div style={{ flex: 2, height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
-                    <div
-                      style={{
-                        height: '100%',
-                        width: `${q.percentage}%`,
-                        background: q.percentage >= 80 ? 'var(--em)' : q.percentage >= 60 ? 'var(--gold)' : 'var(--red)',
-                        transition: 'width 0.4s'
-                      }}
-                    />
-                  </div>
-                  <span style={{
-                    fontWeight: 700, fontSize: '0.85rem', minWidth: '45px', textAlign: 'right',
-                    color: q.percentage >= 80 ? 'var(--em)' : q.percentage >= 60 ? 'var(--gold)' : 'var(--red)',
-                  }}>
-                    {q.percentage}%
-                  </span>
+                  ))}
                 </div>
-              ))}
+                <div style={{ marginTop: '14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                    <span>Progress</span>
+                    <span>{doneCount} of 3 complete</span>
+                  </div>
+                  <div style={{ width: '100%', height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ width: `${donePercent}%`, height: '100%', background: 'var(--fill-success)', borderRadius: '2px', transition: 'width 0.4s ease' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Element 2: Neuro AI Tip Card */}
+              <div style={{ marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7F77DD' }} />
+                  <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', fontWeight: 600 }}>Neuro says</span>
+                </div>
+                <div style={{
+                  background: 'var(--bg-pro)',
+                  border: '0.5px solid var(--border-pro)',
+                  borderRadius: '12px 12px 12px 2px',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  color: 'var(--text-pro)',
+                  lineHeight: '1.5'
+                }}>
+                  {neuroTip}
+                </div>
+              </div>
+
+              {/* Element 3: Weekly Summary Card */}
+              <div style={{
+                background: 'var(--surface-1)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '12px',
+                padding: '16px'
+              }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 14px 0' }}>This week</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 500, color: 'var(--text-primary)' }}>{stats.notesCount}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>notes written</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 500, color: 'var(--text-primary)' }}>{stats.quizzesCount}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>quizzes completed</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 500, color: 'var(--text-primary)' }}>{stats.revisionsCount}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>revisions done</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
+
           </div>
-        )}
+
+        </div>
       </div>
     </div>
   )
