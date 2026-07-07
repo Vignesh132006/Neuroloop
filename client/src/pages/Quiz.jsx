@@ -242,8 +242,8 @@ export default function Quiz() {
                       onClick={() => setQuizSource('note')}
                       style={{
                         padding: '16px', borderRadius: '12px', cursor: 'pointer',
-                        border: `1.5px solid ${quizSource === 'note' ? '#7c3aed' : 'rgba(255,255,255,0.08)'}`,
-                        background: quizSource === 'note' ? 'rgba(124,58,237,0.08)' : 'rgba(255,255,255,0.02)',
+                        border: `1.5px solid ${quizSource === 'note' ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
+                        background: quizSource === 'note' ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)',
                         transition: 'all 0.2s'
                       }}
                     >
@@ -261,8 +261,8 @@ export default function Quiz() {
                       onClick={() => setQuizSource('custom')}
                       style={{
                         padding: '16px', borderRadius: '12px', cursor: 'pointer',
-                        border: `1.5px solid ${quizSource === 'custom' ? '#7c3aed' : 'rgba(255,255,255,0.08)'}`,
-                        background: quizSource === 'custom' ? 'rgba(124,58,237,0.08)' : 'rgba(255,255,255,0.02)',
+                        border: `1.5px solid ${quizSource === 'custom' ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
+                        background: quizSource === 'custom' ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)',
                         transition: 'all 0.2s'
                       }}
                     >
@@ -361,9 +361,9 @@ export default function Quiz() {
                           onClick={() => setQuizType(type.value)}
                           style={{
                             flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
-                            border: `1.5px solid ${quizType === type.value ? '#7c3aed' : 'rgba(255,255,255,0.08)'}`,
-                            background: quizType === type.value ? 'rgba(124,58,237,0.08)' : 'transparent',
-                            color: quizType === type.value ? '#a78bfa' : 'var(--text-secondary, var(--t2))',
+                            border: `1.5px solid ${quizType === type.value ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
+                            background: quizType === type.value ? 'rgba(212,175,55,0.08)' : 'transparent',
+                            color: quizType === type.value ? 'var(--gold)' : 'var(--text-secondary, var(--t2))',
                             fontSize: '13px', fontWeight: '500', textAlign: 'center', transition: 'all 0.2s'
                           }}
                         >
@@ -383,8 +383,8 @@ export default function Quiz() {
                         Step 4 — How many questions?
                       </p>
                       <span style={{
-                        fontSize: '20px', fontWeight: '500', color: 'var(--text-primary, var(--t1))',
-                        background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.2)',
+                        fontSize: '20px', fontWeight: '500', color: 'var(--gold)',
+                        background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)',
                         padding: '2px 12px', borderRadius: '8px'
                       }}>
                         {questionCount}
@@ -398,7 +398,7 @@ export default function Quiz() {
                       step="1"
                       value={questionCount}
                       onChange={(e) => setQuestionCount(parseInt(e.target.value))}
-                      style={{ width: '100%', accentColor: '#7c3aed', cursor: 'pointer' }}
+                      style={{ width: '100%', accentColor: 'var(--gold)', cursor: 'pointer' }}
                     />
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted, var(--t3))', marginTop: '4px' }}>
@@ -430,9 +430,9 @@ export default function Quiz() {
                     disabled={generating}
                     style={{
                       width: '100%', padding: '14px',
-                      background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
-                      color: 'white', border: 'none', borderRadius: '12px',
-                      fontSize: '15px', fontWeight: '600', cursor: 'pointer',
+                      background: 'linear-gradient(135deg, #d4af37, #8a6f1e)',
+                      color: '#0a0a0a', border: 'none', borderRadius: '12px',
+                      fontSize: '15px', fontWeight: '700', cursor: 'pointer',
                       opacity: generating ? 0.7 : 1
                     }}
                   >
