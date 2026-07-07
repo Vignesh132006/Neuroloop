@@ -74,11 +74,11 @@ export default function SupportPanel() {
   ]
 
   const categories = [
-    { value: 'bug', label: '🐛 Bug Report' },
-    { value: 'question', label: '❓ Question' },
-    { value: 'feedback', label: '💡 Feedback' },
-    { value: 'feature-request', label: '✨ Feature Request' },
-    { value: 'account', label: '🔑 Account Issue' },
+    { value: 'bug', label: 'Bug Report' },
+    { value: 'question', label: 'Question' },
+    { value: 'feedback', label: 'Feedback' },
+    { value: 'feature-request', label: 'Feature Request' },
+    { value: 'account', label: 'Account Issue' },
   ]
 
   return (
@@ -124,7 +124,7 @@ export default function SupportPanel() {
         }}
         title="Open Support Panel"
       >
-        🎧 Support
+        Support
       </button>
 
       {/* BACKDROP */}
@@ -164,7 +164,7 @@ export default function SupportPanel() {
         }}>
           <div>
             <div style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9' }}>
-              🎧 Customer Support
+              Customer Support
             </div>
             <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
               We respond within 24 hours
@@ -186,8 +186,8 @@ export default function SupportPanel() {
           display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)'
         }}>
           {[
-            { id: 'contact', label: '📩 Contact Us' },
-            { id: 'faq', label: '❓ FAQ' }
+            { id: 'contact', label: 'Contact Us' },
+            { id: 'faq', label: 'FAQ' }
           ].map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
               flex: 1, padding: '12px', border: 'none', cursor: 'pointer',
@@ -208,7 +208,6 @@ export default function SupportPanel() {
             <>
               {submitted ? (
                 <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
                   <div style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
                     Ticket Submitted!
                   </div>
@@ -272,9 +271,9 @@ export default function SupportPanel() {
                     </label>
                     <div style={{ display: 'flex', gap: '6px' }}>
                       {[
-                        { val: 'low', label: '🟢 Low' },
-                        { val: 'medium', label: '🟡 Medium' },
-                        { val: 'high', label: '🔴 High' }
+                        { val: 'low', label: 'Low' },
+                        { val: 'medium', label: 'Medium' },
+                        { val: 'high', label: 'High' }
                       ].map(p => (
                         <button key={p.val} onClick={() => setForm({...form, priority: p.val})}
                           style={{
@@ -321,7 +320,7 @@ export default function SupportPanel() {
                       opacity: (loading || !form.category || form.subject.length < 5 || form.message.length < 20) ? 0.5 : 1
                     }}
                   >
-                    {loading ? 'Submitting...' : '🎧 Submit Ticket'}
+                    {loading ? 'Submitting...' : 'Submit Ticket'}
                   </button>
                 </>
               )}
@@ -358,7 +357,7 @@ export default function SupportPanel() {
           textAlign: 'center'
         }}>
           <p style={{ fontSize: '11px', color: '#374151', margin: 0 }}>
-            📧 neuroloopadmin@gmail.com
+            neuroloopadmin@gmail.com
           </p>
         </div>
       </div>
