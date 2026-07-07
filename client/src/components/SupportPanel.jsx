@@ -8,6 +8,26 @@ export default function SupportPanel() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [ticketId, setTicketId] = useState('')
+  const [isSettingEnabled, setIsSettingEnabled] = useState(true)
+
+  useEffect(() => {
+    const checkSetting = () => {
+      const stored = localStorage.getItem("showSupportPanel")
+      setIsSettingEnabled(stored !== "false")
+    }
+
+    checkSetting()
+
+    window.addEventListener("support-setting-changed", checkSetting)
+    window.addEventListener("storage", checkSetting)
+
+    return () => {
+      window.removeEventListener("support-setting-changed", checkSetting)
+      window.removeEventListener("storage", checkSetting)
+    }
+  }, [])
+
+  if (!isSettingEnabled) return null
 
   const handleSubmit = async () => {
     if (!form.category || !form.subject || !form.message) return
@@ -64,9 +84,15 @@ export default function SupportPanel() {
   return (
     <>
       <style>{`
+        .support-trigger-btn {
+          left: 220px;
+        }
         @media (max-width: 768px) {
           .support-panel-wrap {
             width: 100% !important;
+          }
+          .support-trigger-btn {
+            left: 0 !important;
           }
         }
       `}</style>
@@ -74,9 +100,9 @@ export default function SupportPanel() {
       {/* TRIGGER BUTTON — fixed on left side */}
       <button
         onClick={() => setIsOpen(true)}
+        className="support-trigger-btn"
         style={{
           position: 'fixed',
-          left: 0,
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 998,

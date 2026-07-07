@@ -15,6 +15,7 @@ export default function Settings() {
   const [profileSuccess, setProfileSuccess] = useState("")
   const [passwordSuccess, setPasswordSuccess] = useState("")
   const [passwordError, setPasswordError] = useState("")
+  const [showSupportButton, setShowSupportButton] = useState(true)
 
   const fetchProfile = async () => {
     try {
@@ -29,7 +30,17 @@ export default function Settings() {
     }
   }
 
-  useEffect(() => { fetchProfile() }, [])
+  useEffect(() => {
+    fetchProfile()
+    const stored = localStorage.getItem("showSupportPanel")
+    setShowSupportButton(stored !== "false")
+  }, [])
+
+  const handleToggleSupport = (checked) => {
+    setShowSupportButton(checked)
+    localStorage.setItem("showSupportPanel", checked ? "true" : "false")
+    window.dispatchEvent(new Event("support-setting-changed"))
+  }
 
   const handleSaveProfile = async (e) => {
     e.preventDefault()
@@ -131,6 +142,19 @@ export default function Settings() {
                     <input
                       type="checkbox" checked={emailNotifications}
                       onChange={(e) => setEmailNotifications(e.target.checked)}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className="flex-between" style={{ margin: "0.5rem 0", paddingBottom: "0.5rem", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "0.5rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.9rem", fontWeight: 500, color: "var(--t1)" }}>Floating Support Panel</label>
+                    <span style={{ fontSize: "0.72rem", color: "var(--t2)" }}>Show floating customer support slide-out panel on the left edge</span>
+                  </div>
+                  <label className="switch">
+                    <input
+                      type="checkbox" checked={showSupportButton}
+                      onChange={(e) => handleToggleSupport(e.target.checked)}
                     />
                     <span className="slider"></span>
                   </label>
