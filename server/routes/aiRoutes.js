@@ -77,10 +77,12 @@ router.post("/summary", authMiddleware, async (req, res) => {
 // POST /api/ai/mcq — Generate MCQ quiz questions
 router.post("/mcq", authMiddleware, async (req, res) => {
   try {
-    const { notes, topic, count = 10 } = req.body
+    const { notes, topic, count } = req.body
     if (!notes) return res.status(400).json({ error: "Notes are required" })
 
-    const prompt = `Based on these notes about "${topic || "the topic"}", generate exactly ${count} multiple choice questions.
+    const safeCount = Math.min(Math.max(parseInt(count) || 5, 3), 20)
+
+    const prompt = `Based on these notes about "${topic || "the topic"}", generate exactly ${safeCount} multiple choice questions.
 
 Each question must have a 'subtopic' field identifying the specific concept being tested (e.g., 'Binary Search Tree', 'Recursion', 'Time Complexity'). Return as JSON: [{question, options, answer, subtopic}]
 
@@ -125,10 +127,12 @@ ${notes}`
 // POST /api/ai/interview — Generate interview questions
 router.post("/interview", authMiddleware, async (req, res) => {
   try {
-    const { notes, topic } = req.body
+    const { notes, topic, count } = req.body
     if (!notes) return res.status(400).json({ error: "Notes are required" })
 
-    const prompt = `Based on these notes about "${topic || "the topic"}", generate 5 deep interview questions that test conceptual understanding.
+    const safeCount = Math.min(Math.max(parseInt(count) || 5, 3), 20)
+
+    const prompt = `Based on these notes about "${topic || "the topic"}", generate exactly ${safeCount} deep interview questions that test conceptual understanding.
 
 Return ONLY a valid JSON array (no markdown, no code fences) in this format:
 [
