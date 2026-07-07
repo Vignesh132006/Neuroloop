@@ -73,6 +73,39 @@ const EyeClosed = () => (
   </svg>
 );
 
+function isValidEmail(email) {
+  // Check basic format
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  if (!emailRegex.test(email)) return { valid: false, message: 'Please enter a valid email address.' }
+
+  // Check for common typos in popular domains
+  const domain = email.split('@')[1]?.toLowerCase()
+  const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com']
+  const typoMap = {
+    'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com',
+    'gmail.co': 'gmail.com', 'gmail.cm': 'gmail.com', 'gmail.om': 'gmail.com',
+    'yahooo.com': 'yahoo.com', 'yaho.com': 'yahoo.com',
+    'outloo.com': 'outlook.com', 'outlok.com': 'outlook.com',
+    'hotmai.com': 'hotmail.com', 'hotmal.com': 'hotmail.com'
+  }
+
+  if (typoMap[domain]) {
+    return { valid: false, message: `Did you mean @${typoMap[domain]}?` }
+  }
+
+  // Check for missing dot in domain
+  if (!domain?.includes('.')) {
+    return { valid: false, message: 'Email domain looks incomplete. Example: name@gmail.com' }
+  }
+
+  // Check minimum length
+  if (email.length < 6) {
+    return { valid: false, message: 'Email is too short.' }
+  }
+
+  return { valid: true, message: '' }
+}
+
 export default function Login() {
   const [activeTab, setActiveTab] = useState('login')
 
@@ -86,6 +119,9 @@ export default function Login() {
   const [signupEmail, setSignupEmail] = useState('')
   const [signupPassword, setSignupPassword] = useState('')
   const [signupGithub, setSignupGithub] = useState('')
+
+  const [emailError, setEmailError] = useState('')
+  const [emailTouched, setEmailTouched] = useState(false)
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -211,6 +247,12 @@ export default function Login() {
   const handleSignup = async (e) => {
     e.preventDefault()
     setError('')
+    const emailCheck = isValidEmail(signupEmail)
+    if (!emailCheck.valid) {
+      setEmailTouched(true)
+      setEmailError(emailCheck.message)
+      return
+    }
     if (signupPassword.length < 6) {
       setError('Password must be at least 6 characters')
       return
@@ -1281,18 +1323,67 @@ export default function Login() {
                   autoComplete="name"
                 />
               </div>
-              <div className="lp-field">
-                <label className="lp-lbl">Email address</label>
-                <input
-                  id="signup-email"
-                  className="lp-inp"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={signupEmail}
-                  onChange={(e) => setSignupEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                />
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{
+                  display: 'block', fontSize: '12px', fontWeight: '500',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: 'var(--text-secondary)', marginBottom: '6px'
+                }}>Email address</label>
+
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="email"
+                    value={signupEmail}
+                    onChange={(e) => {
+                      setSignupEmail(e.target.value)
+                      if (emailTouched) {
+                        const result = isValidEmail(e.target.value)
+                        setEmailError(result.valid ? '' : result.message)
+                      }
+                    }}
+                    onBlur={() => {
+                      setEmailTouched(true)
+                      const result = isValidEmail(signupEmail)
+                      setEmailError(result.valid ? '' : result.message)
+                    }}
+                    placeholder="name@gmail.com"
+                    style={{
+                      width: '100%', padding: '11px 40px 11px 14px',
+                      background: 'var(--bg-glass, rgba(255,255,255,0.04))',
+                      border: `1px solid ${emailError && emailTouched ? 'rgba(239,68,68,0.5)' : signupEmail && !emailError && emailTouched ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                      borderRadius: '10px', color: 'var(--text-primary)',
+                      fontSize: '14px', outline: 'none', boxSizing: 'border-box',
+                      transition: 'border-color 0.2s'
+                    }}
+                  />
+                  {/* Validation icon */}
+                  {emailTouched && signupEmail && (
+                    <div style={{
+                      position: 'absolute', right: '12px', top: '50%',
+                      transform: 'translateY(-50%)', fontSize: '16px'
+                    }}>
+                      {emailError ? '❌' : '✅'}
+                    </div>
+                  )}
+                </div>
+
+                {/* Error or success message */}
+                {emailTouched && emailError && (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    marginTop: '6px', padding: '6px 10px',
+                    background: 'rgba(239,68,68,0.08)',
+                    border: '1px solid rgba(239,68,68,0.2)',
+                    borderRadius: '6px'
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#fca5a5' }}>⚠️ {emailError}</span>
+                  </div>
+                )}
+                {emailTouched && !emailError && signupEmail && (
+                  <div style={{ marginTop: '6px' }}>
+                    <span style={{ fontSize: '12px', color: '#6ee7b7' }}>✓ Valid email address</span>
+                  </div>
+                )}
               </div>
               <div className="lp-field">
                 <label className="lp-lbl">Password</label>
