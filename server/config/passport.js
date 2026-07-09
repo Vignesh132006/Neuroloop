@@ -18,6 +18,7 @@ passport.use(new GoogleStrategy({
       user.googleId     = profile.id;
       user.avatar       = profile.photos?.[0]?.value || '';
       user.isGoogleUser = true;
+      user.isEmailVerified = true; // Google verified
       await user.save();
       return done(null, user);
     }
@@ -29,6 +30,7 @@ passport.use(new GoogleStrategy({
       googleId:     profile.id,
       avatar:       profile.photos?.[0]?.value || '',
       isGoogleUser: true,
+      isEmailVerified: true, // Google verified
       // password field: set a random string so the required validator passes
       password:     require('crypto').randomBytes(32).toString('hex'),
     });
