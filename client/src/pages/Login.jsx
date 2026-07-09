@@ -1095,7 +1095,7 @@ export default function Login() {
               {isLogin ? (
                 <form onSubmit={handleLogin}>
                   <div className="lp-field">
-                    <label className="lp-lbl">Email address</label>
+                    <label className="lp-lbl" htmlFor="login-email">Email address</label>
                     <input
                       id="login-email"
                       className="lp-inp"
@@ -1108,7 +1108,7 @@ export default function Login() {
                     />
                   </div>
                   <div className="lp-field">
-                    <label className="lp-lbl">Password</label>
+                    <label className="lp-lbl" htmlFor="login-password">Password</label>
                     <div className="lp-pwd-wrap">
                       <input
                         id="login-password"
@@ -1184,8 +1184,9 @@ export default function Login() {
                         {/* STEP 1 — Email */}
                         {forgotStep === 'email' && !forgotSuccess && (
                           <>
-                            <label className="fp-label">Your account email</label>
+                            <label className="fp-label" htmlFor="forgot-email">Your account email</label>
                             <input
+                              id="forgot-email"
                               className="fp-inp"
                               type="email"
                               placeholder="you@example.com"
@@ -1208,13 +1209,14 @@ export default function Login() {
                         {/* STEP 2 — OTP */}
                         {forgotStep === 'otp' && !forgotSuccess && (
                           <>
-                            <label className="fp-label">6-digit code sent to {forgotEmail}</label>
+                            <label className="fp-label" htmlFor="forgot-otp">6-digit code sent to {forgotEmail}</label>
                             {forgotIsFirstTime && (
                               <div className="fp-notice">
                                 ℹ️ Check in spam message and report not a spam and take the code otherwise check the email is valid
                               </div>
                             )}
                             <input
+                              id="forgot-otp"
                               className="fp-otp-inp"
                               type="text"
                               inputMode="numeric"
@@ -1254,9 +1256,10 @@ export default function Login() {
                         {/* STEP 3 — New password */}
                         {forgotStep === 'reset' && !forgotSuccess && (
                           <>
-                            <label className="fp-label">New password</label>
+                            <label className="fp-label" htmlFor="forgot-new-password">New password</label>
                             <div className="fp-inp-pwd-wrap">
                               <input
+                                id="forgot-new-password"
                                 className="fp-inp"
                                 type={showNewPassword ? 'text' : 'password'}
                                 placeholder="Min 8 characters"
@@ -1353,7 +1356,7 @@ export default function Login() {
               ) : (
                 <form onSubmit={handleSignup}>
                   <div className="lp-field">
-                    <label className="lp-lbl">Full name</label>
+                    <label className="lp-lbl" htmlFor="signup-name">Full name</label>
                     <input
                       id="signup-name"
                       className="lp-inp"
@@ -1366,7 +1369,7 @@ export default function Login() {
                     />
                   </div>
                   <div style={{ marginBottom: '14px' }}>
-                    <label style={{
+                    <label htmlFor="signup-email" style={{
                       display: 'block', fontSize: '12px', fontWeight: '500',
                       textTransform: 'uppercase', letterSpacing: '0.06em',
                       color: 'var(--text-secondary)', marginBottom: '6px'
@@ -1374,6 +1377,7 @@ export default function Login() {
 
                     <div style={{ position: 'relative' }}>
                       <input
+                        id="signup-email"
                         type="email"
                         value={signupEmail}
                         onChange={(e) => {
@@ -1428,7 +1432,7 @@ export default function Login() {
                     )}
                   </div>
                   <div className="lp-field">
-                    <label className="lp-lbl">Password</label>
+                    <label className="lp-lbl" htmlFor="signup-password">Password</label>
                     <div className="lp-pwd-wrap">
                       <input
                         id="signup-password"
@@ -1481,7 +1485,7 @@ export default function Login() {
                   )}
 
                   <div className="lp-field">
-                    <label className="lp-lbl">GitHub username (optional)</label>
+                    <label className="lp-lbl" htmlFor="signup-github">GitHub username (optional)</label>
                     <input
                       id="signup-github"
                       className="lp-inp"
