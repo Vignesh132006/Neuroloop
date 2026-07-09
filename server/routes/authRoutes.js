@@ -66,6 +66,132 @@ router.post("/signup", async (req, res) => {
   }
 })
 
+const { sendVerificationOtp } = require('../utils/emailService');
+
+// ── ROUTE 1: Verify OTP ──────────────────────────────────────
+router.post('/verify-email', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and OTP are required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: 'Email is already verified' });
+    }
+
+    // Check attempt limit (max 5 attempts)
+    if (user.emailOtpAttempts >= 5) {
+      return res.status(429).json({
+        message: 'Too many attempts. Please request a new code.',
+      });
+    }
+
+    // Check expiry
+    if (!user.emailOtpExpiry || new Date() > user.emailOtpExpiry) {
+      return res.status(400).json({
+        message: 'Code has expired. Please request a new one.',
+      });
+    }
+
+    // Check OTP
+    if (user.emailOtp !== otp.trim()) {
+      user.emailOtpAttempts += 1;
+      await user.save();
+      const remaining = 5 - user.emailOtpAttempts;
+      return res.status(400).json({
+        message: `Incorrect code. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`,
+      });
+    }
+
+    // OTP is correct — verify the account
+    user.isEmailVerified  = true;
+    user.emailOtp         = null;
+    user.emailOtpExpiry   = null;
+    user.emailOtpAttempts = 0;
+    await user.save();
+
+    // Send welcome email
+    try {
+      const { sendWelcomeEmail } = require('../utils/emailService');
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (e) {
+      console.error('[Email] Welcome email failed:', e.message);
+    }
+
+    // Now issue the JWT token
+    const jwt   = require('jsonwebtoken');
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    res.json({
+      message: 'Email verified successfully!',
+      token,
+      user: {
+        id:    user._id,
+        name:  user.name,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error('[Auth] verify-email error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ── ROUTE 2: Resend OTP ──────────────────────────────────────
+router.post('/resend-verification', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
+    const user = await User.findOne({ email });
+    if (!user)              return res.status(404).json({ message: 'Account not found' });
+    if (user.isEmailVerified) return res.status(400).json({ message: 'Email already verified' });
+
+    // Rate limit: max 1 resend per 60 seconds
+    if (user.emailOtpExpiry) {
+      const secondsLeft = Math.ceil((user.emailOtpExpiry - Date.now()) / 1000);
+      if (secondsLeft > 540) { // OTP was sent less than 60 seconds ago (600 - 60 = 540)
+        return res.status(429).json({
+          message: `Please wait ${60 - (600 - secondsLeft)} seconds before requesting a new code.`,
+        });
+      }
+    }
+
+    const otp    = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.emailOtp         = otp;
+    user.emailOtpExpiry   = expiry;
+    user.emailOtpAttempts = 0;
+    await user.save();
+
+    await sendVerificationOtp(user.email, user.name, otp);
+
+    res.json({ message: 'New verification code sent to your email.' });
+  } catch (err) {
+    console.error('[Auth] resend-verification error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ── ROUTE 3: Check verification status ───────────────────────
+router.get('/verification-status/:email', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user) return res.status(404).json({ message: 'Account not found' });
+    res.json({ isEmailVerified: user.isEmailVerified });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // POST /api/auth/login
 router.post("/login", async (req, res) => {
   try {
