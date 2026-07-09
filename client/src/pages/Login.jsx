@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
+import EmailVerificationScreen from '../components/EmailVerificationScreen'
 
 const getStrength = (pwd) => {
   let score = 0
@@ -120,6 +121,10 @@ export default function Login() {
   const [signupPassword, setSignupPassword] = useState('')
   const [signupGithub, setSignupGithub] = useState('')
 
+  const [verifyMode,  setVerifyMode]  = useState(false);
+  const [pendingEmail, setPendingEmail] = useState('');
+  const [pendingName,  setPendingName]  = useState('');
+
   const [emailError, setEmailError] = useState('')
   const [emailTouched, setEmailTouched] = useState(false)
 
@@ -235,6 +240,16 @@ export default function Login() {
     setLoading(true)
     try {
       const res = await api.post('/auth/login', { email: loginEmail, password: loginPassword })
+      const { data } = res
+
+      // Handle unverified email
+      if (data.status === 'pending_verification') {
+        setPendingEmail(data.email);
+        setPendingName(data.name || '');
+        setVerifyMode(true);
+        return;
+      }
+
       login(res.data.token, res.data.user)
       navigate('/dashboard')
     } catch (err) {
@@ -265,14 +280,33 @@ export default function Login() {
         password: signupPassword,
         githubUsername: signupGithub || undefined,
       })
-      login(res.data.token, res.data.user)
-      navigate('/dashboard')
+      const { data } = res
+
+      if (data.status === 'pending_verification') {
+        // Show verification screen instead of logging in
+        setPendingEmail(data.email);
+        setPendingName(data.name);
+        setVerifyMode(true);
+        return;
+      }
+
+      // If somehow token is returned directly (fallback)
+      if (data.token) {
+        login(data.token, data.user);
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
+
+  const handleVerified = (token, user) => {
+    // Use the SAME login function your existing login form uses
+    login(token, user);
+    navigate('/dashboard');
+  };
 
   const handleGoogleLogin = () => {
     const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
@@ -1006,467 +1040,477 @@ export default function Login() {
       {/* RIGHT — FORM */}
       <div className="lp-right">
         <div className="lp-form-wrap">
-          {/* Mobile logo (hidden on desktop where left panel shows) */}
-          <div style={{ display: 'none', marginBottom: '1.5rem', justifyContent: 'center' }} className="mobile-logo">
-            <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-              <div style={{
-                width:32,height:32,borderRadius:8,
-                background:'linear-gradient(135deg,#d4af37,#a08020)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                boxShadow:'0 4px 10px rgba(212,175,55,0.4)',
-              }}>
-                <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
-                  <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
-                  <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
-                  <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
-                  <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <span style={{
-                fontFamily:"'DM Serif Display',serif",
-                fontSize:'1.1rem',color:'#f5f0e8',
-              }}>Neuro<span style={{color:'#d4af37'}}>Loop</span></span>
-            </div>
-          </div>
-
-          <div className="lp-form-title">{isLogin ? 'Welcome back' : 'Get Started'}</div>
-          <div className="lp-form-sub">{isLogin ? 'Sign in to continue your learning loop' : 'Create an account to start learning'}</div>
-
-          <div className="lp-tabs">
-            <button className={`lp-tab ${isLogin ? 'active' : ''}`} onClick={() => setIsLogin(true)}>
-              Log In
-            </button>
-            <button className={`lp-tab ${!isLogin ? 'active' : ''}`} onClick={() => setIsLogin(false)}>
-              Sign Up
-            </button>
-          </div>
-
-          {/* Error alert */}
-          {error && (
-            <div className="alert alert-error" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5' }}>
-              {error}
-            </div>
-          )}
-
-          {isLogin ? (
-            <form onSubmit={handleLogin}>
-              <div className="lp-field">
-                <label className="lp-lbl">Email address</label>
-                <input
-                  id="login-email"
-                  className="lp-inp"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  required
-                  autoComplete="username"
-                />
-              </div>
-              <div className="lp-field">
-                <label className="lp-lbl">Password</label>
-                <div className="lp-pwd-wrap">
-                  <input
-                    id="login-password"
-                    className="lp-inp"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    className="lp-pwd-toggle"
-                    onClick={() => setShowPassword(v => !v)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOpen/> : <EyeClosed/>}
-                  </button>
-                </div>
-              </div>
-
-              {/* Forgot trigger — shows only when forgotStep is null */}
-              {isLogin && forgotStep === null && (
-                <button
-                  type="button"
-                  className="fp-trigger"
-                  onClick={() => { setForgotStep('email'); setForgotError(''); }}
-                >
-                  Forgot password?
-                </button>
-              )}
-
-              {/* Inline forgot password panel */}
-              {isLogin && forgotStep !== null && (
-                <div className="fp-wrap">
-                  <div className="fp-header">
-                    <div className="fp-title">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                           stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0110 0v4"/>
-                      </svg>
-                      {forgotStep === 'email' && 'Reset your password'}
-                      {forgotStep === 'otp' && 'Enter verification code'}
-                      {forgotStep === 'reset' && 'Set new password'}
-                    </div>
-                    <button type="button" className="fp-close" onClick={() => {
-                      setForgotStep(null); setForgotError('');
-                      setForgotEmail(''); setForgotOtp(''); setNewPassword('');
-                      setForgotIsFirstTime(false);
-                    }}>
-                      ×
-                    </button>
-                  </div>
-
-                  <div className="fp-body">
-                    {/* Step indicator */}
-                    <div className="fp-step-indicator">
-                      <div className={`fp-step-dot ${forgotStep==='email'?'active':['otp','reset'].includes(forgotStep)?'done':''}`}/>
-                      <div className="fp-step-line"/>
-                      <div className={`fp-step-dot ${forgotStep==='otp'?'active':forgotStep==='reset'?'done':''}`}/>
-                      <div className="fp-step-line"/>
-                      <div className={`fp-step-dot ${forgotStep==='reset'?'active':''}`}/>
-                    </div>
-
-                    {/* Error */}
-                    {forgotError && <div className="fp-error">{forgotError}</div>}
-
-                    {/* Success */}
-                    {forgotSuccess && <div className="fp-success">{forgotSuccess}</div>}
-
-                    {/* STEP 1 — Email */}
-                    {forgotStep === 'email' && !forgotSuccess && (
-                      <>
-                        <label className="fp-label">Your account email</label>
-                        <input
-                          className="fp-inp"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={forgotEmail}
-                          onChange={e => setForgotEmail(e.target.value)}
-                          onKeyDown={e => e.key === 'Enter' && handleForgotSendOtp()}
-                          autoFocus
-                        />
-                        <button
-                          type="button"
-                          className="fp-btn"
-                          onClick={handleForgotSendOtp}
-                          disabled={forgotLoading || !forgotEmail}
-                        >
-                          {forgotLoading ? 'Sending...' : 'Send Verification Code'}
-                        </button>
-                      </>
-                    )}
-
-                    {/* STEP 2 — OTP */}
-                    {forgotStep === 'otp' && !forgotSuccess && (
-                      <>
-                        <label className="fp-label">6-digit code sent to {forgotEmail}</label>
-                        {forgotIsFirstTime && (
-                          <div className="fp-notice">
-                            ℹ️ Check in spam message and report not a spam and take the code otherwise check the email is valid
-                          </div>
-                        )}
-                        <input
-                          className="fp-otp-inp"
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={6}
-                          placeholder="000000"
-                          value={forgotOtp}
-                          onChange={e => setForgotOtp(e.target.value.replace(/\D/g,''))}
-                          onKeyDown={e => e.key === 'Enter' && handleForgotVerifyOtp()}
-                          autoFocus
-                          style={{width:'100%',marginBottom:10}}
-                        />
-                        {otpTimer > 0 ? (
-                          <div className="fp-timer">
-                            Resend code in <strong>{otpTimer}s</strong>
-                          </div>
-                        ) : (
-                          <div style={{textAlign:'center',marginBottom:10}}>
-                            <button type="button" className="fp-resend" onClick={() => {
-                              handleForgotSendOtp();
-                              setOtpTimer(60);
-                            }}>
-                              Resend code
-                            </button>
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          className="fp-btn"
-                          onClick={handleForgotVerifyOtp}
-                          disabled={forgotLoading || forgotOtp.length !== 6}
-                        >
-                          {forgotLoading ? 'Verifying...' : 'Verify Code'}
-                        </button>
-                      </>
-                    )}
-
-                    {/* STEP 3 — New password */}
-                    {forgotStep === 'reset' && !forgotSuccess && (
-                      <>
-                        <label className="fp-label">New password</label>
-                        <div className="fp-inp-pwd-wrap">
-                          <input
-                            className="fp-inp"
-                            type={showNewPassword ? 'text' : 'password'}
-                            placeholder="Min 8 characters"
-                            value={newPassword}
-                            onChange={e => setNewPassword(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && handleForgotReset()}
-                            autoFocus
-                          />
-                          <button
-                            type="button"
-                            className="fp-pwd-eye"
-                            onClick={() => setShowNewPassword(v => !v)}
-                          >
-                            {showNewPassword ? (
-                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                              </svg>
-                            ) : (
-                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                   stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-                                <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-                                <line x1="1" y1="1" x2="23" y2="23"/>
-                              </svg>
-                            )}
-                          </button>
-                        </div>
-                        {/* Password strength bar */}
-                        {newPassword.length > 0 && (
-                          <div style={{marginBottom:10}}>
-                            <div style={{display:'flex',gap:4,marginBottom:4}}>
-                              {[1,2,3,4].map(i => {
-                                const strength = [
-                                  newPassword.length >= 8,
-                                  /[A-Z]/.test(newPassword),
-                                  /[0-9]/.test(newPassword),
-                                  /[^A-Za-z0-9]/.test(newPassword),
-                                ].filter(Boolean).length;
-                                const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
-                                return (
-                                  <div key={i} style={{
-                                    flex:1,height:3,borderRadius:99,
-                                    background: i <= strength ? colors[strength-1] : 'rgba(255,255,255,0.08)',
-                                    transition:'all 0.3s ease',
-                                  }}/>
-                                );
-                              })}
-                            </div>
-                            <div style={{fontSize:'0.68rem',color:'rgba(255,255,255,0.3)'}}>
-                              {[
-                                newPassword.length >= 8,
-                                /[A-Z]/.test(newPassword),
-                                /[0-9]/.test(newPassword),
-                                /[^A-Za-z0-9]/.test(newPassword),
-                              ].filter(Boolean).length < 2
-                                ? 'Add uppercase, numbers, symbols for stronger password'
-                                : 'Good password strength'}
-                            </div>
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          className="fp-btn"
-                          onClick={handleForgotReset}
-                          disabled={forgotLoading || newPassword.length < 8}
-                        >
-                          {forgotLoading ? 'Resetting...' : 'Reset Password'}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {/* Remember me */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: '#a09880' }}>
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    style={{ width: '14px', height: '14px', accentColor: '#d4af37' }}
-                  />
-                  Remember me
-                </label>
-              </div>
-
-              <button id="login-submit" className="lp-btn" type="submit" disabled={loading}>
-                {loading ? 'Signing In...' : 'Sign In'}
-              </button>
-            </form>
+          {verifyMode ? (
+            <EmailVerificationScreen
+              email={pendingEmail}
+              name={pendingName}
+              onVerified={handleVerified}
+            />
           ) : (
-            <form onSubmit={handleSignup}>
-              <div className="lp-field">
-                <label className="lp-lbl">Full name</label>
-                <input
-                  id="signup-name"
-                  className="lp-inp"
-                  type="text"
-                  placeholder="John Doe"
-                  value={signupName}
-                  onChange={(e) => setSignupName(e.target.value)}
-                  required
-                  autoComplete="name"
-                />
+            <>
+              {/* Mobile logo (hidden on desktop where left panel shows) */}
+              <div style={{ display: 'none', marginBottom: '1.5rem', justifyContent: 'center' }} className="mobile-logo">
+                <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+                  <div style={{
+                    width:32,height:32,borderRadius:8,
+                    background:'linear-gradient(135deg,#d4af37,#a08020)',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    boxShadow:'0 4px 10px rgba(212,175,55,0.4)',
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
+                      <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
+                      <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
+                      <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
+                      <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                  </div>
+                  <span style={{
+                    fontFamily:"'DM Serif Display',serif",
+                    fontSize:'1.1rem',color:'#f5f0e8',
+                  }}>Neuro<span style={{color:'#d4af37'}}>Loop</span></span>
+                </div>
               </div>
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{
-                  display: 'block', fontSize: '12px', fontWeight: '500',
-                  textTransform: 'uppercase', letterSpacing: '0.06em',
-                  color: 'var(--text-secondary)', marginBottom: '6px'
-                }}>Email address</label>
 
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type="email"
-                    value={signupEmail}
-                    onChange={(e) => {
-                      setSignupEmail(e.target.value)
-                      if (emailTouched) {
-                        const result = isValidEmail(e.target.value)
-                        setEmailError(result.valid ? '' : result.message)
-                      }
-                    }}
-                    onBlur={() => {
-                      setEmailTouched(true)
-                      const result = isValidEmail(signupEmail)
-                      setEmailError(result.valid ? '' : result.message)
-                    }}
-                    placeholder="name@gmail.com"
-                    style={{
-                      width: '100%', padding: '11px 40px 11px 14px',
-                      background: 'var(--bg-glass, rgba(255,255,255,0.04))',
-                      border: `1px solid ${emailError && emailTouched ? 'rgba(239,68,68,0.5)' : signupEmail && !emailError && emailTouched ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                      borderRadius: '10px', color: 'var(--text-primary)',
-                      fontSize: '14px', outline: 'none', boxSizing: 'border-box',
-                      transition: 'border-color 0.2s'
-                    }}
-                  />
-                  {/* Validation icon */}
-                  {emailTouched && signupEmail && (
-                    <div style={{
-                      position: 'absolute', right: '12px', top: '50%',
-                      transform: 'translateY(-50%)', fontSize: '16px'
-                    }}>
-                      {emailError ? '❌' : '✅'}
+              <div className="lp-form-title">{isLogin ? 'Welcome back' : 'Get Started'}</div>
+              <div className="lp-form-sub">{isLogin ? 'Sign in to continue your learning loop' : 'Create an account to start learning'}</div>
+
+              <div className="lp-tabs">
+                <button className={`lp-tab ${isLogin ? 'active' : ''}`} onClick={() => setIsLogin(true)}>
+                  Log In
+                </button>
+                <button className={`lp-tab ${!isLogin ? 'active' : ''}`} onClick={() => setIsLogin(false)}>
+                  Sign Up
+                </button>
+              </div>
+
+              {/* Error alert */}
+              {error && (
+                <div className="alert alert-error" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5' }}>
+                  {error}
+                </div>
+              )}
+
+              {isLogin ? (
+                <form onSubmit={handleLogin}>
+                  <div className="lp-field">
+                    <label className="lp-lbl">Email address</label>
+                    <input
+                      id="login-email"
+                      className="lp-inp"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                      autoComplete="username"
+                    />
+                  </div>
+                  <div className="lp-field">
+                    <label className="lp-lbl">Password</label>
+                    <div className="lp-pwd-wrap">
+                      <input
+                        id="login-password"
+                        className="lp-inp"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        className="lp-pwd-toggle"
+                        onClick={() => setShowPassword(v => !v)}
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOpen/> : <EyeClosed/>}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Forgot trigger — shows only when forgotStep is null */}
+                  {isLogin && forgotStep === null && (
+                    <button
+                      type="button"
+                      className="fp-trigger"
+                      onClick={() => { setForgotStep('email'); setForgotError(''); }}
+                    >
+                      Forgot password?
+                    </button>
+                  )}
+
+                  {/* Inline forgot password panel */}
+                  {isLogin && forgotStep !== null && (
+                    <div className="fp-wrap">
+                      <div className="fp-header">
+                        <div className="fp-title">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                               stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                          </svg>
+                          {forgotStep === 'email' && 'Reset your password'}
+                          {forgotStep === 'otp' && 'Enter verification code'}
+                          {forgotStep === 'reset' && 'Set new password'}
+                        </div>
+                        <button type="button" className="fp-close" onClick={() => {
+                          setForgotStep(null); setForgotError('');
+                          setForgotEmail(''); setForgotOtp(''); setNewPassword('');
+                          setForgotIsFirstTime(false);
+                        }}>
+                          ×
+                        </button>
+                      </div>
+
+                      <div className="fp-body">
+                        {/* Step indicator */}
+                        <div className="fp-step-indicator">
+                          <div className={`fp-step-dot ${forgotStep==='email'?'active':['otp','reset'].includes(forgotStep)?'done':''}`}/>
+                          <div className="fp-step-line"/>
+                          <div className={`fp-step-dot ${forgotStep==='otp'?'active':forgotStep==='reset'?'done':''}`}/>
+                          <div className="fp-step-line"/>
+                          <div className={`fp-step-dot ${forgotStep==='reset'?'active':''}`}/>
+                        </div>
+
+                        {/* Error */}
+                        {forgotError && <div className="fp-error">{forgotError}</div>}
+
+                        {/* Success */}
+                        {forgotSuccess && <div className="fp-success">{forgotSuccess}</div>}
+
+                        {/* STEP 1 — Email */}
+                        {forgotStep === 'email' && !forgotSuccess && (
+                          <>
+                            <label className="fp-label">Your account email</label>
+                            <input
+                              className="fp-inp"
+                              type="email"
+                              placeholder="you@example.com"
+                              value={forgotEmail}
+                              onChange={e => setForgotEmail(e.target.value)}
+                              onKeyDown={e => e.key === 'Enter' && handleForgotSendOtp()}
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              className="fp-btn"
+                              onClick={handleForgotSendOtp}
+                              disabled={forgotLoading || !forgotEmail}
+                            >
+                              {forgotLoading ? 'Sending...' : 'Send Verification Code'}
+                            </button>
+                          </>
+                        )}
+
+                        {/* STEP 2 — OTP */}
+                        {forgotStep === 'otp' && !forgotSuccess && (
+                          <>
+                            <label className="fp-label">6-digit code sent to {forgotEmail}</label>
+                            {forgotIsFirstTime && (
+                              <div className="fp-notice">
+                                ℹ️ Check in spam message and report not a spam and take the code otherwise check the email is valid
+                              </div>
+                            )}
+                            <input
+                              className="fp-otp-inp"
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={6}
+                              placeholder="000000"
+                              value={forgotOtp}
+                              onChange={e => setForgotOtp(e.target.value.replace(/\D/g,''))}
+                              onKeyDown={e => e.key === 'Enter' && handleForgotVerifyOtp()}
+                              autoFocus
+                              style={{width:'100%',marginBottom:10}}
+                            />
+                            {otpTimer > 0 ? (
+                              <div className="fp-timer">
+                                Resend code in <strong>{otpTimer}s</strong>
+                              </div>
+                            ) : (
+                              <div style={{textAlign:'center',marginBottom:10}}>
+                                <button type="button" className="fp-resend" onClick={() => {
+                                  handleForgotSendOtp();
+                                  setOtpTimer(60);
+                                }}>
+                                  Resend code
+                                </button>
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              className="fp-btn"
+                              onClick={handleForgotVerifyOtp}
+                              disabled={forgotLoading || forgotOtp.length !== 6}
+                            >
+                              {forgotLoading ? 'Verifying...' : 'Verify Code'}
+                            </button>
+                          </>
+                        )}
+
+                        {/* STEP 3 — New password */}
+                        {forgotStep === 'reset' && !forgotSuccess && (
+                          <>
+                            <label className="fp-label">New password</label>
+                            <div className="fp-inp-pwd-wrap">
+                              <input
+                                className="fp-inp"
+                                type={showNewPassword ? 'text' : 'password'}
+                                placeholder="Min 8 characters"
+                                value={newPassword}
+                                onChange={e => setNewPassword(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && handleForgotReset()}
+                                autoFocus
+                              />
+                              <button
+                                type="button"
+                                className="fp-pwd-eye"
+                                onClick={() => setShowNewPassword(v => !v)}
+                              >
+                                {showNewPassword ? (
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                  </svg>
+                                ) : (
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                            {/* Password strength bar */}
+                            {newPassword.length > 0 && (
+                              <div style={{marginBottom:10}}>
+                                <div style={{display:'flex',gap:4,marginBottom:4}}>
+                                  {[1,2,3,4].map(i => {
+                                    const strength = [
+                                      newPassword.length >= 8,
+                                      /[A-Z]/.test(newPassword),
+                                      /[0-9]/.test(newPassword),
+                                      /[^A-Za-z0-9]/.test(newPassword),
+                                    ].filter(Boolean).length;
+                                    const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
+                                    return (
+                                      <div key={i} style={{
+                                        flex:1,height:3,borderRadius:99,
+                                        background: i <= strength ? colors[strength-1] : 'rgba(255,255,255,0.08)',
+                                        transition:'all 0.3s ease',
+                                      }}/>
+                                    );
+                                  })}
+                                </div>
+                                <div style={{fontSize:'0.68rem',color:'rgba(255,255,255,0.3)'}}>
+                                  {[
+                                    newPassword.length >= 8,
+                                    /[A-Z]/.test(newPassword),
+                                    /[0-9]/.test(newPassword),
+                                    /[^A-Za-z0-9]/.test(newPassword),
+                                  ].filter(Boolean).length < 2
+                                    ? 'Add uppercase, numbers, symbols for stronger password'
+                                    : 'Good password strength'}
+                                </div>
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              className="fp-btn"
+                              onClick={handleForgotReset}
+                              disabled={forgotLoading || newPassword.length < 8}
+                            >
+                              {forgotLoading ? 'Resetting...' : 'Reset Password'}
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   )}
-                </div>
 
-                {/* Error or success message */}
-                {emailTouched && emailError && (
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    marginTop: '6px', padding: '6px 10px',
-                    background: 'rgba(239,68,68,0.08)',
-                    border: '1px solid rgba(239,68,68,0.2)',
-                    borderRadius: '6px'
-                  }}>
-                    <span style={{ fontSize: '12px', color: '#fca5a5' }}>⚠️ {emailError}</span>
+                  {/* Remember me */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: '#a09880' }}>
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        style={{ width: '14px', height: '14px', accentColor: '#d4af37' }}
+                      />
+                      Remember me
+                    </label>
                   </div>
-                )}
-                {emailTouched && !emailError && signupEmail && (
-                  <div style={{ marginTop: '6px' }}>
-                    <span style={{ fontSize: '12px', color: '#6ee7b7' }}>✓ Valid email address</span>
-                  </div>
-                )}
-              </div>
-              <div className="lp-field">
-                <label className="lp-lbl">Password</label>
-                <div className="lp-pwd-wrap">
-                  <input
-                    id="signup-password"
-                    className="lp-inp"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
-                    required
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    className="lp-pwd-toggle"
-                    onClick={() => setShowPassword(v => !v)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOpen/> : <EyeClosed/>}
+
+                  <button id="login-submit" className="lp-btn" type="submit" disabled={loading}>
+                    {loading ? 'Signing In...' : 'Sign In'}
                   </button>
-                </div>
-              </div>
+                </form>
+              ) : (
+                <form onSubmit={handleSignup}>
+                  <div className="lp-field">
+                    <label className="lp-lbl">Full name</label>
+                    <input
+                      id="signup-name"
+                      className="lp-inp"
+                      type="text"
+                      placeholder="John Doe"
+                      value={signupName}
+                      onChange={(e) => setSignupName(e.target.value)}
+                      required
+                      autoComplete="name"
+                    />
+                  </div>
+                  <div style={{ marginBottom: '14px' }}>
+                    <label style={{
+                      display: 'block', fontSize: '12px', fontWeight: '500',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      color: 'var(--text-secondary)', marginBottom: '6px'
+                    }}>Email address</label>
 
-              {/* Password strength meter */}
-              {signupPassword.length > 0 && (
-                <div style={{ marginTop: '-0.5rem', marginBottom: '1rem' }}>
-                  <div className="strength-meter" style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
-                    {[0, 1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="strength-bar"
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="email"
+                        value={signupEmail}
+                        onChange={(e) => {
+                          setSignupEmail(e.target.value)
+                          if (emailTouched) {
+                            const result = isValidEmail(e.target.value)
+                            setEmailError(result.valid ? '' : result.message)
+                          }
+                        }}
+                        onBlur={() => {
+                          setEmailTouched(true)
+                          const result = isValidEmail(signupEmail)
+                          setEmailError(result.valid ? '' : result.message)
+                        }}
+                        placeholder="name@gmail.com"
                         style={{
-                          height: '4px',
-                          flex: 1,
-                          borderRadius: '2px',
-                          background: i < pwdStrength ? strengthColors[pwdStrength - 1] : 'rgba(255,255,255,0.08)',
-                          transition: 'background 0.3s ease'
+                          width: '100%', padding: '11px 40px 11px 14px',
+                          background: 'var(--bg-glass, rgba(255,255,255,0.04))',
+                          border: `1px solid ${emailError && emailTouched ? 'rgba(239,68,68,0.5)' : signupEmail && !emailError && emailTouched ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                          borderRadius: '10px', color: 'var(--text-primary)',
+                          fontSize: '14px', outline: 'none', boxSizing: 'border-box',
+                          transition: 'border-color 0.2s'
                         }}
                       />
-                    ))}
+                      {/* Validation icon */}
+                      {emailTouched && signupEmail && (
+                        <div style={{
+                          position: 'absolute', right: '12px', top: '50%',
+                          transform: 'translateY(-50%)', fontSize: '16px'
+                        }}>
+                          {emailError ? '❌' : '✅'}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Error or success message */}
+                    {emailTouched && emailError && (
+                      <div style={{
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        marginTop: '6px', padding: '6px 10px',
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        borderRadius: '6px'
+                      }}>
+                        <span style={{ fontSize: '12px', color: '#fca5a5' }}>⚠️ {emailError}</span>
+                      </div>
+                    )}
+                    {emailTouched && !emailError && signupEmail && (
+                      <div style={{ marginTop: '6px' }}>
+                        <span style={{ fontSize: '12px', color: '#6ee7b7' }}>✓ Valid email address</span>
+                      </div>
+                    )}
                   </div>
-                  <p style={{
-                    fontSize: '0.72rem',
-                    marginTop: '4px',
-                    color: pwdStrength > 0 ? strengthColors[pwdStrength - 1] : '#a09880',
-                    fontWeight: 600,
-                  }}>
-                    {pwdStrength > 0 ? strengthLabels[pwdStrength - 1] : 'Enter a password'}
-                  </p>
-                </div>
+                  <div className="lp-field">
+                    <label className="lp-lbl">Password</label>
+                    <div className="lp-pwd-wrap">
+                      <input
+                        id="signup-password"
+                        className="lp-inp"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
+                        required
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        className="lp-pwd-toggle"
+                        onClick={() => setShowPassword(v => !v)}
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOpen/> : <EyeClosed/>}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Password strength meter */}
+                  {signupPassword.length > 0 && (
+                    <div style={{ marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                      <div className="strength-meter" style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
+                        {[0, 1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="strength-bar"
+                            style={{
+                              height: '4px',
+                              flex: 1,
+                              borderRadius: '2px',
+                              background: i < pwdStrength ? strengthColors[pwdStrength - 1] : 'rgba(255,255,255,0.08)',
+                              transition: 'background 0.3s ease'
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <p style={{
+                        fontSize: '0.72rem',
+                        marginTop: '4px',
+                        color: pwdStrength > 0 ? strengthColors[pwdStrength - 1] : '#a09880',
+                        fontWeight: 600,
+                      }}>
+                        {pwdStrength > 0 ? strengthLabels[pwdStrength - 1] : 'Enter a password'}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="lp-field">
+                    <label className="lp-lbl">GitHub username (optional)</label>
+                    <input
+                      id="signup-github"
+                      className="lp-inp"
+                      type="text"
+                      placeholder="username"
+                      value={signupGithub}
+                      onChange={(e) => setSignupGithub(e.target.value)}
+                    />
+                  </div>
+
+                  <button id="signup-submit" className="lp-btn" type="submit" disabled={loading}>
+                    {loading ? 'Creating account...' : 'Create Account'}
+                  </button>
+                </form>
               )}
 
-              <div className="lp-field">
-                <label className="lp-lbl">GitHub username (optional)</label>
-                <input
-                  id="signup-github"
-                  className="lp-inp"
-                  type="text"
-                  placeholder="username"
-                  value={signupGithub}
-                  onChange={(e) => setSignupGithub(e.target.value)}
-                />
-              </div>
+              <div className="lp-divider">or</div>
 
-              <button id="signup-submit" className="lp-btn" type="submit" disabled={loading}>
-                {loading ? 'Creating account...' : 'Create Account'}
+              <button className="lp-google" onClick={handleGoogleLogin}>
+                <svg width="17" height="17" viewBox="0 0 48 48">
+                  <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/>
+                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                  <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36 24 36c-5.2 0-9.5-2.9-11.3-7.1l-6.5 5C9.5 39.6 16.3 44 24 44z"/>
+                  <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.2-2.3 4-4.2 5.2l6.2 5.2C41 34.9 44 29.9 44 24c0-1.3-.1-2.7-.4-4z"/>
+                </svg>
+                Continue with Google
               </button>
-            </form>
+            </>
           )}
-
-          <div className="lp-divider">or</div>
-
-          <button className="lp-google" onClick={handleGoogleLogin}>
-            <svg width="17" height="17" viewBox="0 0 48 48">
-              <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/>
-              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-              <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36 24 36c-5.2 0-9.5-2.9-11.3-7.1l-6.5 5C9.5 39.6 16.3 44 24 44z"/>
-              <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.2-2.3 4-4.2 5.2l6.2 5.2C41 34.9 44 29.9 44 24c0-1.3-.1-2.7-.4-4z"/>
-            </svg>
-            Continue with Google
-          </button>
         </div>
       </div>
 
