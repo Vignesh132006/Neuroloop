@@ -211,6 +211,15 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" })
     }
 
+    // Check email verification
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        message:  'Please verify your email before logging in.',
+        status:   'pending_verification',
+        email:    user.email,
+      });
+    }
+
     // Update streak
     const today = new Date().toDateString()
     const lastActive = user.lastActiveDate
