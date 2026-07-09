@@ -24,22 +24,34 @@ router.post("/signup", async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword })
     await newUser.save()
 
-    // Send welcome email — non-blocking, don't await
-    sendWelcomeEmail(newUser.email, newUser.name).catch(err =>
-      console.error('[Auth] Welcome email failed:', err.message)
-    )
+    const { sendVerificationOtp, sendWelcomeEmail } = require('../utils/emailService');
 
-    const token = jwt.sign(
-      { id: newUser._id, name: newUser.name, email: newUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    )
+    // Generate 6-digit OTP
+    const otp    = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    res.status(201).json({
-      message: "Account created successfully",
-      token,
-      user: { id: newUser._id, name: newUser.name, email: newUser.email },
-    })
+    // Save OTP to user
+    newUser.emailOtp         = otp;
+    newUser.emailOtpExpiry   = expiry;
+    newUser.isEmailVerified  = false;
+    newUser.emailOtpAttempts = 0;
+    await newUser.save();
+
+    // Send OTP email
+    try {
+      await sendVerificationOtp(newUser.email, newUser.name, otp);
+    } catch (emailErr) {
+      console.error('[Email] Failed to send verification OTP:', emailErr.message);
+      // Don't block signup if email fails — user can resend
+    }
+
+    // Return pending status — NO token yet
+    return res.status(201).json({
+      message: 'Account created. Please verify your email.',
+      status:  'pending_verification',
+      email:   newUser.email,
+      name:    newUser.name,
+    });
   } catch (error) {
     const { sendAdminAlert } = require("../utils/adminAlert")
     console.error("[RouteError]", error)
