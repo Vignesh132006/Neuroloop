@@ -358,10 +358,68 @@ async function sendServerErrorAlert({ route, method, error, userId, userEmail })
   return await sendEmail(mail)
 }
 
+async function sendVerificationOtp(userEmail, userName, otp) {
+  const msg = {
+    to: userEmail,
+    from: { email: process.env.SENDER_EMAIL || FROM_EMAIL, name: 'NeuroLoop' },
+    subject: 'Verify your NeuroLoop account',
+    html: `
+      <div style="font-family:Inter,Arial,sans-serif;background:#0a0a0a;
+                  color:#f5f0e8;padding:40px 32px;border-radius:16px;
+                  max-width:480px;margin:auto;
+                  border:1px solid rgba(212,175,55,0.25);">
+
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="display:inline-flex;align-items:center;gap:10px;">
+            <div style="width:40px;height:40px;border-radius:10px;
+                        background:linear-gradient(135deg,#d4af37,#8a6f1e);
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:20px;">🧠</div>
+            <span style="font-family:Georgia,serif;font-size:1.3rem;
+                         color:#f5f0e8;">Neuro<span style="color:#d4af37;">Loop</span></span>
+          </div>
+        </div>
+
+        <h2 style="font-family:Georgia,serif;font-weight:400;
+                   color:#f5f0e8;margin:0 0 8px;text-align:center;">
+          Verify your email
+        </h2>
+        <p style="color:#a09880;text-align:center;margin:0 0 28px;font-size:0.9rem;">
+          Hey ${userName}, enter this code to activate your account.
+        </p>
+
+        <div style="background:#111111;border:1px solid rgba(212,175,55,0.3);
+                    border-radius:14px;padding:28px;text-align:center;
+                    margin-bottom:24px;">
+          <div style="font-size:2.8rem;font-weight:800;
+                      letter-spacing:0.4em;color:#d4af37;
+                      font-family:Georgia,serif;">
+            ${otp}
+          </div>
+          <div style="font-size:0.75rem;color:#5a5040;margin-top:10px;">
+            Valid for 10 minutes · Do not share this code
+          </div>
+        </div>
+
+        <p style="color:#5a5040;font-size:0.78rem;text-align:center;margin:0;">
+          If you did not create a NeuroLoop account, ignore this email.
+        </p>
+      </div>
+    `,
+  };
+
+  await sgMail.send(msg);
+  console.log(`[Email] Verification OTP sent to ${userEmail}`);
+}
+
 module.exports = {
   sendWelcomeEmail,
   sendOTPEmail,
   sendRevisionReminderEmail,
   sendSupportTicketEmail,
-  sendServerErrorAlert
+  sendServerErrorAlert,
+  sendVerificationOtp,
+  // Export requested aliases and functions:
+  sendReminderEmail: sendRevisionReminderEmail,
+  sendResetOtpEmail: sendOTPEmail
 }
