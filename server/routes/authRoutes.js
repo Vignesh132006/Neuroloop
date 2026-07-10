@@ -19,7 +19,7 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "Email already registered" })
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const hashedPassword = await bcrypt.hash(password, 8)
 
     const newUser = new User({ name, email, password: hashedPassword })
     await newUser.save()
@@ -293,7 +293,7 @@ router.put("/profile", require("../middleware/authMiddleware"), async (req, res)
       if (!isMatch) {
         return res.status(400).json({ message: "Current password is incorrect" })
       }
-      user.password = await bcrypt.hash(newPassword, 12)
+      user.password = await bcrypt.hash(newPassword, 8)
     }
 
     if (githubUsername !== undefined) user.githubUsername = githubUsername.trim()
@@ -418,7 +418,7 @@ router.post('/reset-password', async (req, res) => {
     if (new Date() > user.resetOtpExpiry) return res.status(400).json({ message: 'Session expired' });
 
     const bcrypt = require('bcryptjs');
-    user.password = await bcrypt.hash(newPassword, 10);
+    user.password = await bcrypt.hash(newPassword, 8);
     user.resetOtp = null;
     user.resetOtpExpiry = null;
     user.hasResetPasswordBefore = true;
