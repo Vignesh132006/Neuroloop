@@ -78,7 +78,13 @@ a{text-decoration:none;color:inherit;}
 @media (max-width: 768px) {
   .page-wrap {
     margin-left: 0 !important;
-    padding: 72px 16px 20px !important;
+    padding: 72px 16px 70px !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-bottom: 70px !important;
+    max-width: 100vw !important;
   }
 }
 

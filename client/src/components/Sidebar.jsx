@@ -138,6 +138,66 @@ const S = `
     border-color:rgba(239,68,68,0.35);
     color:#fca5a5;
   }
+
+  .sb-desktop-only {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+  }
+  .sb-mobile-only {
+    display: none;
+  }
+  .sb-mobile-link {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: rgba(255,255,255,0.4);
+    transition: all 0.2s;
+  }
+  .sb-mobile-link.active {
+    color: #a78bfa;
+    background: rgba(124,58,237,0.12);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar, .sb {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      width: 100%;
+      height: 60px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      border-right: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 0 8px;
+      z-index: 100;
+      overflow: hidden;
+      transform: none !important;
+    }
+    .sb-desktop-only {
+      display: none;
+    }
+    .sb-mobile-only {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      height: 100%;
+    }
+    #mobile-menu-toggle {
+      display: none !important;
+    }
+  }
 `;
 
 const learningItems = [
@@ -216,117 +276,146 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      <nav
-        className="sb"
-        style={{
-          transform: mobileOpen ? 'translateX(0)' : undefined,
-        }}
-      >
-        {/* Logo */}
-        <div className="sb-logo">
-          <NeuroLoopLogo size={32} showWordmark={true} />
-        </div>
-
-        {/* Navigation */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', overflowY: 'auto' }}>
-          <div className="sb-group-label">Learning</div>
-          {learningItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
-            >
-              <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
-              <span>{item.label}</span>
-              {item.hasBadge && dueCount > 0 && (
-                <span className="sb-badge">{dueCount}</span>
-              )}
-            </NavLink>
-          ))}
-
-          <div className="sb-group-label">Tools</div>
-          {toolsItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
-            >
-              <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
-              <span>{item.label}</span>
-              {item.hasBadge && dueCount > 0 && (
-                <span className="sb-badge">{dueCount}</span>
-              )}
-            </NavLink>
-          ))}
-        </div>
-
-        <div className="sb-bottom">
-          {/* Streak Widget */}
-          <div className="sb-streak">
-            <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#d4af37' }}>
-              <FiZap size={18} fill="#d4af37" />
-            </span>
-            <div>
-              <div className="sb-streak-num">
-                {displayStreak} day{displayStreak !== 1 ? 's' : ''}
-              </div>
-              <div className="sb-streak-lbl">
-                Current streak
-              </div>
-            </div>
+      <nav className="sb">
+        <div className="sb-desktop-only">
+          {/* Logo */}
+          <div className="sb-logo">
+            <NeuroLoopLogo size={32} showWordmark={true} />
           </div>
 
-          {/* User section */}
-          {user && (
-            <div className="sb-user">
-              <div className="sb-avatar">
-                {user.name?.charAt(0).toUpperCase()}
-              </div>
-              <div style={{ overflow: 'hidden', flex: 1 }}>
-                <div className="sb-user-name">{user.name}</div>
-                <div className="sb-user-email">{user.email}</div>
+          {/* Navigation */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', overflowY: 'auto' }}>
+            <div className="sb-group-label">Learning</div>
+            {learningItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
+              >
+                <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
+                <span>{item.label}</span>
+                {item.hasBadge && dueCount > 0 && (
+                  <span className="sb-badge">{dueCount}</span>
+                )}
+              </NavLink>
+            ))}
+
+            <div className="sb-group-label">Tools</div>
+            {toolsItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `sb-link ${isActive ? 'active' : ''}`}
+              >
+                <span className="sb-link-icon" style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
+                <span>{item.label}</span>
+                {item.hasBadge && dueCount > 0 && (
+                  <span className="sb-badge">{dueCount}</span>
+                )}
+              </NavLink>
+            ))}
+          </div>
+
+          <div className="sb-bottom">
+            {/* Streak Widget */}
+            <div className="sb-streak">
+              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#d4af37' }}>
+                <FiZap size={18} fill="#d4af37" />
+              </span>
+              <div>
+                <div className="sb-streak-num">
+                  {displayStreak} day{displayStreak !== 1 ? 's' : ''}
+                </div>
+                <div className="sb-streak-lbl">
+                  Current streak
+                </div>
               </div>
             </div>
-          )}
 
-          {/* Admin Panel button */}
-          <a
-            href="/admin/login"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              background: 'rgba(124,58,237,0.08)',
-              border: '1px solid rgba(124,58,237,0.15)',
-              color: '#a78bfa',
-              fontSize: '12px',
-              fontWeight: '500',
-              textDecoration: 'none',
-              marginBottom: '8px',
-              transition: 'all 0.2s',
-              cursor: 'pointer',
-              justifyContent: 'center'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(124,58,237,0.15)'
-              e.currentTarget.style.borderColor = 'rgba(124,58,237,0.3)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(124,58,237,0.08)'
-              e.currentTarget.style.borderColor = 'rgba(124,58,237,0.15)'
-            }}
+            {/* User section */}
+            {user && (
+              <div className="sb-user">
+                <div className="sb-avatar">
+                  {user.name?.charAt(0).toUpperCase()}
+                </div>
+                <div style={{ overflow: 'hidden', flex: 1 }}>
+                  <div className="sb-user-name">{user.name}</div>
+                  <div className="sb-user-email">{user.email}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Admin Panel button */}
+            <a
+              href="/admin/login"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                background: 'rgba(124,58,237,0.08)',
+                border: '1px solid rgba(124,58,237,0.15)',
+                color: '#a78bfa',
+                fontSize: '12px',
+                fontWeight: '500',
+                textDecoration: 'none',
+                marginBottom: '8px',
+                transition: 'all 0.2s',
+                cursor: 'pointer',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(124,58,237,0.15)'
+                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.3)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(124,58,237,0.08)'
+                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.15)'
+              }}
+            >
+              <i className="ti ti-shield-lock" aria-hidden="true" style={{ fontSize: '14px' }}></i>
+              Admin Panel
+            </a>
+
+            {/* Logout */}
+            <button onClick={handleLogout} className="sb-logout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <FiLogOut size={14} /> Logout
+            </button>
+          </div>
+        </div>
+
+        <div className="sb-mobile-only">
+          {/* Mobile Links */}
+          <NavLink to="/dashboard" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-layout-dashboard"></i>
+          </NavLink>
+          <NavLink to="/journal" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-notebook"></i>
+          </NavLink>
+          <NavLink to="/notes" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-files"></i>
+          </NavLink>
+          <NavLink to="/quiz" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-brain"></i>
+          </NavLink>
+          <NavLink to="/revision" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-refresh"></i>
+          </NavLink>
+          <NavLink to="/chat" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-message-circle"></i>
+          </NavLink>
+          <NavLink to="/settings" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
+            <i className="ti ti-settings"></i>
+          </NavLink>
+          <button
+            onClick={handleLogout}
+            className="sb-mobile-link"
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
           >
-            <i className="ti ti-shield-lock" aria-hidden="true" style={{ fontSize: '14px' }}></i>
-            Admin Panel
-          </a>
-
-          {/* Logout */}
-          <button onClick={handleLogout} className="sb-logout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <FiLogOut size={14} /> Logout
+            <FiLogOut size={20} />
           </button>
         </div>
       </nav>
@@ -343,13 +432,6 @@ export default function Sidebar() {
           }}
         />
       )}
-
-      <style>{`
-        @media (max-width: 768px) {
-          #mobile-menu-toggle { display: flex !important; }
-          nav.sb { transform: translateX(${mobileOpen ? '0' : '-100%'}); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        }
-      `}</style>
     </>
   )
 }
