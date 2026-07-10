@@ -201,7 +201,9 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" })
     }
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).select(
+      'name email password streak lastActiveDate weakTopics emailNotifications googleId'
+    )
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" })
     }
