@@ -1390,7 +1390,7 @@ export default function Login() {
                       id="signup-name"
                       className="lp-inp"
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Enter your Name"
                       value={signupName}
                       onChange={(e) => setSignupName(e.target.value)}
                       required
