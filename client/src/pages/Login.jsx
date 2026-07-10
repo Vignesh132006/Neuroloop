@@ -749,6 +749,9 @@ export default function Login() {
           from{transform:translateX(-100%);}
           to{transform:translateX(100%);}
         }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
 
         /* Password Wrapper styles */
         .lp-pwd-wrap{
@@ -1349,8 +1352,34 @@ export default function Login() {
                     </label>
                   </div>
 
-                  <button id="login-submit" className="lp-btn" type="submit" disabled={loading}>
-                    {loading ? 'Signing In...' : 'Sign In'}
+                  <button
+                    id="login-submit"
+                    className="lp-btn"
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: loading ? 'rgba(212,175,55,0.6)' : '#d4af37',
+                      cursor: loading ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <div style={{
+                          width: '16px', height: '16px',
+                          border: '2px solid rgba(0,0,0,0.3)',
+                          borderTop: '2px solid #0a0a0a',
+                          borderRadius: '50%',
+                          animation: 'spin 0.7s linear infinite'
+                        }} />
+                        Signing in...
+                      </>
+                    ) : (
+                      'Log In'
+                    )}
                   </button>
                 </form>
               ) : (
@@ -1496,8 +1525,34 @@ export default function Login() {
                     />
                   </div>
 
-                  <button id="signup-submit" className="lp-btn" type="submit" disabled={loading}>
-                    {loading ? 'Creating account...' : 'Create Account'}
+                  <button
+                    id="signup-submit"
+                    className="lp-btn"
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: loading ? 'rgba(212,175,55,0.6)' : '#d4af37',
+                      cursor: loading ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <div style={{
+                          width: '16px', height: '16px',
+                          border: '2px solid rgba(0,0,0,0.3)',
+                          borderTop: '2px solid #0a0a0a',
+                          borderRadius: '50%',
+                          animation: 'spin 0.7s linear infinite'
+                        }} />
+                        Creating account...
+                      </>
+                    ) : (
+                      'Create Account'
+                    )}
                   </button>
                 </form>
               )}
