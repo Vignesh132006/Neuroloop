@@ -57,3 +57,19 @@ api.interceptors.response.use(
 )
 
 export default api
+
+// Keep backend alive — ping every 14 minutes
+// Prevents Render free tier cold start delay on login
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
+function keepAlive() {
+  fetch(`${BACKEND_URL}/health`, { method: 'GET' })
+    .then(() => console.log('[KeepAlive] Server pinged'))
+    .catch(() => {}) // silent fail — never crash the app
+}
+
+// Start pinging after 5 seconds (let app load first)
+setTimeout(() => {
+  keepAlive()
+  setInterval(keepAlive, 14 * 60 * 1000) // every 14 minutes
+}, 5000)
