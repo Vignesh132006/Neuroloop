@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     password: {
@@ -91,5 +92,8 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 )
+
+userSchema.index({ email: 1 })
+userSchema.index({ lastActiveDate: -1 })
 
 module.exports = mongoose.model("User", userSchema)
