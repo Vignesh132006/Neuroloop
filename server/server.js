@@ -134,6 +134,13 @@ console.log("[Diagnostic] Starting server initialization...");
   mongoose.connect(process.env.MONGO_URI)
     .then(() => {
       console.log('[Database] MongoDB Connected')
+      try {
+        const { startReminderScheduler } = require('./utils/scheduler')
+        startReminderScheduler()
+        console.log('[Scheduler] Spaced repetition scheduler initialized')
+      } catch (schedErr) {
+        console.error('[Scheduler] Initialization failed:', schedErr.message)
+      }
       app.listen(PORT, '0.0.0.0', () => {
         console.log(`[Server] Running on port ${PORT}`)
       })

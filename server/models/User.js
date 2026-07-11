@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema(
       default: true,
     },
 
+    lastReminderSentDate: {
+      type: Date,
+      default: null,
+    },
+
     resetOtp: {
       type: String,
       default: null,

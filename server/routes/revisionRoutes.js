@@ -262,4 +262,65 @@ router.post("/send-reminders", authMiddleware, async (req, res) => {
   }
 })
 
+// POST /api/revision/cron-send-reminders — Trigger revision reminder emails for all users (e.g. from an external cron job)
+router.post("/cron-send-reminders", async (req, res) => {
+  try {
+    const cronSecret = req.headers["x-cron-secret"] || req.query.secret
+    if (process.env.CRON_SECRET && cronSecret !== process.env.CRON_SECRET) {
+      return res.status(401).json({ error: "Unauthorized" })
+    }
+
+    console.log("[Cron Endpoint] Running revision reminder check for all users...")
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    // Find all users who want email notifications
+    const users = await User.find({ emailNotifications: true })
+    let emailsSent = 0
+
+    for (const user of users) {
+      // Double check if they already received a reminder today
+      if (user.lastReminderSentDate) {
+        const lastSent = new Date(user.lastReminderSentDate)
+        if (
+          lastSent.getUTCFullYear() === today.getUTCFullYear() &&
+          lastSent.getUTCMonth() === today.getUTCMonth() &&
+          lastSent.getUTCDate() === today.getUTCDate()
+        ) {
+          // Already sent today
+          continue
+        }
+      }
+
+      // Find notes due for this user
+      const dueNotes = await Note.find({
+        user: user._id,
+        nextRevision: { $lte: today },
+      }).sort({ nextRevision: 1 })
+
+      if (dueNotes.length > 0) {
+        const topicList = dueNotes.map(n => ({
+          topic: n.topic,
+          difficulty: n.difficulty || null
+        }))
+
+        console.log(`[Cron Endpoint] Sending reminder email to ${user.email} for ${dueNotes.length} notes`)
+        await sendRevisionReminderEmail(user.email, user.name, topicList)
+
+        user.lastReminderSentDate = new Date()
+        await user.save()
+        emailsSent++
+      }
+    }
+
+    res.json({
+      message: `Revision reminder check complete. Sent emails to ${emailsSent} user(s).`,
+      emailsSent
+    })
+  } catch (error) {
+    console.error("[Cron Endpoint Error]", error)
+    res.status(500).json({ error: "Failed to process reminders" })
+  }
+})
+
 module.exports = router
