@@ -40,11 +40,23 @@ console.log("[Diagnostic] Starting server initialization...");
   console.log("[Diagnostic] express app created");
 
   app.use(cors({
-    origin: [
-      'http://localhost:5173',
-      'https://neuroloop-wine.vercel.app',
-      process.env.FRONTEND_URL
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'https://neuroloop-wine.vercel.app',
+        process.env.FRONTEND_URL
+      ].filter(Boolean);
+
+      const isAllowed = allowedOrigins.includes(origin);
+      const isVercel = origin.endsWith('.vercel.app') && (origin.includes('neuroloop') || origin.includes('vignesh'));
+
+      if (isAllowed || isVercel) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true
   }))
   app.use(express.json({ limit: "5mb" }))
