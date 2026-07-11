@@ -87,8 +87,8 @@ console.log("[Diagnostic] Starting server initialization...");
     res.json({ message: "NeuroLoop API Running", version: "2.0.0" })
   })
 
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  app.get('/api/ping', (req, res) => {
+    res.json({ ok: true })
   })
 
   app.use((req, res) => {

@@ -63,7 +63,7 @@ export default api
 const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 function keepAlive() {
-  fetch(`${BACKEND_URL}/health`, { method: 'GET' })
+  fetch(`${BACKEND_URL}/api/ping`, { method: 'GET' })
     .then(() => console.log('[KeepAlive] Server pinged'))
     .catch(() => {}) // silent fail — never crash the app
 }
