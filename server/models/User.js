@@ -75,6 +75,7 @@ const userSchema = new mongoose.Schema(
 
     googleId: { type: String, default: null },
     avatar:   { type: String, default: null },
+    isEmailVerified: { type: Boolean, default: false },
 
     emailOtp:          { type: String,  default: null },
     emailOtpExpiry:    { type: Date,    default: null },
