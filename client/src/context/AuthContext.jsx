@@ -22,15 +22,6 @@ export function AuthProvider({ children }) {
     localStorage.setItem("user", JSON.stringify(userData))
     setToken(tokenVal)
     setUser(userData)
-
-    // Prefetch dashboard data in background immediately after login
-    // This way data is ready when dashboard mounts
-    setTimeout(() => {
-      const headers = { Authorization: `Bearer ${tokenVal}` }
-      const base = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-      fetch(`${base}/api/auth/me`, { headers }).catch(() => {})
-      fetch(`${base}/api/notes/stats/weekly`, { headers }).catch(() => {})
-    }, 100)
   }
 
   const logout = () => {

@@ -13,7 +13,7 @@ import Chat      from "./pages/Chat"
 import Leaderboard from "./pages/Leaderboard"
 import StudyPlans from "./pages/StudyPlans"
 import Settings   from "./pages/Settings"
-import AuthSuccessPage from "./pages/AuthSuccessPage"
+
 
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminLayout from './pages/admin/AdminLayout'
@@ -29,8 +29,7 @@ export default function App() {
           {/* Public */}
           <Route path="/login"  element={<Login />} />
           <Route path="/signup" element={<Navigate to="/login" replace />} />
-          <Route path="/auth/success" element={<AuthSuccessPage />} />
-          <Route path="/auth/google/success" element={<AuthSuccessPage />} />
+
 
           {/* Protected */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

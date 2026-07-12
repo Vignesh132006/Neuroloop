@@ -3,7 +3,6 @@ const router = express.Router()
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
-const passport = require('../utils/passport')
 const { sendWelcomeEmail } = require('../utils/emailService')
 
 // POST /api/auth/signup
@@ -537,52 +536,6 @@ router.post('/admin/login', async (req, res) => {
   }
 })
 
-// Google OAuth routes
-const getCallbackURL = (req) => {
-  if (process.env.GOOGLE_CALLBACK_URL && !process.env.GOOGLE_CALLBACK_URL.includes('localhost')) {
-    return process.env.GOOGLE_CALLBACK_URL;
-  }
-  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const host = req.headers['x-forwarded-host'] || req.get('host');
-  return `${proto}://${host}/api/auth/google/callback`;
-};
 
-router.get('/google', (req, res, next) => {
-  const callbackURL = getCallbackURL(req);
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-    callbackURL
-  })(req, res, next);
-});
-
-router.get('/google/callback', (req, res, next) => {
-  const callbackURL = getCallbackURL(req);
-  passport.authenticate('google', {
-    callbackURL,
-    failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`
-  })(req, res, next);
-}, async (req, res) => {
-  try {
-    const user = req.user
-    const jwt = require('jsonwebtoken')
-    const token = jwt.sign(
-      { id: user._id, name: user.name, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    )
-    const userData = encodeURIComponent(JSON.stringify({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      streak: user.streak
-    }))
-    res.redirect(
-      `${process.env.FRONTEND_URL}/auth/google/success?token=${token}&user=${userData}`
-    )
-  } catch (err) {
-    console.error('[Google OAuth] Callback error:', err)
-    res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`)
-  }
-})
 
 module.exports = router
