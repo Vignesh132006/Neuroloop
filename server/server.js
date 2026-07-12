@@ -49,10 +49,10 @@ console.log("[Diagnostic] Starting server initialization...");
       const isAllowed = allowedOrigins.includes(origin);
       const isVercel = origin.endsWith('.vercel.app') && (origin.includes('neuroloop') || origin.includes('vignesh'));
 
-      if (isAllowed || isVercel) {
+      if (isAllowed || isVercel || origin === 'null') {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(null, false);
       }
     },
     credentials: true
