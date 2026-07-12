@@ -202,7 +202,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({ email }).select(
-      'name email password streak lastActiveDate weakTopics emailNotifications googleId'
+      'name email password streak lastActiveDate weakTopics emailNotifications googleId isEmailVerified'
     )
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" })
