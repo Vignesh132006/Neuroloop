@@ -108,11 +108,7 @@ console.log("[Diagnostic] Starting server initialization...");
     })
   })
 
-  if (!process.env.GOOGLE_CLIENT_ID) {
-    console.warn('[Warning] GOOGLE_CLIENT_ID not set. Google OAuth will not work.');
-  } else {
-    console.log('[Auth] Google OAuth ready.');
-  }
+
 
   const PORT = process.env.PORT || 5000
 
