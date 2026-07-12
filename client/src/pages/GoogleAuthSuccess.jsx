@@ -7,23 +7,29 @@ export default function GoogleAuthSuccess() {
   const { login } = useAuth()
 
   useEffect(() => {
+    console.log('[GoogleAuthSuccess] Success page loaded. URL:', window.location.href);
     const params   = new URLSearchParams(window.location.search)
     const token    = params.get('token')
     const userStr  = params.get('user')
     const error    = params.get('error')
+    console.log('[GoogleAuthSuccess] Params parsed:', { token: token ? 'Present' : 'Missing', user: userStr ? 'Present' : 'Missing', error });
 
     if (error || !token) {
+      console.warn('[GoogleAuthSuccess] Redirecting to login: missing token or error present');
       navigate('/login?error=google_failed')
       return
     }
 
     try {
       const user = JSON.parse(decodeURIComponent(userStr))
+      console.log('[GoogleAuthSuccess] User JSON parsed successfully:', user);
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
       login(user, token)
+      console.log('[GoogleAuthSuccess] login context called. Navigating to dashboard...');
       navigate('/dashboard', { replace: true })
     } catch (e) {
+      console.error('[GoogleAuthSuccess] Exception in parsing/login:', e);
       navigate('/login?error=parse_failed')
     }
   }, [])

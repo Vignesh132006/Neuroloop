@@ -18,12 +18,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = (tokenVal, userData) => {
+    console.log('[AuthContext] login called. Original params:', { tokenVal: typeof tokenVal, userData: typeof userData });
     let t = tokenVal
     let u = userData
     if (typeof tokenVal === 'object' && typeof userData === 'string') {
       t = userData
       u = tokenVal
     }
+    console.log('[AuthContext] login final values:', { token: t ? 'Present' : 'Missing', user: u ? 'Present' : 'Missing' });
     localStorage.setItem("token", t)
     localStorage.setItem("user", JSON.stringify(u))
     setToken(t)
