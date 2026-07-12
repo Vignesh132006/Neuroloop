@@ -7,6 +7,10 @@ export default function GoogleAuthSuccess() {
   const { login } = useAuth()
 
   useEffect(() => {
+    if (window.location.pathname !== '/auth/google/success') {
+      console.log('[GoogleAuthSuccess] Path is no longer /auth/google/success. Skipping Strict Mode re-run.');
+      return;
+    }
     console.log('[GoogleAuthSuccess] Success page loaded. URL:', window.location.href);
     const params   = new URLSearchParams(window.location.search)
     const token    = params.get('token')
