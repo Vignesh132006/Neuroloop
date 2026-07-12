@@ -14,7 +14,7 @@ console.log("[Diagnostic] Starting server initialization...");
 
   const session  = require('express-session');
   console.log("[Diagnostic] session loaded");
-  const passport = require('./config/passport');
+  const passport = require('./utils/passport');
   console.log("[Diagnostic] passport loaded");
 
   const authRoutes = require("./routes/authRoutes")
@@ -76,7 +76,14 @@ console.log("[Diagnostic] Starting server initialization...");
 
   // Routes
   console.log("[Diagnostic] Mounting routes...");
-  app.use('/api/auth/google', require('./routes/googleAuthRoutes'));
+  app.get('/api/auth/google-test', (req, res) => {
+    res.json({
+      google_client_id: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
+      google_secret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING',
+      callback_url: process.env.GOOGLE_CALLBACK_URL || 'NOT SET',
+      frontend_url: process.env.FRONTEND_URL || 'NOT SET'
+    })
+  })
   app.use("/api/auth", authRoutes)
   app.use("/api/notes", noteRoutes)
   app.use("/api/topics", topicRoutes)

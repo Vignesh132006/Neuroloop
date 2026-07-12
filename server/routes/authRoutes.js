@@ -3,6 +3,7 @@ const router = express.Router()
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
+const passport = require('../utils/passport')
 const { sendWelcomeEmail } = require('../utils/emailService')
 
 // POST /api/auth/signup
@@ -535,5 +536,41 @@ router.post('/admin/login', async (req, res) => {
     res.status(500).json({ error: 'Admin login failed' })
   }
 })
+
+// Google OAuth routes
+router.get('/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email']
+  })
+)
+
+router.get('/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`
+  }),
+  async (req, res) => {
+    try {
+      const user = req.user
+      const jwt = require('jsonwebtoken')
+      const token = jwt.sign(
+        { id: user._id, name: user.name, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      )
+      const userData = encodeURIComponent(JSON.stringify({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        streak: user.streak
+      }))
+      res.redirect(
+        `${process.env.FRONTEND_URL}/auth/google/success?token=${token}&user=${userData}`
+      )
+    } catch (err) {
+      console.error('[Google OAuth] Callback error:', err)
+      res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`)
+    }
+  }
+)
 
 module.exports = router

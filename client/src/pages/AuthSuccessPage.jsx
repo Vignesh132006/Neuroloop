@@ -10,10 +10,12 @@ const AuthSuccessPage = () => {
 
   useEffect(() => {
     const token  = params.get('token');
-    const name   = params.get('name');
-    const email  = params.get('email');
-    const avatar = params.get('avatar');
+    let name   = params.get('name');
+    let email  = params.get('email');
+    let avatar = params.get('avatar');
+    let streak = 0;
     const error  = params.get('error');
+    const userParam = params.get('user');
 
     if (error) {
       setStatus('Sign in failed. Redirecting...');
@@ -21,9 +23,21 @@ const AuthSuccessPage = () => {
       return;
     }
 
+    if (userParam) {
+      try {
+        const decodedUser = JSON.parse(decodeURIComponent(userParam));
+        if (decodedUser.name) name = decodedUser.name;
+        if (decodedUser.email) email = decodedUser.email;
+        if (decodedUser.avatar) avatar = decodedUser.avatar;
+        if (decodedUser.streak) streak = decodedUser.streak;
+      } catch (e) {
+        console.error('Failed to parse user parameter:', e);
+      }
+    }
+
     if (token) {
       // Store token and user data in context (which handles localStorage and state updates)
-      login(token, { name, email, avatar });
+      login(token, { name, email, avatar, streak });
 
       setStatus('Welcome back! Loading your dashboard...');
       setTimeout(() => navigate('/dashboard'), 800);

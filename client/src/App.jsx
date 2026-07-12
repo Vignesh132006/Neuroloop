@@ -30,6 +30,7 @@ export default function App() {
           <Route path="/login"  element={<Login />} />
           <Route path="/signup" element={<Navigate to="/login" replace />} />
           <Route path="/auth/success" element={<AuthSuccessPage />} />
+          <Route path="/auth/google/success" element={<AuthSuccessPage />} />
 
           {/* Protected */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
