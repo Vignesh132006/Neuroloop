@@ -18,10 +18,16 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = (tokenVal, userData) => {
-    localStorage.setItem("token", tokenVal)
-    localStorage.setItem("user", JSON.stringify(userData))
-    setToken(tokenVal)
-    setUser(userData)
+    let t = tokenVal
+    let u = userData
+    if (typeof tokenVal === 'object' && typeof userData === 'string') {
+      t = userData
+      u = tokenVal
+    }
+    localStorage.setItem("token", t)
+    localStorage.setItem("user", JSON.stringify(u))
+    setToken(t)
+    setUser(u)
   }
 
   const logout = () => {

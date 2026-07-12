@@ -12,8 +12,8 @@ console.log("[Diagnostic] Starting server initialization...");
   const cors = require("cors")
   console.log("[Diagnostic] cors loaded");
 
-  console.log("[Diagnostic] session loaded");
-  console.log("[Diagnostic] passport loaded");
+  const session  = require('express-session')
+  const passport = require('./utils/passport')
 
   const authRoutes = require("./routes/authRoutes")
   console.log("[Diagnostic] authRoutes loaded");
@@ -58,6 +58,18 @@ console.log("[Diagnostic] Starting server initialization...");
     credentials: true
   }))
   app.use(express.json({ limit: "5mb" }))
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'neuroloop_2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  }))
+  app.use(passport.initialize())
+  app.use(passport.session())
 
 
   console.log("[Diagnostic] middleware set up");
