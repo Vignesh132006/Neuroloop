@@ -10,6 +10,7 @@ passport.use(new GoogleStrategy(
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
+      console.log('[Google OAuth Verify Callback] Triggered for email:', profile.emails?.[0]?.value);
       const email  = profile.emails[0].value
       const name   = profile.displayName
 
