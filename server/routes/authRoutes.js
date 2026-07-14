@@ -538,31 +538,40 @@ router.post('/admin/login', async (req, res) => {
 })
 
 // ── GOOGLE OAUTH ─────────────────────────────────────
-router.get('/google',
+router.get('/google', (req, res, next) => {
+  const host = req.get('host');
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
+  const state = req.query.frontend_origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    prompt: 'select_account'
-  })
-)
+    prompt: 'select_account',
+    callbackURL: callbackURL,
+    state: state
+  })(req, res, next);
+});
 
 router.get('/google/callback', (req, res, next) => {
   console.log('[Google Callback] Query params:', req.query);
-  passport.authenticate('google', (err, user, info) => {
+  const host = req.get('host');
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
+  const frontendURL = req.query.state || process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  passport.authenticate('google', { callbackURL }, (err, user, info) => {
     console.log('[Google Callback] Authenticated. err:', err, 'user:', user ? user.email : null, 'info:', info);
     if (err) {
       console.error('[Google OAuth Callback Error]:', err);
-      const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
       return res.redirect(`${frontendURL}/login?error=google_failed`);
     }
     if (!user) {
       console.error('[Google OAuth Failure Info]:', info);
-      const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
       return res.redirect(`${frontendURL}/login?error=google_failed`);
     }
     req.logIn(user, (logInErr) => {
       if (logInErr) {
         console.error('[Google logIn error]:', logInErr);
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
         return res.redirect(`${frontendURL}/login?error=server_error`);
       }
       try {
@@ -578,11 +587,9 @@ router.get('/google/callback', (req, res, next) => {
           email:  user.email,
           streak: user.streak || 0
         }))
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173'
         res.redirect(`${frontendURL}/auth/google/success?token=${token}&user=${userData}`)
       } catch (err) {
         console.error('[Google OAuth] Callback error:', err)
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173'
         res.redirect(`${frontendURL}/login?error=server_error`)
       }
     });

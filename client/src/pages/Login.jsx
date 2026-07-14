@@ -1385,7 +1385,7 @@ export default function Login() {
                   </div>
 
                   <a
-                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google`}
+                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google?frontend_origin=${window.location.origin}`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -1596,7 +1596,7 @@ export default function Login() {
                   </div>
 
                   <a
-                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google`}
+                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google?frontend_origin=${window.location.origin}`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
