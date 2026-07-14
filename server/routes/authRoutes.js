@@ -542,7 +542,12 @@ router.get('/google', (req, res, next) => {
   const host = req.get('host');
   const protocol = req.headers['x-forwarded-proto'] || req.protocol;
   const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
-  const state = req.query.frontend_origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  let state = req.query.frontend_origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  // Sanitize redirect target to ensure it is absolute
+  if (!state.startsWith('http://') && !state.startsWith('https://')) {
+    state = state.includes('localhost') ? `http://${state}` : `https://${state}`;
+  }
 
   passport.authenticate('google', {
     scope: ['profile', 'email'],
@@ -557,7 +562,12 @@ router.get('/google/callback', (req, res, next) => {
   const host = req.get('host');
   const protocol = req.headers['x-forwarded-proto'] || req.protocol;
   const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
-  const frontendURL = req.query.state || process.env.FRONTEND_URL || 'http://localhost:5173';
+  let frontendURL = req.query.state || process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  // Sanitize redirect target to ensure it is absolute
+  if (!frontendURL.startsWith('http://') && !frontendURL.startsWith('https://')) {
+    frontendURL = frontendURL.includes('localhost') ? `http://${frontendURL}` : `https://${frontendURL}`;
+  }
 
   passport.authenticate('google', { callbackURL }, (err, user, info) => {
     console.log('[Google Callback] Authenticated. err:', err, 'user:', user ? user.email : null, 'info:', info);
