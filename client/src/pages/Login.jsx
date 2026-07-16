@@ -376,7 +376,7 @@ export default function Login() {
         .lp-inp{
           width:100%;padding:12px 15px;
           background:var(--s1);
-          border:1px solid var(--bd);
+          border:1px solid rgba(219,39,119,0.28);
           border-radius:9px;color:var(--t1);font-size:0.9rem;
           transition:all 0.2s;
         }
@@ -606,7 +606,7 @@ export default function Login() {
         }
 
         .lp-brand-sub{
-          font-size:0.72rem;color:var(--t2);
+          font-size:0.72rem;color:var(--t1);font-weight:500;
           text-transform:uppercase;letter-spacing:0.14em;
           text-align:center;
           animation:brandReveal 1s cubic-bezier(0.22,1,0.36,1) 0.5s both;
@@ -1337,12 +1337,12 @@ export default function Login() {
 
                   {/* Remember me */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: '#a09880' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: 'var(--t2)' }}>
                       <input
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        style={{ width: '14px', height: '14px', accentColor: '#d4af37' }}
+                        style={{ width: '14px', height: '14px', accentColor: 'var(--gold)' }}
                       />
                       Remember me
                     </label>
@@ -1358,7 +1358,7 @@ export default function Login() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      background: loading ? 'rgba(212,175,55,0.6)' : '#d4af37',
+                      background: loading ? 'rgba(219,39,119,0.6)' : 'var(--gold)',
                       cursor: loading ? 'not-allowed' : 'pointer'
                     }}
                   >
@@ -1366,12 +1366,12 @@ export default function Login() {
                       <>
                         <div style={{
                           width: '16px', height: '16px',
-                          border: '2px solid rgba(0,0,0,0.3)',
-                          borderTop: '2px solid #0a0a0a',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTop: '2px solid #ffffff',
                           borderRadius: '50%',
                           animation: 'spin 0.7s linear infinite'
                         }} />
-                        Signing in...
+                        Logging in...
                       </>
                     ) : (
                       'Log In'
@@ -1379,9 +1379,9 @@ export default function Login() {
                   </button>
 
                   <div style={{ margin: '16px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-                    <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>or</span>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
+                    <span style={{ color: 'var(--t2)', fontSize: '12px' }}>or</span>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
                   </div>
 
                   <a
@@ -1393,10 +1393,10 @@ export default function Login() {
                       gap: '10px',
                       width: '100%',
                       padding: '11px 20px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: 'var(--s1)',
+                      border: '1px solid var(--bd)',
                       borderRadius: '10px',
-                      color: '#f1f5f9',
+                      color: 'var(--t1)',
                       fontSize: '14px',
                       fontWeight: '500',
                       textDecoration: 'none',
@@ -1404,8 +1404,8 @@ export default function Login() {
                       boxSizing: 'border-box',
                       transition: 'all 0.2s'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--s2)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'var(--s1)'}
                   >
                     <svg width="18" height="18" viewBox="0 0 48 48">
                       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
@@ -1569,7 +1569,7 @@ export default function Login() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      background: loading ? 'rgba(212,175,55,0.6)' : '#d4af37',
+                      background: loading ? 'rgba(219,39,119,0.6)' : 'var(--gold)',
                       cursor: loading ? 'not-allowed' : 'pointer'
                     }}
                   >
@@ -1577,8 +1577,8 @@ export default function Login() {
                       <>
                         <div style={{
                           width: '16px', height: '16px',
-                          border: '2px solid rgba(0,0,0,0.3)',
-                          borderTop: '2px solid #0a0a0a',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTop: '2px solid #ffffff',
                           borderRadius: '50%',
                           animation: 'spin 0.7s linear infinite'
                         }} />
@@ -1590,9 +1590,9 @@ export default function Login() {
                   </button>
 
                   <div style={{ margin: '16px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-                    <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>or</span>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
+                    <span style={{ color: 'var(--t2)', fontSize: '12px' }}>or</span>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
                   </div>
 
                   <a
@@ -1604,10 +1604,10 @@ export default function Login() {
                       gap: '10px',
                       width: '100%',
                       padding: '11px 20px',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: 'var(--s1)',
+                      border: '1px solid var(--bd)',
                       borderRadius: '10px',
-                      color: '#f1f5f9',
+                      color: 'var(--t1)',
                       fontSize: '14px',
                       fontWeight: '500',
                       textDecoration: 'none',
@@ -1615,8 +1615,8 @@ export default function Login() {
                       boxSizing: 'border-box',
                       transition: 'all 0.2s'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--s2)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'var(--s1)'}
                   >
                     <svg width="18" height="18" viewBox="0 0 48 48">
                       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>

@@ -341,7 +341,7 @@ export default function IntroPage() {
         .scroll-line {
           height: 40px;
           width: 1px;
-          background: rgba(219, 39, 119, 0.25);
+          background: rgba(219, 39, 119, 0.55);
           position: relative;
         }
 
@@ -374,7 +374,8 @@ export default function IntroPage() {
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.1em;
-          color: var(--t2);
+          color: var(--t1);
+          font-weight: 500;
           animation: pulse 2s infinite;
         }
 
@@ -408,8 +409,8 @@ export default function IntroPage() {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1px;
-          background-color: rgba(219, 39, 119, 0.08);
-          border: 1px solid rgba(219, 39, 119, 0.08);
+          background-color: rgba(219, 39, 119, 0.15);
+          border: 1px solid rgba(219, 39, 119, 0.15);
           border-radius: 8px;
           overflow: hidden;
         }
@@ -421,6 +422,7 @@ export default function IntroPage() {
           overflow: hidden;
           cursor: default;
           transition: background-color 0.3s ease;
+          border: 1px solid rgba(219, 39, 119, 0.08);
           opacity: 0; /* Animated on scroll */
         }
 
@@ -464,7 +466,7 @@ export default function IntroPage() {
 
         .card-description {
           font-size: 14px;
-          color: var(--t2);
+          color: #5c3d47;
           line-height: 1.7;
         }
 
@@ -572,7 +574,7 @@ export default function IntroPage() {
         .cta-footer-note {
           display: block;
           font-size: 11px;
-          color: var(--t3);
+          color: var(--t2);
           margin-top: 12px;
         }
 
@@ -582,7 +584,7 @@ export default function IntroPage() {
           border-top: 1px solid rgba(219, 39, 119, 0.08);
           text-align: center;
           font-size: 12px;
-          color: var(--t3);
+          color: var(--t2);
           position: relative;
           z-index: 2;
         }

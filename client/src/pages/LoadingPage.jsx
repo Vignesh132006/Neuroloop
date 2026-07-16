@@ -61,12 +61,9 @@ export default function LoadingPage() {
 
         .app-name {
           font-size: 22px;
-          font-weight: 500;
+          font-weight: 600;
           margin-top: 16px;
-          background: linear-gradient(135deg, var(--gold), var(--goldl));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: var(--gold);
           animation: fadeUp 0.5s ease 0.2s both;
         }
 
