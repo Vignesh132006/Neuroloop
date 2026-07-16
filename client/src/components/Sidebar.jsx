@@ -167,36 +167,39 @@ const S = `
   @media (max-width: 768px) {
     .sidebar, .sb {
       position: fixed !important;
+      top: 0 !important;
       bottom: 0 !important;
       left: 0 !important;
-      right: 0 !important;
-      top: auto !important;
-      width: 100% !important;
-      height: 60px !important;
-      min-height: auto !important;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      border-right: none;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 0 8px;
-      z-index: 1000 !important;
-      overflow: hidden;
-      transform: none !important;
+      right: auto !important;
+      width: 240px !important;
+      height: 100vh !important;
+      min-height: 100vh !important;
+      flex-direction: column !important;
+      border-right: 1px solid rgba(255,255,255,0.06) !important;
+      border-top: none !important;
+      padding: 20px 12px !important;
+      z-index: 9999 !important;
+      transform: translateX(-100%) !important;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      display: flex !important;
+      overflow-y: auto !important;
+      background: #0d0d1a !important;
+    }
+    .sidebar.open, .sb.open {
+      transform: translateX(0) !important;
     }
     .sb-desktop-only {
-      display: none;
+      display: flex !important;
+      flex-direction: column;
+      height: 100%;
+      flex: 1;
+      width: 100%;
     }
     .sb-mobile-only {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      width: 100%;
-      height: 100%;
+      display: none !important;
     }
     #mobile-menu-toggle {
-      display: none !important;
+      display: flex !important;
     }
   }
 `;
@@ -277,7 +280,7 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      <nav className="sb">
+      <nav className={`sb ${mobileOpen ? 'open' : ''}`}>
         <div className="sb-desktop-only">
           {/* Logo */}
           <div className="sb-logo">
@@ -388,37 +391,6 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className="sb-mobile-only">
-          {/* Mobile Links */}
-          <NavLink to="/dashboard" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-layout-dashboard"></i>
-          </NavLink>
-          <NavLink to="/journal" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-notebook"></i>
-          </NavLink>
-          <NavLink to="/notes" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-files"></i>
-          </NavLink>
-          <NavLink to="/quiz" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-brain"></i>
-          </NavLink>
-          <NavLink to="/revision" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-refresh"></i>
-          </NavLink>
-          <NavLink to="/chat" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-message-circle"></i>
-          </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => `sb-mobile-link ${isActive ? 'active' : ''}`}>
-            <i className="ti ti-settings"></i>
-          </NavLink>
-          <button
-            onClick={handleLogout}
-            className="sb-mobile-link"
-            style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
-          >
-            <FiLogOut size={20} />
-          </button>
-        </div>
       </nav>
 
       {/* Mobile Overlay */}
@@ -429,7 +401,7 @@ export default function Sidebar() {
             position: 'fixed', inset: 0,
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(4px)',
-            zIndex: 850,
+            zIndex: 9998,
           }}
         />
       )}
