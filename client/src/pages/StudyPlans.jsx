@@ -93,6 +93,29 @@ export default function StudyPlans() {
 
   return (
     <div className="app-layout">
+      <style>{`
+        .study-plan-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 0.5rem;
+          gap: 12px;
+        }
+        .study-plan-actions {
+          display: flex;
+          gap: 0.5rem;
+        }
+        @media (max-width: 600px) {
+          .study-plan-card-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .study-plan-actions {
+            margin-top: 4px;
+            justify-content: flex-start;
+          }
+        }
+      `}</style>
       <Sidebar />
       <div className="page-wrap">
         {toast && (
@@ -124,25 +147,27 @@ export default function StudyPlans() {
             {plans.map((plan) => (
               <div key={plan._id} className="card" style={{ position: "relative" }}>
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)' }} />
-                {/* Action buttons */}
-                <div style={{ position: "absolute", top: "1.25rem", right: "1.25rem", display: "flex", gap: "0.5rem" }}>
-                  <button
-                    className="btn-outline"
-                    onClick={() => downloadPDF(plan)}
-                    title="Download PDF"
-                    style={{ padding: '6px 10px', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                  ><FiPrinter /> Print</button>
-                  <button
-                    className="btn-ghost"
-                    onClick={() => handleDelete(plan)}
-                    title="Delete"
-                    style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                  ><FiTrash2 /> Delete</button>
-                </div>
+                <div className="study-plan-card-header">
+                  <h3 style={{ fontWeight: 600, fontSize: "1.15rem", color: "var(--t1)" }}>
+                    {plan.topic}
+                  </h3>
 
-                <h3 style={{ fontWeight: 600, fontSize: "1.15rem", color: "var(--t1)", marginRight: "8rem" }}>
-                  {plan.topic}
-                </h3>
+                  {/* Action buttons */}
+                  <div className="study-plan-actions">
+                    <button
+                      className="btn-outline"
+                      onClick={() => downloadPDF(plan)}
+                      title="Download PDF"
+                      style={{ padding: '6px 10px', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    ><FiPrinter /> Print</button>
+                    <button
+                      className="btn-ghost"
+                      onClick={() => handleDelete(plan)}
+                      title="Delete"
+                      style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    ><FiTrash2 /> Delete</button>
+                  </div>
+                </div>
 
                 {/* Subtopic pills */}
                 {plan.weakSubtopics && plan.weakSubtopics.length > 0 && (
