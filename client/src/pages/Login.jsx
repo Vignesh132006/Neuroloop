@@ -317,7 +317,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{minHeight:'100vh',display:'flex',background:'#0a0a0a'}}>
+    <div style={{minHeight:'100vh',display:'flex',background:'var(--bg)'}}>
       <style>{`
         :root {
           --green: #10b981;
@@ -325,9 +325,9 @@ export default function Login() {
 
         .lp-left{
           flex:1.2;position:relative;overflow:hidden;
-          background:#0a0a0a;
+          background:var(--bg);
           display:flex;flex-direction:column;
-          border-right:1px solid rgba(255,255,255,0.06);
+          border-right:1px solid var(--bd);
         }
         @media (max-width: 900px) {
           .lp-left { display: none; }
@@ -336,7 +336,7 @@ export default function Login() {
         .lp-right{
           width:480px;flex-shrink:0;
           display:flex;align-items:center;justify-content:center;
-          padding:40px;background:#0d0d0d;
+          padding:40px;background:var(--s1);
         }
         @media (max-width: 900px) {
           .lp-right { width: 100%; }
@@ -345,86 +345,86 @@ export default function Login() {
 
         .lp-form-title{
           font-family:'DM Serif Display',serif;
-          font-size:1.6rem;color:#f5f0e8;
+          font-size:1.6rem;color:var(--t1);
           font-weight:400;margin-bottom:4px;
         }
-        .lp-form-sub{color:#a09880;font-size:0.85rem;margin-bottom:24px;}
+        .lp-form-sub{color:var(--t2);font-size:0.85rem;margin-bottom:24px;}
 
         .lp-tabs{
           display:flex;
-          background:#161616;
-          border:1px solid rgba(255,255,255,0.07);
+          background:var(--s2);
+          border:1px solid var(--bd);
           border-radius:10px;padding:4px;margin-bottom:24px;
         }
         .lp-tab{
           flex:1;padding:9px;border-radius:7px;
           border:none;font-size:0.85rem;font-weight:600;
-          color:#5a5040;background:transparent;transition:all 0.2s;
+          color:var(--t3);background:transparent;transition:all 0.2s;
           cursor:pointer;
         }
         .lp-tab.active{
-          background:#d4af37;color:#0a0a0a;
-          box-shadow:0 3px 12px rgba(212,175,55,0.35);
+          background:var(--gold);color:#ffffff;
+          box-shadow:0 3px 12px var(--goldg);
         }
 
         .lp-field{margin-bottom:14px;}
         .lp-lbl{
           display:block;font-size:0.68rem;font-weight:600;
-          color:#a09880;letter-spacing:0.1em;
+          color:var(--t2);letter-spacing:0.1em;
           text-transform:uppercase;margin-bottom:7px;
         }
         .lp-inp{
           width:100%;padding:12px 15px;
-          background:rgba(255,255,255,0.04);
-          border:1px solid rgba(255,255,255,0.08);
-          border-radius:9px;color:#f5f0e8;font-size:0.9rem;
+          background:var(--s1);
+          border:1px solid var(--bd);
+          border-radius:9px;color:var(--t1);font-size:0.9rem;
           transition:all 0.2s;
         }
         .lp-inp:focus{
-          border-color:rgba(212,175,55,0.55);
-          box-shadow:0 0 0 3px rgba(212,175,55,0.1);
-          background:rgba(212,175,55,0.03);
+          border-color:var(--gold);
+          box-shadow:0 0 0 3px var(--goldg);
+          background:var(--s1);
           outline:none;
         }
-        .lp-inp::placeholder{color:#3a3028;}
+        .lp-inp::placeholder{color:var(--t3);}
 
         .lp-btn{
           width:100%;padding:13px;border-radius:9px;border:none;
-          background:#d4af37;color:#0a0a0a;
+          background:var(--gold);color:#ffffff;
           font-size:0.92rem;font-weight:700;
           letter-spacing:0.03em;
-          box-shadow:0 4px 20px rgba(212,175,55,0.35);
+          box-shadow:0 4px 20px var(--goldg);
           margin-top:4px;transition:all 0.2s;
           cursor:pointer;
         }
         .lp-btn:hover{
-          background:#f0d060;
+          background:var(--goldl);
           transform:translateY(-1px);
-          box-shadow:0 8px 28px rgba(212,175,55,0.45);
+          box-shadow:0 8px 28px var(--goldg);
         }
 
         .lp-divider{
           display:flex;align-items:center;gap:12px;
-          margin:18px 0;color:#3a3028;font-size:0.75rem;
+          margin:18px 0;color:var(--t3);font-size:0.75rem;
         }
         .lp-divider::before,.lp-divider::after{
           content:'';flex:1;height:1px;
-          background:rgba(255,255,255,0.07);
+          background:var(--bd);
         }
 
         .lp-google{
           width:100%;padding:11px;border-radius:9px;
-          background:rgba(255,255,255,0.04);
-          border:1px solid rgba(255,255,255,0.09);
-          color:#a09880;font-size:0.86rem;font-weight:500;
+          background:var(--s2);
+          border:1px solid var(--bd);
+          color:var(--t2);font-size:0.86rem;font-weight:500;
           display:flex;align-items:center;justify-content:center;gap:10px;
           transition:all 0.2s;
           cursor:pointer;
         }
         .lp-google:hover{
-          background:rgba(255,255,255,0.08);
-          color:#f5f0e8;
-          border-color:rgba(255,255,255,0.16);
+          background:var(--s3);
+          color:var(--t1);
+          border-color:var(--bd);
         }
 
         /* Parallax spotlight that follows mouse */
@@ -433,7 +433,7 @@ export default function Login() {
           width:600px;height:600px;
           border-radius:50%;
           pointer-events:none;
-          background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 65%);
+          background:radial-gradient(circle,var(--goldg) 0%,transparent 65%);
           transform:translate(-50%,-50%);
           transition:left 0.8s cubic-bezier(0.22,1,0.36,1),
                       top 0.8s cubic-bezier(0.22,1,0.36,1);
@@ -444,8 +444,8 @@ export default function Login() {
         .lp-grid{
           position:absolute;inset:0;z-index:0;
           background-image:
-            linear-gradient(rgba(212,175,55,0.03) 1px,transparent 1px),
-            linear-gradient(90deg,rgba(212,175,55,0.03) 1px,transparent 1px);
+            linear-gradient(rgba(219,39,119,0.03) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(219,39,119,0.03) 1px,transparent 1px);
           background-size:48px 48px;
           animation:gridDrift 30s linear infinite;
         }
@@ -475,7 +475,7 @@ export default function Login() {
           pointer-events:none;
         }
         .neural-line{
-          stroke:rgba(212,175,55,0.12);
+          stroke:rgba(219,39,119,0.12);
           stroke-width:1;
           animation:neuralPulse ease-in-out infinite alternate;
         }
@@ -484,7 +484,7 @@ export default function Login() {
           to{stroke-opacity:0.2;stroke-width:1.2;}
         }
         .neural-node{
-          fill:rgba(212,175,55,0.25);
+          fill:rgba(219,39,119,0.25);
           animation:nodePulse ease-in-out infinite alternate;
         }
         @keyframes nodePulse{
@@ -492,7 +492,7 @@ export default function Login() {
           to{r:5;opacity:0.6;}
         }
         .neural-node-glow{
-          fill:none;stroke:rgba(212,175,55,0.15);
+          fill:none;stroke:rgba(219,39,119,0.15);
           animation:nodeGlow ease-in-out infinite alternate;
         }
         @keyframes nodeGlow{
@@ -511,23 +511,23 @@ export default function Login() {
         }
         .lp-ring-1{
           width:280px;height:280px;
-          border-color:rgba(212,175,55,0.1);
+          border-color:rgba(219,39,119,0.1);
           animation-duration:20s;
         }
         .lp-ring-2{
           width:440px;height:440px;
-          border-color:rgba(212,175,55,0.06);
+          border-color:rgba(219,39,119,0.06);
           animation-duration:30s;
           animation-direction:reverse;
         }
         .lp-ring-3{
           width:600px;height:600px;
-          border-color:rgba(16,185,129,0.05);
+          border-color:rgba(219,39,119,0.05);
           animation-duration:42s;
         }
         .lp-ring-4{
           width:760px;height:760px;
-          border-color:rgba(212,175,55,0.03);
+          border-color:rgba(219,39,119,0.03);
           animation-duration:55s;
           animation-direction:reverse;
         }
@@ -541,7 +541,7 @@ export default function Login() {
           position:absolute;top:50%;left:50%;
           width:6px;height:6px;border-radius:50%;
           background:var(--gold);
-          box-shadow:0 0 10px var(--gold),0 0 20px rgba(212,175,55,0.5);
+          box-shadow:0 0 10px var(--gold),0 0 20px var(--goldg);
           animation:ringDotOrbit 20s linear infinite;
           transform-origin:0 0;
         }
@@ -571,42 +571,42 @@ export default function Login() {
         }
         .lp-orb-core{
           width:80px;height:80px;border-radius:22px;
-          background:linear-gradient(135deg,#d4af37,#8a6f1e);
+          background:linear-gradient(135deg,var(--gold),var(--goldl));
           display:flex;align-items:center;justify-content:center;
           box-shadow:
-            0 0 0 1px rgba(212,175,55,0.4),
-            0 0 30px rgba(212,175,55,0.3),
-            0 0 80px rgba(212,175,55,0.15),
-            0 0 120px rgba(212,175,55,0.08);
+            0 0 0 1px var(--gold),
+            0 0 30px var(--goldg),
+            0 0 80px rgba(219,39,119,0.15),
+            0 0 120px rgba(219,39,119,0.08);
           animation:coreBreath 3s ease-in-out infinite;
         }
         @keyframes coreBreath{
           0%,100%{
-            box-shadow:0 0 0 1px rgba(212,175,55,0.4),0 0 30px rgba(212,175,55,0.3),
-                       0 0 80px rgba(212,175,55,0.15),0 0 120px rgba(212,175,55,0.08);
+            box-shadow:0 0 0 1px var(--gold),0 0 30px var(--goldg),
+                       0 0 80px rgba(219,39,119,0.15),0 0 120px rgba(219,39,119,0.08);
             transform:scale(1);
           }
           50%{
-            box-shadow:0 0 0 1px rgba(212,175,55,0.6),0 0 50px rgba(212,175,55,0.4),
-                       0 0 100px rgba(212,175,55,0.2),0 0 150px rgba(212,175,55,0.1);
+            box-shadow:0 0 0 1px var(--goldl),0 0 50px var(--goldg),
+                       0 0 100px rgba(219,39,119,0.2),0 0 150px rgba(219,39,119,0.1);
             transform:scale(1.05);
           }
         }
 
         .lp-brand-word{
           font-family:'DM Serif Display',serif;
-          font-size:1.7rem;color:#f5f0e8;
+          font-size:1.7rem;color:var(--t1);
           text-align:center;letter-spacing:-0.01em;
           animation:brandReveal 1s cubic-bezier(0.22,1,0.36,1) 0.3s both;
         }
-        .lp-brand-word span{color:#d4af37;}
+        .lp-brand-word span{color:var(--gold);}
         @keyframes brandReveal{
           from{opacity:0;transform:translateY(10px);}
           to{opacity:1;transform:translateY(0);}
         }
 
         .lp-brand-sub{
-          font-size:0.72rem;color:rgba(255,255,255,0.3);
+          font-size:0.72rem;color:var(--t2);
           text-transform:uppercase;letter-spacing:0.14em;
           text-align:center;
           animation:brandReveal 1s cubic-bezier(0.22,1,0.36,1) 0.5s both;
@@ -616,7 +616,7 @@ export default function Login() {
         .lp-scan{
           position:absolute;left:0;right:0;
           height:1px;
-          background:linear-gradient(90deg,transparent,rgba(212,175,55,0.4),transparent);
+          background:linear-gradient(90deg,transparent,rgba(219,39,119,0.4),transparent);
           animation:scanMove 6s linear infinite;
           pointer-events:none;z-index:3;
         }
@@ -634,29 +634,29 @@ export default function Login() {
         }
         .lp-corner-tl{
           top:24px;left:24px;
-          border-top:2px solid rgba(212,175,55,0.4);
-          border-left:2px solid rgba(212,175,55,0.4);
+          border-top:2px solid rgba(219,39,119,0.4);
+          border-left:2px solid rgba(219,39,119,0.4);
           border-radius:4px 0 0 0;
           animation:cornerPulse 3s ease-in-out infinite;
         }
         .lp-corner-tr{
           top:24px;right:24px;
-          border-top:2px solid rgba(212,175,55,0.4);
-          border-right:2px solid rgba(212,175,55,0.4);
+          border-top:2px solid rgba(219,39,119,0.4);
+          border-right:2px solid rgba(219,39,119,0.4);
           border-radius:0 4px 0 0;
           animation:cornerPulse 3s ease-in-out infinite 0.75s;
         }
         .lp-corner-bl{
           bottom:24px;left:24px;
-          border-bottom:2px solid rgba(212,175,55,0.4);
-          border-left:2px solid rgba(212,175,55,0.4);
+          border-bottom:2px solid rgba(219,39,119,0.4);
+          border-left:2px solid rgba(219,39,119,0.4);
           border-radius:0 0 0 4px;
           animation:cornerPulse 3s ease-in-out infinite 1.5s;
         }
         .lp-corner-br{
           bottom:24px;right:24px;
-          border-bottom:2px solid rgba(212,175,55,0.4);
-          border-right:2px solid rgba(212,175,55,0.4);
+          border-bottom:2px solid rgba(219,39,119,0.4);
+          border-right:2px solid rgba(219,39,119,0.4);
           border-radius:0 0 4px 0;
           animation:cornerPulse 3s ease-in-out infinite 2.25s;
         }
@@ -676,12 +676,12 @@ export default function Login() {
         }
         .lp-q-text{
           font-family:'DM Serif Display',serif;
-          font-size:0.92rem;color:rgba(255,255,255,0.5);
+          font-size:0.92rem;color:var(--t2);
           font-style:italic;line-height:1.6;margin-bottom:6px;
           transition:opacity 0.4s ease;
         }
         .lp-q-auth{
-          font-size:0.68rem;color:rgba(212,175,55,0.7);
+          font-size:0.68rem;color:rgba(219,39,119,0.7);
           font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
         }
 
@@ -698,15 +698,15 @@ export default function Login() {
         }
         .lp-top-badge-icon{
           width:30px;height:30px;border-radius:8px;
-          background:linear-gradient(135deg,#d4af37,#8a6f1e);
+          background:linear-gradient(135deg,var(--gold),var(--goldl));
           display:flex;align-items:center;justify-content:center;
-          box-shadow:0 4px 12px rgba(212,175,55,0.35);
+          box-shadow:0 4px 12px var(--goldg);
         }
         .lp-top-badge-name{
           font-family:'DM Serif Display',serif;
-          font-size:1rem;color:#f5f0e8;
+          font-size:1rem;color:var(--t1);
         }
-        .lp-top-badge-name span{color:#d4af37;}
+        .lp-top-badge-name span{color:var(--gold);}
 
         /* Right panel enter animation */
         .lp-right{
@@ -999,12 +999,12 @@ export default function Login() {
         <div className="lp-top-badge">
           <div className="lp-top-badge-icon">
             <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
-              <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
-              <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
-              <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="18" cy="8" r="3" fill="#ffffff"/>
+              <circle cx="28" cy="24" r="3" fill="#ffffff"/>
+              <circle cx="8" cy="24" r="3" fill="#ffffff"/>
+              <line x1="18" y1="11" x2="26" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="18" y1="11" x2="10" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
           <div className="lp-top-badge-name">Neuro<span>Loop</span></div>
@@ -1014,12 +1014,12 @@ export default function Login() {
         <div className="lp-center-orb">
           <div className="lp-orb-core">
             <svg width="40" height="40" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="8" r="3.5" fill="rgba(10,10,10,0.85)"/>
-              <circle cx="28" cy="24" r="3.5" fill="rgba(10,10,10,0.85)"/>
-              <circle cx="8" cy="24" r="3.5" fill="rgba(10,10,10,0.85)"/>
-              <line x1="18" y1="11.5" x2="26" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="18" y1="11.5" x2="10" y2="22" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="rgba(10,10,10,0.7)" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="18" cy="8" r="3.5" fill="#ffffff"/>
+              <circle cx="28" cy="24" r="3.5" fill="#ffffff"/>
+              <circle cx="8" cy="24" r="3.5" fill="#ffffff"/>
+              <line x1="18" y1="11.5" x2="26" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="18" y1="11.5" x2="10" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
           <div className="lp-brand-word">Neuro<span>Loop</span></div>
@@ -1052,23 +1052,23 @@ export default function Login() {
                 <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
                   <div style={{
                     width:32,height:32,borderRadius:8,
-                    background:'linear-gradient(135deg,#d4af37,#a08020)',
+                    background:'linear-gradient(135deg,var(--gold),var(--goldl))',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    boxShadow:'0 4px 10px rgba(212,175,55,0.4)',
+                    boxShadow:'0 4px 10px var(--goldg)',
                   }}>
                     <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
-                      <circle cx="18" cy="8" r="3" fill="#0a0a0a"/>
-                      <circle cx="28" cy="24" r="3" fill="#0a0a0a"/>
-                      <circle cx="8" cy="24" r="3" fill="#0a0a0a"/>
-                      <line x1="18" y1="11" x2="26" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="18" y1="11" x2="10" y2="22" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="10" y1="24" x2="26" y2="24" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round"/>
+                      <circle cx="18" cy="8" r="3" fill="#ffffff"/>
+                      <circle cx="28" cy="24" r="3" fill="#ffffff"/>
+                      <circle cx="8" cy="24" r="3" fill="#ffffff"/>
+                      <line x1="18" y1="11" x2="26" y2="22" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="18" y1="11" x2="10" y2="22" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
                     </svg>
                   </div>
                   <span style={{
                     fontFamily:"'DM Serif Display',serif",
-                    fontSize:'1.1rem',color:'#f5f0e8',
-                  }}>Neuro<span style={{color:'#d4af37'}}>Loop</span></span>
+                    fontSize:'1.1rem',color:'var(--t1)',
+                  }}>Neuro<span style={{color:'var(--gold)'}}>Loop</span></span>
                 </div>
               </div>
 

@@ -15,8 +15,8 @@ export default function LoadingPage() {
     <div className="loading-container">
       <style>{`
         .loading-container {
-          background-color: #050508;
-          color: #f1f5f9;
+          background-color: #fff5f7;
+          color: var(--t1);
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           height: 100vh;
           width: 100vw;
@@ -63,7 +63,7 @@ export default function LoadingPage() {
           font-size: 22px;
           font-weight: 500;
           margin-top: 16px;
-          background: linear-gradient(135deg, #7c3aed, #06b6d4);
+          background: linear-gradient(135deg, var(--gold), var(--goldl));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -72,7 +72,7 @@ export default function LoadingPage() {
 
         .tagline {
           font-size: 13px;
-          color: rgba(255, 255, 255, 0.3);
+          color: var(--t2);
           margin-top: 8px;
           animation: fadeIn 0.5s ease 0.4s both;
         }
@@ -85,7 +85,7 @@ export default function LoadingPage() {
 
         .loading-bar-track {
           height: 2px;
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(219, 39, 119, 0.12);
           border-radius: 1px;
           overflow: hidden;
           width: 100%;
@@ -93,7 +93,7 @@ export default function LoadingPage() {
 
         .loading-bar-fill {
           height: 100%;
-          background: linear-gradient(90deg, #7c3aed, #06b6d4);
+          background: linear-gradient(90deg, var(--gold), var(--goldl));
           border-radius: 1px;
           animation: progressFill 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
           width: 0%;
@@ -111,7 +111,7 @@ export default function LoadingPage() {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: rgba(124, 58, 237, 0.6);
+          background: rgba(219, 39, 119, 0.6);
           animation: textFade 1.2s ease infinite;
         }
 
@@ -133,7 +133,7 @@ export default function LoadingPage() {
           left: 50%;
           transform: translateX(-50%);
           font-size: 11px;
-          color: rgba(255, 255, 255, 0.1);
+          color: var(--t3);
           letter-spacing: 0.1em;
           text-transform: uppercase;
         }
@@ -144,8 +144,8 @@ export default function LoadingPage() {
         <svg width="60" height="60" viewBox="0 0 60 60">
           <defs>
             <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#7c3aed" />
-              <stop offset="100%" stopColor="#06b6d4" />
+              <stop offset="0%" stopColor="#db2777" />
+              <stop offset="100%" stopColor="#ec4899" />
             </linearGradient>
           </defs>
           <rect x="8" y="8" width="44" height="44" rx="12"
