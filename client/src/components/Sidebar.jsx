@@ -23,10 +23,10 @@ const S = `
   }
   .sb-logo-mark{
     width:34px;height:34px;border-radius:9px;
-    background:linear-gradient(135deg,#d4af37,#a08020);
+    background:linear-gradient(135deg,#e50914,#99060d);
     display:flex;align-items:center;justify-content:center;
     font-size:17px;
-    box-shadow:0 4px 14px rgba(212,175,55,0.35);
+    box-shadow:0 4px 14px rgba(229,9,20,0.35);
     flex-shrink:0;
   }
   .sb-logo-name{
@@ -34,7 +34,7 @@ const S = `
     font-size:1.15rem;color:#f5f0e8;
     letter-spacing:-0.01em;
   }
-  .sb-logo-name span{color:#d4af37;}
+  .sb-logo-name span{color:#e50914;}
 
   .sb-group-label{
     font-size:0.6rem;font-weight:700;
@@ -57,7 +57,7 @@ const S = `
     content:'';
     position:absolute;left:0;top:20%;bottom:20%;
     width:2px;border-radius:99px;
-    background:#d4af37;
+    background:#e50914;
     transform:scaleY(0);
     transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
     transform-origin:center;
@@ -68,13 +68,13 @@ const S = `
   }
   .sb-link:hover::after{transform:scaleY(0.5);opacity:0.5;}
   .sb-link.active{
-    background:rgba(212,175,55,0.1);
-    color:#d4af37;
-    border-color:rgba(212,175,55,0.25);
+    background:rgba(229,9,20,0.1);
+    color:#e50914;
+    border-color:rgba(229,9,20,0.25);
   }
   .sb-link.active::after{transform:scaleY(1);}
   .sb-link.active .sb-link-icon{
-    filter:drop-shadow(0 0 5px rgba(212,175,55,0.7));
+    filter:drop-shadow(0 0 5px rgba(229,9,20,0.7));
   }
   .sb-link-icon{
     font-size:1rem;width:20px;
@@ -91,8 +91,8 @@ const S = `
   .sb-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
 
   .sb-streak{
-    background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(212,175,55,0.04));
-    border:1px solid rgba(212,175,55,0.22);
+    background:linear-gradient(135deg,rgba(229,9,20,0.1),rgba(229,9,20,0.04));
+    border:1px solid rgba(229,9,20,0.22);
     border-radius:11px;padding:11px 13px;
     display:flex;align-items:center;gap:9px;
     margin-top: 10px;
@@ -105,7 +105,7 @@ const S = `
     0%,100%{transform:scale(1) rotate(-4deg);}
     50%{transform:scale(1.2) rotate(4deg);}
   }
-  .sb-streak-num{font-weight:700;font-size:1rem;color:#d4af37;}
+  .sb-streak-num{font-weight:700;font-size:1rem;color:#e50914;}
   .sb-streak-lbl{font-size:0.7rem;color:rgba(255,255,255,0.3);}
 
   .sb-user{
@@ -116,9 +116,9 @@ const S = `
   }
   .sb-avatar{
     width:33px;height:33px;border-radius:50%;
-    background:linear-gradient(135deg,#d4af37,#a08020);
+    background:linear-gradient(135deg,#e50914,#99060d);
     display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:0.85rem;color:#0a0a0a;
+    font-weight:700;font-size:0.85rem;color:#ffffff;
     flex-shrink:0;
   }
   .sb-user-name{font-size:0.82rem;font-weight:600;color:#f5f0e8;}
@@ -160,26 +160,27 @@ const S = `
     transition: all 0.2s;
   }
   .sb-mobile-link.active {
-    color: #a78bfa;
-    background: rgba(124,58,237,0.12);
+    color: #e50914;
+    background: rgba(229,9,20,0.12);
   }
 
   @media (max-width: 768px) {
     .sidebar, .sb {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      top: auto;
-      width: 100%;
-      height: 60px;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: auto !important;
+      width: 100% !important;
+      height: 60px !important;
+      min-height: auto !important;
       flex-direction: row;
       align-items: center;
       justify-content: space-around;
       border-right: none;
       border-top: 1px solid rgba(255,255,255,0.06);
       padding: 0 8px;
-      z-index: 100;
+      z-index: 1000 !important;
       overflow: hidden;
       transform: none !important;
     }
@@ -321,8 +322,8 @@ export default function Sidebar() {
           <div className="sb-bottom">
             {/* Streak Widget */}
             <div className="sb-streak">
-              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#d4af37' }}>
-                <FiZap size={18} fill="#d4af37" />
+              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#e50914' }}>
+                <FiZap size={18} fill="#e50914" />
               </span>
               <div>
                 <div className="sb-streak-num">

@@ -18,18 +18,18 @@ export default function NeuroLoopLogo({ size = 36, showWordmark = true }) {
           strokeLinecap="round"
         />
         {/* Inner neural nodes */}
-        <circle cx="18" cy="8"  r="2.5" fill="#d4af37" />
+        <circle cx="18" cy="8"  r="2.5" fill="#e50914" />
         <circle cx="27" cy="22" r="2.5" fill="#10b981" />
-        <circle cx="9"  cy="22" r="2.5" fill="#f0d060" />
+        <circle cx="9"  cy="22" r="2.5" fill="#ff4d4d" />
         {/* Connecting lines (synapses) */}
-        <line x1="18" y1="10.5" x2="25" y2="20" stroke="#d4af37" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
-        <line x1="18" y1="10.5" x2="11" y2="20" stroke="#f0d060" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <line x1="18" y1="10.5" x2="25" y2="20" stroke="#e50914" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <line x1="18" y1="10.5" x2="11" y2="20" stroke="#ff4d4d" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
         <line x1="11" y1="22"   x2="25" y2="22" stroke="#10b981" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
         <defs>
           <linearGradient id="nl-grad-logo" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-            <stop offset="0%"   stopColor="#d4af37" />
+            <stop offset="0%"   stopColor="#e50914" />
             <stop offset="50%"  stopColor="#10b981" />
-            <stop offset="100%" stopColor="#f0d060" />
+            <stop offset="100%" stopColor="#ff4d4d" />
           </linearGradient>
         </defs>
       </svg>
@@ -39,7 +39,7 @@ export default function NeuroLoopLogo({ size = 36, showWordmark = true }) {
             fontFamily: "'DM Serif Display', Georgia, serif",
             fontWeight: 400,
             fontSize: `${Math.max(size * 0.032, 1.15)}rem`,
-            background: 'linear-gradient(135deg, #d4af37, #f0d060)',
+            background: 'linear-gradient(135deg, #e50914, #ff4d4d)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',

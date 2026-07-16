@@ -36,8 +36,8 @@ export default function MotivationBanner({ streak = 0 }) {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg,rgba(212,175,55,0.1),rgba(212,175,55,0.04))',
-      border: '1px solid rgba(212,175,55,0.2)',
+      background: 'linear-gradient(135deg,rgba(229,9,20,0.1),rgba(229,9,20,0.04))',
+      border: '1px solid rgba(229,9,20,0.2)',
       borderRadius: 12,
       padding: '11px 18px',
       display: 'flex',
@@ -45,33 +45,33 @@ export default function MotivationBanner({ streak = 0 }) {
       gap: 12,
       marginBottom: 28,
       fontSize: '0.875rem',
-      color: '#a09880',
+      color: 'var(--t2)',
       position: 'relative',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         {streak > 0 && (
           <div style={{
-            background: 'rgba(212,175,55,0.15)',
-            border: '1px solid rgba(212,175,55,0.3)',
+            background: 'rgba(229,9,20,0.15)',
+            border: '1px solid rgba(229,9,20,0.3)',
             borderRadius: '9999px',
             padding: '4px 12px',
             fontSize: '0.82rem',
             fontWeight: 700,
-            color: '#d4af37',
+            color: '#e50914',
             whiteSpace: 'nowrap',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
           }}>
-            <FiZap size={12} fill="#d4af37" /> {streak} day{streak !== 1 ? 's' : ''}
+            <FiZap size={12} fill="#e50914" /> {streak} day{streak !== 1 ? 's' : ''}
           </div>
         )}
-        <p style={{ margin: 0, color: '#a09880', fontSize: '0.875rem' }}>{quotes[quoteIdx]}</p>
+        <p style={{ margin: 0, color: 'var(--t2)', fontSize: '0.875rem' }}>{quotes[quoteIdx]}</p>
       </div>
       <button 
         onClick={handleDismiss} 
         style={{
-          background: 'none', border: 'none', color: '#5a5040', 
+          background: 'none', border: 'none', color: 'var(--t3)', 
           cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center',
           padding: '4px'
         }}

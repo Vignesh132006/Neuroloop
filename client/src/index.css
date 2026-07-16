@@ -1192,7 +1192,6 @@ input:checked + .slider:before {
   .page-wrap{padding:28px 24px;}
 }
 @media(max-width:768px){
-  .page-wrap{margin-left:0;padding:20px 16px;}
   .stat-grid{grid-template-columns:1fr;}
   .notes-grid{grid-template-columns:1fr;}
   .page-title{font-size:1.6rem;}

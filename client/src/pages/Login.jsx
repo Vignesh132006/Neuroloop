@@ -341,6 +341,15 @@ export default function Login() {
         @media (max-width: 900px) {
           .lp-right { width: 100%; }
         }
+
+        .mobile-logo {
+          display: none;
+        }
+        @media (max-width: 900px) {
+          .mobile-logo {
+            display: flex !important;
+          }
+        }
         .lp-form-wrap{width:100%;max-width:360px;}
 
         .lp-form-title{
@@ -1048,7 +1057,7 @@ export default function Login() {
           ) : (
             <>
               {/* Mobile logo (hidden on desktop where left panel shows) */}
-              <div style={{ display: 'none', marginBottom: '1.5rem', justifyContent: 'center' }} className="mobile-logo">
+              <div style={{ marginBottom: '1.5rem', justifyContent: 'center' }} className="mobile-logo">
                 <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
                   <div style={{
                     width:32,height:32,borderRadius:8,

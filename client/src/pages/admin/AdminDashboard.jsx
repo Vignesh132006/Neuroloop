@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   }, [])
 
   const statCards = stats ? [
-    { label: 'Total Users', value: stats.totalUsers, icon: '👥', color: '#d4af37', sub: `+${stats.newUsersWeek} this week` },
+    { label: 'Total Users', value: stats.totalUsers, icon: '👥', color: '#e50914', sub: `+${stats.newUsersWeek} this week` },
     { label: 'Active (7 days)', value: stats.activeUsers, icon: '🟢', color: '#10b981', sub: `${stats.todayUsers} joined today` },
     { label: 'Total Notes', value: stats.totalNotes, icon: '📝', color: '#3b82f6', sub: 'Across all users' },
     { label: 'Quizzes Taken', value: stats.totalQuizzes, icon: '🧠', color: '#f59e0b', sub: `Avg score: ${stats.avgQuizScore}%` },
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
         }
         .admin-stat-card {
           background: #0d0d0d;
-          border: 1px solid rgba(212, 175, 55, 0.08);
+          border: 1px solid rgba(229, 9, 20, 0.08);
           border-radius: 16px;
           padding: 24px;
           transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -53,8 +53,8 @@ export default function AdminDashboard() {
         }
         .admin-stat-card:hover {
           transform: translateY(-4px);
-          border-color: rgba(212, 175, 55, 0.25);
-          box-shadow: 0 12px 30px rgba(212, 175, 55, 0.08);
+          border-color: rgba(229, 9, 20, 0.25);
+          box-shadow: 0 12px 30px rgba(229, 9, 20, 0.08);
         }
       `}</style>
 
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
                 letterSpacing: '0.08em', color: '#a09880' }}>{card.label}</span>
               <span style={{ fontSize: '24px' }}>{card.icon}</span>
             </div>
-            <div style={{ fontSize: '36px', fontWeight: '700', color: card.color === '#d4af37' ? '#d4af37' : card.color, marginBottom: '6px', fontFamily: 'Inter, sans-serif' }}>
+            <div style={{ fontSize: '36px', fontWeight: '700', color: card.color, marginBottom: '6px', fontFamily: 'Inter, sans-serif' }}>
               {card.value}
             </div>
             <div style={{ fontSize: '12px', color: '#5a5040', fontWeight: '500' }}>{card.sub}</div>

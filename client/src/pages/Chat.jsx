@@ -80,7 +80,7 @@ export default function Chat() {
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:rgba(212,175,55,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:rgba(229,9,20,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
       .replace(/\n/g, "<br/>")
   }
 
@@ -104,8 +104,41 @@ export default function Chat() {
 
   return (
     <div className="app-layout">
+      <style>{`
+        .chat-page-wrap {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          height: 100dvh;
+          padding-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+          .chat-page-wrap {
+            padding-bottom: 70px !important;
+          }
+          .chat-container-layout {
+            height: calc(100vh - 230px);
+            height: calc(100dvh - 230px);
+          }
+        }
+        @media (max-width: 600px) {
+          .chat-controls {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 10px;
+          }
+          .chat-controls > div {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 6px;
+          }
+          .chat-controls select {
+            width: 100% !important;
+          }
+        }
+      `}</style>
       <Sidebar />
-      <div className="page-wrap fade-in" style={{ display: "flex", flexDirection: "column", height: "100vh", paddingBottom: "24px" }}>
+      <div className="page-wrap chat-page-wrap fade-in">
         {/* Header */}
         <div className="flex-between" style={{ marginBottom: "1rem" }}>
           <div>

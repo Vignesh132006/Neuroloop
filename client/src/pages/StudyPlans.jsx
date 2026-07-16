@@ -43,10 +43,10 @@ export default function StudyPlans() {
               max-width: 800px; margin: 0 auto;
             }
             .header { border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1.5rem; }
-            .title { font-size: 1.75rem; font-weight: 700; color: #d4af37; margin: 0; }
+            .title { font-size: 1.75rem; font-weight: 700; color: #e50914; margin: 0; }
             .meta { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
             .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
-            .pill { background-color: #fef3c7; color: #d4af37; border: 1px solid #f59e0b; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+            .pill { background-color: #fee2e2; color: #e50914; border: 1px solid #f87171; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
             .content { white-space: pre-wrap; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; font-size: 0.95rem; }
             @media print { body { padding: 0; } .content { border: none; background: transparent; padding: 0; } }
           </style>

@@ -61,9 +61,9 @@ export default function AdminLayout() {
           background: rgba(255, 255, 255, 0.02);
         }
         .admin-nav-item.active {
-          background: rgba(212, 175, 55, 0.08);
-          border-left: 2px solid #d4af37;
-          color: #d4af37;
+          background: rgba(229, 9, 20, 0.08);
+          border-left: 2px solid #e50914;
+          color: #e50914;
           font-weight: 600;
         }
         .admin-logout-btn {
@@ -89,7 +89,7 @@ export default function AdminLayout() {
       <div className="admin-sidebar" style={{
         width: '240px', flexShrink: 0,
         background: '#0d0d0d',
-        borderRight: '1px solid rgba(212,175,55,0.08)',
+        borderRight: '1px solid rgba(229,9,20,0.08)',
         display: 'flex', flexDirection: 'column',
         padding: '24px 14px',
         position: 'fixed', height: '100vh', top: 0, left: 0,
@@ -99,9 +99,9 @@ export default function AdminLayout() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '36px', height: '36px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #d4af37, #8a6f1e)',
+              background: 'linear-gradient(135deg, #e50914, #99060d)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-              color: '#0a0a0a', boxShadow: '0 4px 10px rgba(212,175,55,0.2)'
+              color: '#ffffff', boxShadow: '0 4px 10px rgba(229,9,20,0.2)'
             }}>🛡️</div>
             <div>
               <div style={{ color: '#f5f0e8', fontSize: '14px', fontWeight: '700', fontFamily: "'DM Serif Display', serif" }}>Admin Panel</div>

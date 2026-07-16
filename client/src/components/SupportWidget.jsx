@@ -99,15 +99,15 @@ export default function SupportWidget() {
       <style>{`
         .support-btn {
           width: 38px; height: 38px; border-radius: 50%;
-          background: linear-gradient(135deg, #d4af37, #8a6f1e);
-          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
-          border: none; color: #0a0a0a; display: flex;
+          background: linear-gradient(135deg, #e50914, #99060d);
+          box-shadow: 0 4px 14px rgba(229, 9, 20, 0.35);
+          border: none; color: #ffffff; display: flex;
           align-items: center; justify-content: center;
           cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         .support-btn:hover {
           transform: scale(1.08) rotate(5deg);
-          box-shadow: 0 6px 24px rgba(212, 175, 55, 0.5);
+          box-shadow: 0 6px 24px rgba(229, 9, 20, 0.5);
         }
         .support-btn.active {
           transform: scale(0.9) rotate(-90deg);
@@ -117,7 +117,7 @@ export default function SupportWidget() {
           position: absolute; bottom: 56px; right: 0;
           width: 350px; background: rgba(18, 18, 18, 0.96);
           backdrop-filter: blur(16px);
-          border: 1px solid rgba(212, 175, 55, 0.25);
+          border: 1px solid rgba(229, 9, 20, 0.25);
           border-radius: 16px;
           box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
           overflow: hidden;
@@ -129,14 +129,14 @@ export default function SupportWidget() {
         }
 
         .support-hdr {
-          background: rgba(212, 175, 55, 0.06);
-          border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+          background: rgba(229, 9, 20, 0.06);
+          border-bottom: 1px solid rgba(229, 9, 20, 0.15);
           padding: 14px 20px; display: flex;
           align-items: center; justify-content: space-between;
         }
         .support-title {
           font-family: 'DM Serif Display', Georgia, serif;
-          color: #d4af37; font-size: 1.05rem; margin: 0;
+          color: #e50914; font-size: 1.05rem; margin: 0;
           display: flex; align-items: center; gap: 8px;
         }
         .support-close {
@@ -148,7 +148,7 @@ export default function SupportWidget() {
         .support-body { padding: 20px; }
         .support-label {
           display: block; font-size: 0.68rem; font-weight: 600;
-          color: #a09880; letter-spacing: 0.08em;
+          color: #a1a1aa; letter-spacing: 0.08em;
           text-transform: uppercase; margin-bottom: 6px;
         }
         .support-inp {
@@ -160,22 +160,22 @@ export default function SupportWidget() {
           margin-bottom: 14px; outline: none;
         }
         .support-inp:focus {
-          border-color: rgba(212, 175, 55, 0.5);
-          background: rgba(212, 175, 55, 0.02);
-          box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+          border-color: rgba(229, 9, 20, 0.5);
+          background: rgba(229, 9, 20, 0.02);
+          box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
         }
         .support-txt {
           min-height: 100px; resize: none;
         }
         .support-submit {
           width: 100%; padding: 11px; border-radius: 8px;
-          border: none; background: #d4af37; color: #0a0a0a;
+          border: none; background: #e50914; color: #ffffff;
           font-weight: 700; font-size: 0.88rem; cursor: pointer;
-          transition: all 0.2s; box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+          transition: all 0.2s; box-shadow: 0 4px 16px rgba(229, 9, 20, 0.25);
         }
         .support-submit:hover:not(:disabled) {
-          background: #f0d060; transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+          background: #ff4d4d; transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(229, 9, 20, 0.35);
         }
         .support-submit:disabled { opacity: 0.65; cursor: not-allowed; }
 
@@ -200,10 +200,10 @@ export default function SupportWidget() {
         .support-badge {
           background: rgba(18, 18, 18, 0.95);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(212, 175, 55, 0.45);
+          border: 1px solid rgba(229, 9, 20, 0.45);
           border-radius: 99px;
           padding: 8px 16px;
-          color: #d4af37;
+          color: #e50914;
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.08em;
@@ -219,8 +219,8 @@ export default function SupportWidget() {
           to { opacity: 1; transform: translateX(0) scale(1); }
         }
         @keyframes supportPulse {
-          from { box-shadow: 0 4px 16px rgba(212, 175, 55, 0.08); }
-          to { box-shadow: 0 4px 24px rgba(212, 175, 55, 0.25); }
+          from { box-shadow: 0 4px 16px rgba(229, 9, 20, 0.08); }
+          to { box-shadow: 0 4px 24px rgba(229, 9, 20, 0.25); }
         }
       `}</style>
 

@@ -243,7 +243,7 @@ export default function Quiz() {
                       style={{
                         padding: '16px', borderRadius: '12px', cursor: 'pointer',
                         border: `1.5px solid ${quizSource === 'note' ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
-                        background: quizSource === 'note' ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)',
+                        background: quizSource === 'note' ? 'rgba(229,9,20,0.08)' : 'rgba(255,255,255,0.02)',
                         transition: 'all 0.2s'
                       }}
                     >
@@ -262,7 +262,7 @@ export default function Quiz() {
                       style={{
                         padding: '16px', borderRadius: '12px', cursor: 'pointer',
                         border: `1.5px solid ${quizSource === 'custom' ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
-                        background: quizSource === 'custom' ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)',
+                        background: quizSource === 'custom' ? 'rgba(229,9,20,0.08)' : 'rgba(255,255,255,0.02)',
                         transition: 'all 0.2s'
                       }}
                     >
@@ -362,7 +362,7 @@ export default function Quiz() {
                           style={{
                             flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
                             border: `1.5px solid ${quizType === type.value ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`,
-                            background: quizType === type.value ? 'rgba(212,175,55,0.08)' : 'transparent',
+                            background: quizType === type.value ? 'rgba(229,9,20,0.08)' : 'transparent',
                             color: quizType === type.value ? 'var(--gold)' : 'var(--text-secondary, var(--t2))',
                             fontSize: '13px', fontWeight: '500', textAlign: 'center', transition: 'all 0.2s'
                           }}
@@ -384,7 +384,7 @@ export default function Quiz() {
                       </p>
                       <span style={{
                         fontSize: '20px', fontWeight: '500', color: 'var(--gold)',
-                        background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.25)',
+                        background: 'rgba(229,9,20,0.08)', border: '1px solid rgba(229,9,20,0.25)',
                         padding: '2px 12px', borderRadius: '8px'
                       }}>
                         {questionCount}
@@ -430,8 +430,8 @@ export default function Quiz() {
                     disabled={generating}
                     style={{
                       width: '100%', padding: '14px',
-                      background: 'linear-gradient(135deg, #d4af37, #8a6f1e)',
-                      color: '#0a0a0a', border: 'none', borderRadius: '12px',
+                      background: 'linear-gradient(135deg, #e50914, #99060d)',
+                      color: '#ffffff', border: 'none', borderRadius: '12px',
                       fontSize: '15px', fontWeight: '700', cursor: 'pointer',
                       opacity: generating ? 0.7 : 1
                     }}
