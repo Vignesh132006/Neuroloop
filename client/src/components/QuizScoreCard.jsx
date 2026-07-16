@@ -140,6 +140,25 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, onRetry, onClose }) => 
           transform: translateY(-1px);
           box-shadow: 0 8px 22px rgba(124,58,237,0.38);
         }
+        @media (max-width: 480px) {
+          .qs-card {
+            padding: 1.5rem 1rem !important;
+          }
+          .qs-title {
+            font-size: 1.4rem !important;
+          }
+          .qs-stats {
+            gap: 6px !important;
+          }
+          .qs-actions {
+            flex-direction: column;
+            gap: 8px !important;
+          }
+          .qs-btn-retry, .qs-btn-continue {
+            width: 100% !important;
+            flex: none !important;
+          }
+        }
       `}</style>
 
       <div className="qs-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
