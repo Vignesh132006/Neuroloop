@@ -189,8 +189,6 @@ export default function Dashboard() {
   return (
     <div className="app-layout">
       <style>{`
-        @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
-
         :root {
           --text-primary: var(--t1, #f5f0e8);
           --text-secondary: var(--t2, #a09880);
