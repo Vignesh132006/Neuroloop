@@ -156,11 +156,11 @@ export default function Dashboard() {
   // Topic mastery bar color helper
   const getTopicColor = (index) => {
     switch (index) {
-      case 0: return "#7F77DD"
-      case 1: return "#1D9E75"
-      case 2: return "#D85A30"
-      case 3: return "#378ADD"
-      default: return "#EF9F27"
+      case 0: return "#ff4d4d"
+      case 1: return "#e50914"
+      case 2: return "#b3000c"
+      case 3: return "#ff8080"
+      default: return "#e50914"
     }
   }
 
@@ -354,9 +354,9 @@ export default function Dashboard() {
                 Welcome back, {user?.name}!
               </h1>
               <div style={{
-                background: 'var(--bg-warning)',
-                color: 'var(--text-warning)',
-                border: '0.5px solid var(--border-warning)',
+                background: 'rgba(229, 9, 20, 0.12)',
+                color: '#ff4d4d',
+                border: '0.5px solid rgba(229, 9, 20, 0.3)',
                 padding: '3px 10px',
                 borderRadius: '20px',
                 fontSize: '12px',
@@ -378,7 +378,7 @@ export default function Dashboard() {
               <div style={{ flex: 1, height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  background: 'linear-gradient(90deg, #7F77DD, #1D9E75)',
+                  background: 'linear-gradient(90deg, #b3000c, #ff4d4d)',
                   borderRadius: '3px',
                   width: `${xpPercent}%`,
                   transition: 'width 1.2s ease'
@@ -394,9 +394,9 @@ export default function Dashboard() {
           <div className="stats-grid-row">
             {/* Card 1: Notes Written */}
             <div className="stat-card-custom">
-              <div className="stat-card-top-border" style={{ backgroundColor: '#AFA9EC' }} />
-              <div className="stat-icon-container" style={{ background: 'var(--bg-pro)' }}>
-                <i className="ti ti-notebook" style={{ color: '#AFA9EC', fontSize: '16px' }} />
+              <div className="stat-card-top-border" style={{ backgroundColor: '#ff4d4d' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(255, 77, 77, 0.15)' }}>
+                <i className="ti ti-notebook" style={{ color: '#ff4d4d', fontSize: '16px' }} />
               </div>
               <div className="stat-number-large">{stats.notesCount}</div>
               <div className="stat-label-caps">Notes Written</div>
@@ -405,9 +405,9 @@ export default function Dashboard() {
 
             {/* Card 2: Quizzes Taken */}
             <div className="stat-card-custom">
-              <div className="stat-card-top-border" style={{ backgroundColor: '#5DCAA5' }} />
-              <div className="stat-icon-container" style={{ background: 'rgba(29, 158, 117, 0.15)' }}>
-                <i className="ti ti-brain" style={{ color: '#5DCAA5', fontSize: '16px' }} />
+              <div className="stat-card-top-border" style={{ backgroundColor: '#e50914' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(229, 9, 20, 0.15)' }}>
+                <i className="ti ti-brain" style={{ color: '#e50914', fontSize: '16px' }} />
               </div>
               <div className="stat-number-large">{stats.quizzesCount}</div>
               <div className="stat-label-caps">Quizzes Taken</div>
@@ -416,9 +416,9 @@ export default function Dashboard() {
 
             {/* Card 3: Revisions Done */}
             <div className="stat-card-custom">
-              <div className="stat-card-top-border" style={{ backgroundColor: '#85B7EB' }} />
-              <div className="stat-icon-container" style={{ background: 'rgba(55, 138, 221, 0.15)' }}>
-                <i className="ti ti-refresh" style={{ color: '#85B7EB', fontSize: '16px' }} />
+              <div className="stat-card-top-border" style={{ backgroundColor: '#b3000c' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(179, 0, 12, 0.15)' }}>
+                <i className="ti ti-refresh" style={{ color: '#b3000c', fontSize: '16px' }} />
               </div>
               <div className="stat-number-large">{stats.revisionsCount}</div>
               <div className="stat-label-caps">Revisions Done</div>
@@ -427,9 +427,9 @@ export default function Dashboard() {
 
             {/* Card 4: Overall Mastery */}
             <div className="stat-card-custom">
-              <div className="stat-card-top-border" style={{ backgroundColor: '#EF9F27' }} />
-              <div className="stat-icon-container" style={{ background: 'var(--bg-warning)' }}>
-                <i className="ti ti-star" style={{ color: '#EF9F27', fontSize: '16px' }} />
+              <div className="stat-card-top-border" style={{ backgroundColor: '#ff8080' }} />
+              <div className="stat-icon-container" style={{ background: 'rgba(255, 128, 128, 0.15)' }}>
+                <i className="ti ti-star" style={{ color: '#ff8080', fontSize: '16px' }} />
               </div>
               <div className="stat-number-large">{overallMastery}%</div>
               <div className="stat-label-caps">Overall Mastery</div>
@@ -572,7 +572,7 @@ export default function Dashboard() {
                     <span>{doneCount} of 3 complete</span>
                   </div>
                   <div style={{ width: '100%', height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
-                    <div style={{ width: `${donePercent}%`, height: '100%', background: 'var(--fill-success)', borderRadius: '2px', transition: 'width 0.4s ease' }} />
+                    <div style={{ width: `${donePercent}%`, height: '100%', background: 'var(--gold)', borderRadius: '2px', transition: 'width 0.4s ease' }} />
                   </div>
                 </div>
               </div>
@@ -580,7 +580,7 @@ export default function Dashboard() {
               {/* Element 2: Neuro AI Tip Card */}
               <div style={{ marginBottom: '14px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7F77DD' }} />
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)' }} />
                   <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', fontWeight: 600 }}>Neuro says</span>
                 </div>
                 <div style={{
