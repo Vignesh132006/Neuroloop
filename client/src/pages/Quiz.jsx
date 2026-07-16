@@ -140,6 +140,18 @@ export default function Quiz() {
 
   return (
     <div className="app-layout">
+      <style>{`
+        .quiz-source-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        @media (max-width: 600px) {
+          .quiz-source-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
       <Sidebar />
       <div className="page-wrap">
         {toast && (
@@ -236,7 +248,7 @@ export default function Quiz() {
                   <p style={{ fontSize: '13px', color: 'var(--text-secondary, var(--t2))', marginBottom: '10px', fontWeight: '500' }}>
                     Step 1 — Where do you want questions from?
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="quiz-source-grid">
                     {/* Option 1: From my notes */}
                     <div
                       onClick={() => setQuizSource('note')}
