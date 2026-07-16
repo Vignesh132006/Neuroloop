@@ -376,7 +376,7 @@ export default function Login() {
         .lp-inp{
           width:100%;padding:12px 15px;
           background:var(--s1);
-          border:1px solid rgba(219,39,119,0.28);
+          border:1px solid rgba(229,9,20,0.28);
           border-radius:9px;color:var(--t1);font-size:0.9rem;
           transition:all 0.2s;
         }
@@ -444,8 +444,8 @@ export default function Login() {
         .lp-grid{
           position:absolute;inset:0;z-index:0;
           background-image:
-            linear-gradient(rgba(219,39,119,0.03) 1px,transparent 1px),
-            linear-gradient(90deg,rgba(219,39,119,0.03) 1px,transparent 1px);
+            linear-gradient(rgba(229,9,20,0.03) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(229,9,20,0.03) 1px,transparent 1px);
           background-size:48px 48px;
           animation:gridDrift 30s linear infinite;
         }
@@ -475,7 +475,7 @@ export default function Login() {
           pointer-events:none;
         }
         .neural-line{
-          stroke:rgba(219,39,119,0.12);
+          stroke:rgba(229,9,20,0.12);
           stroke-width:1;
           animation:neuralPulse ease-in-out infinite alternate;
         }
@@ -484,7 +484,7 @@ export default function Login() {
           to{stroke-opacity:0.2;stroke-width:1.2;}
         }
         .neural-node{
-          fill:rgba(219,39,119,0.25);
+          fill:rgba(229,9,20,0.25);
           animation:nodePulse ease-in-out infinite alternate;
         }
         @keyframes nodePulse{
@@ -492,7 +492,7 @@ export default function Login() {
           to{r:5;opacity:0.6;}
         }
         .neural-node-glow{
-          fill:none;stroke:rgba(219,39,119,0.15);
+          fill:none;stroke:rgba(229,9,20,0.15);
           animation:nodeGlow ease-in-out infinite alternate;
         }
         @keyframes nodeGlow{
@@ -511,23 +511,23 @@ export default function Login() {
         }
         .lp-ring-1{
           width:280px;height:280px;
-          border-color:rgba(219,39,119,0.1);
+          border-color:rgba(229,9,20,0.1);
           animation-duration:20s;
         }
         .lp-ring-2{
           width:440px;height:440px;
-          border-color:rgba(219,39,119,0.06);
+          border-color:rgba(229,9,20,0.06);
           animation-duration:30s;
           animation-direction:reverse;
         }
         .lp-ring-3{
           width:600px;height:600px;
-          border-color:rgba(219,39,119,0.05);
+          border-color:rgba(229,9,20,0.05);
           animation-duration:42s;
         }
         .lp-ring-4{
           width:760px;height:760px;
-          border-color:rgba(219,39,119,0.03);
+          border-color:rgba(229,9,20,0.03);
           animation-duration:55s;
           animation-direction:reverse;
         }
@@ -576,19 +576,19 @@ export default function Login() {
           box-shadow:
             0 0 0 1px var(--gold),
             0 0 30px var(--goldg),
-            0 0 80px rgba(219,39,119,0.15),
-            0 0 120px rgba(219,39,119,0.08);
+            0 0 80px rgba(229,9,20,0.15),
+            0 0 120px rgba(229,9,20,0.08);
           animation:coreBreath 3s ease-in-out infinite;
         }
         @keyframes coreBreath{
           0%,100%{
             box-shadow:0 0 0 1px var(--gold),0 0 30px var(--goldg),
-                       0 0 80px rgba(219,39,119,0.15),0 0 120px rgba(219,39,119,0.08);
+                       0 0 80px rgba(229,9,20,0.15),0 0 120px rgba(229,9,20,0.08);
             transform:scale(1);
           }
           50%{
             box-shadow:0 0 0 1px var(--goldl),0 0 50px var(--goldg),
-                       0 0 100px rgba(219,39,119,0.2),0 0 150px rgba(219,39,119,0.1);
+                       0 0 100px rgba(229,9,20,0.2),0 0 150px rgba(229,9,20,0.1);
             transform:scale(1.05);
           }
         }
@@ -616,7 +616,7 @@ export default function Login() {
         .lp-scan{
           position:absolute;left:0;right:0;
           height:1px;
-          background:linear-gradient(90deg,transparent,rgba(219,39,119,0.4),transparent);
+          background:linear-gradient(90deg,transparent,rgba(229,9,20,0.4),transparent);
           animation:scanMove 6s linear infinite;
           pointer-events:none;z-index:3;
         }
@@ -634,29 +634,29 @@ export default function Login() {
         }
         .lp-corner-tl{
           top:24px;left:24px;
-          border-top:2px solid rgba(219,39,119,0.4);
-          border-left:2px solid rgba(219,39,119,0.4);
+          border-top:2px solid rgba(229,9,20,0.4);
+          border-left:2px solid rgba(229,9,20,0.4);
           border-radius:4px 0 0 0;
           animation:cornerPulse 3s ease-in-out infinite;
         }
         .lp-corner-tr{
           top:24px;right:24px;
-          border-top:2px solid rgba(219,39,119,0.4);
-          border-right:2px solid rgba(219,39,119,0.4);
+          border-top:2px solid rgba(229,9,20,0.4);
+          border-right:2px solid rgba(229,9,20,0.4);
           border-radius:0 4px 0 0;
           animation:cornerPulse 3s ease-in-out infinite 0.75s;
         }
         .lp-corner-bl{
           bottom:24px;left:24px;
-          border-bottom:2px solid rgba(219,39,119,0.4);
-          border-left:2px solid rgba(219,39,119,0.4);
+          border-bottom:2px solid rgba(229,9,20,0.4);
+          border-left:2px solid rgba(229,9,20,0.4);
           border-radius:0 0 0 4px;
           animation:cornerPulse 3s ease-in-out infinite 1.5s;
         }
         .lp-corner-br{
           bottom:24px;right:24px;
-          border-bottom:2px solid rgba(219,39,119,0.4);
-          border-right:2px solid rgba(219,39,119,0.4);
+          border-bottom:2px solid rgba(229,9,20,0.4);
+          border-right:2px solid rgba(229,9,20,0.4);
           border-radius:0 0 4px 0;
           animation:cornerPulse 3s ease-in-out infinite 2.25s;
         }
@@ -681,7 +681,7 @@ export default function Login() {
           transition:opacity 0.4s ease;
         }
         .lp-q-auth{
-          font-size:0.68rem;color:rgba(219,39,119,0.7);
+          font-size:0.68rem;color:rgba(229,9,20,0.7);
           font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
         }
 
@@ -772,9 +772,9 @@ export default function Login() {
         /* Inline Forgot Password Panel styles */
         .fp-wrap{
           margin-top:4px;
-          border:1px solid rgba(212,175,55,0.2);
+          border:1px solid rgba(229,9,20,0.2);
           border-radius:12px;
-          background:rgba(212,175,55,0.03);
+          background:rgba(229,9,20,0.03);
           overflow:hidden;
           animation:fpExpand 0.35s cubic-bezier(0.22,1,0.36,1);
         }
@@ -787,7 +787,7 @@ export default function Login() {
           display:flex;align-items:center;
           justify-content:space-between;
           padding:12px 16px;
-          border-bottom:1px solid rgba(212,175,55,0.12);
+          border-bottom:1px solid rgba(229,9,20,0.12);
         }
         .fp-title{
           font-size:0.8rem;font-weight:600;
@@ -834,9 +834,9 @@ export default function Login() {
           margin-bottom:10px;
         }
         .fp-inp:focus{
-          border-color:rgba(212,175,55,0.5);
-          box-shadow:0 0 0 3px rgba(212,175,55,0.1);
-          background:rgba(212,175,55,0.03);
+          border-color:rgba(229,9,20,0.5);
+          box-shadow:0 0 0 3px rgba(229,9,20,0.1);
+          background:rgba(229,9,20,0.03);
           outline:none;
         }
         .fp-inp-pwd-wrap{position:relative;margin-bottom:10px;}
@@ -856,12 +856,12 @@ export default function Login() {
           border:none;background:var(--gold);
           color:#0a0a0a;font-size:0.85rem;font-weight:700;
           transition:all 0.2s;
-          box-shadow:0 3px 12px rgba(212,175,55,0.3);
+          box-shadow:0 3px 12px rgba(229,9,20,0.3);
         }
         .fp-btn:hover:not(:disabled){
           background:var(--goldl);
           transform:translateY(-1px);
-          box-shadow:0 6px 18px rgba(212,175,55,0.4);
+          box-shadow:0 6px 18px rgba(229,9,20,0.4);
         }
         .fp-btn:disabled{opacity:0.6;cursor:not-allowed;}
 
@@ -882,7 +882,7 @@ export default function Login() {
         .fp-notice{
           font-size:0.78rem;color:#a09880;
           margin-bottom:12px;padding:8px 12px;
-          background:rgba(212,175,55,0.08);
+          background:rgba(229,9,20,0.08);
           border-radius:8px;border-left:3px solid var(--gold);
           animation:fpExpand 0.25s ease;
           line-height:1.4;
@@ -901,10 +901,10 @@ export default function Login() {
           transition:all 0.2s;
         }
         .fp-otp-inp:focus{
-          border-color:rgba(212,175,55,0.5);
-          box-shadow:0 0 0 3px rgba(212,175,55,0.1);
+          border-color:rgba(229,9,20,0.5);
+          box-shadow:0 0 0 3px rgba(229,9,20,0.1);
           outline:none;
-          background:rgba(212,175,55,0.04);
+          background:rgba(229,9,20,0.04);
         }
 
         .fp-timer{
@@ -1358,7 +1358,7 @@ export default function Login() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      background: loading ? 'rgba(219,39,119,0.6)' : 'var(--gold)',
+                      background: loading ? 'rgba(229,9,20,0.6)' : 'var(--gold)',
                       cursor: loading ? 'not-allowed' : 'pointer'
                     }}
                   >
@@ -1569,7 +1569,7 @@ export default function Login() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      background: loading ? 'rgba(219,39,119,0.6)' : 'var(--gold)',
+                      background: loading ? 'rgba(229,9,20,0.6)' : 'var(--gold)',
                       cursor: loading ? 'not-allowed' : 'pointer'
                     }}
                   >
