@@ -14,6 +14,8 @@ import Leaderboard from "./pages/Leaderboard"
 import StudyPlans from "./pages/StudyPlans"
 import Settings   from "./pages/Settings"
 import GoogleAuthSuccess from './pages/GoogleAuthSuccess'
+import IntroPage from "./pages/IntroPage"
+import LoadingPage from "./pages/LoadingPage"
 
 
 import AdminLogin from './pages/admin/AdminLogin'
@@ -28,6 +30,8 @@ export default function App() {
       <AuthProvider>
         <Routes>
           {/* Public */}
+          <Route path="/" element={<IntroPage />} />
+          <Route path="/loading" element={<LoadingPage />} />
           <Route path="/login"  element={<Login />} />
           <Route path="/signup" element={<Navigate to="/login" replace />} />
           <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
