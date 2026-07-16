@@ -114,11 +114,11 @@ export default function Chat() {
         }
         @media (max-width: 768px) {
           .chat-page-wrap {
-            padding-bottom: 70px !important;
+            padding-bottom: 24px !important;
           }
           .chat-container-layout {
-            height: calc(100vh - 230px);
-            height: calc(100dvh - 230px);
+            height: calc(100vh - 170px);
+            height: calc(100dvh - 170px);
           }
         }
         @media (max-width: 600px) {
