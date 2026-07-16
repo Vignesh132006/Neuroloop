@@ -260,7 +260,7 @@ export default function Sidebar() {
         onClick={() => setMobileOpen(!mobileOpen)}
         style={{
           position: 'fixed', top: '1rem', left: '1rem',
-          zIndex: 1000, display: 'none',
+          zIndex: 9990, display: 'none',
           width: '40px', height: '40px',
           borderRadius: '50%',
           background: 'rgba(13,13,26,0.9)',
