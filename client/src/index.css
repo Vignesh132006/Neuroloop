@@ -854,6 +854,30 @@ body::after{
 .podium-slot:nth-child(2) { order: 1; } /* 2nd is left */
 .podium-slot:nth-child(3) { order: 3; } /* 3rd is right */
 
+@media (max-width: 600px) {
+  .podium-container {
+    gap: 0.5rem !important;
+    margin: 1.5rem 0 !important;
+  }
+  .podium-slot {
+    width: 96px !important;
+  }
+  .podium-avatar {
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 16px !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .podium-slot:nth-child(1) .podium-avatar {
+    width: 58px !important;
+    height: 58px !important;
+    font-size: 20px !important;
+  }
+  .podium-block {
+    font-size: 1.1rem !important;
+  }
+}
+
 /* SETTINGS STYLES */
 .settings-grid {
   display: grid;
