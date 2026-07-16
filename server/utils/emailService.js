@@ -69,7 +69,7 @@ async function sendWelcomeEmail(userEmail, userName) {
       </div>
     </div>
 
-    <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/dashboard"
+    <a href="${process.env.FRONTEND_URL || 'https://neuroloop-wine.vercel.app'}/dashboard"
        style="display:block;text-align:center;padding:14px 32px;
               background:linear-gradient(135deg,#7C3AED,#06B6D4);
               color:white;border-radius:9999px;text-decoration:none;
@@ -201,7 +201,7 @@ async function sendRevisionReminderEmail(userEmail, userName, dueNotes) {
       </p>
     </div>
 
-    <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/revision"
+    <a href="${process.env.FRONTEND_URL || 'https://neuroloop-wine.vercel.app'}/revision"
        style="display:block;text-align:center;padding:14px 32px;
               background:linear-gradient(135deg,#7C3AED,#06B6D4);
               color:white;border-radius:9999px;text-decoration:none;
