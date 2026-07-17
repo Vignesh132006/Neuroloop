@@ -30,7 +30,7 @@ export default function AdminLogin() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'radial-gradient(ellipse at top, rgba(229,9,20,0.08) 0%, transparent 60%), #0a0a0a',
+      background: 'radial-gradient(ellipse at top, rgba(255,59,48,0.08) 0%, transparent 60%), #0a0a0a',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter, sans-serif', overflow: 'hidden', position: 'relative'
     }}>
@@ -40,8 +40,8 @@ export default function AdminLogin() {
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes adminLogoPulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(229,9,20,0.3); }
-          50% { transform: scale(1.06); box-shadow: 0 0 25px rgba(229,9,20,0.5); }
+          0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,59,48,0.3); }
+          50% { transform: scale(1.06); box-shadow: 0 0 25px rgba(255,59,48,0.5); }
         }
         .admin-login-card {
           animation: adminCardReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -58,21 +58,21 @@ export default function AdminLogin() {
           transition: all 0.25s;
         }
         .admin-inp:focus {
-          border-color: rgba(229,9,20,0.55);
-          box-shadow: 0 0 0 3px rgba(229,9,20,0.1);
-          background: rgba(229,9,20,0.02);
+          border-color: rgba(255,59,48,0.55);
+          box-shadow: 0 0 0 3px rgba(255,59,48,0.1);
+          background: rgba(255,59,48,0.02);
         }
         .admin-btn {
           width: 100%; padding: 12px;
-          background: linear-gradient(135deg, #e50914, #99060d);
+          background: linear-gradient(135deg, #ff3b30, #a3151a);
           color: #ffffff; border: none; borderRadius: '10px';
           fontSize: '15px'; fontWeight: '700'; cursor: 'pointer';
-          box-shadow: 0 4px 15px rgba(229,9,20,0.25);
+          box-shadow: 0 4px 15px rgba(255,59,48,0.25);
           transition: all 0.25s;
         }
         .admin-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #ff4d4d, #e50914);
-          box-shadow: 0 6px 20px rgba(229,9,20,0.4);
+          background: linear-gradient(135deg, #ff6b76, #ff3b30);
+          box-shadow: 0 6px 20px rgba(255,59,48,0.4);
           transform: translateY(-1px);
         }
         .admin-btn:disabled {
@@ -83,17 +83,17 @@ export default function AdminLogin() {
       {/* Floating back background elements to match main app */}
       <div style={{
         position: 'absolute', width: '280px', height: '280px', borderRadius: '50%',
-        border: '1px solid rgba(229,9,20,0.05)', top: '10%', left: '10%', pointerEvents: 'none'
+        border: '1px solid rgba(255,59,48,0.05)', top: '10%', left: '10%', pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute', width: '400px', height: '400px', borderRadius: '50%',
-        border: '1px solid rgba(229,9,20,0.03)', bottom: '10%', right: '10%', pointerEvents: 'none'
+        border: '1px solid rgba(255,59,48,0.03)', bottom: '10%', right: '10%', pointerEvents: 'none'
       }} />
 
       <div className="admin-login-card" style={{
         width: '100%', maxWidth: '400px', margin: '0 16px',
         background: '#0d0d0d',
-        border: '1px solid rgba(229,9,20,0.12)',
+        border: '1px solid rgba(255,59,48,0.12)',
         borderRadius: '20px', padding: '40px',
         boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
         zIndex: 2
@@ -101,7 +101,7 @@ export default function AdminLogin() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div className="admin-logo-box" style={{
             width: '56px', height: '56px', borderRadius: '16px',
-            background: 'linear-gradient(135deg, #e50914, #99060d)',
+            background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '28px', margin: '0 auto 16px',
             color: '#ffffff'
