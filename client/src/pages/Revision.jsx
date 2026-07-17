@@ -167,7 +167,7 @@ export default function Revision() {
         <div className="stat-grid" style={{ marginBottom: '24px' }}>
           <div className="stat-card anim-card" style={{'--i': 0}}>
             <div className="stat-card-accent" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)', '--i': 0 }} />
-            <div className="stat-icon" style={{ background: 'rgba(229,9,20,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiRefreshCw /></div>
+            <div className="stat-icon" style={{ background: 'rgba(255,59,48,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiRefreshCw /></div>
             <div className="stat-val" style={{'--i': 0}}>{dueNotes.length}</div>
             <div className="stat-label">Due Today</div>
           </div>
