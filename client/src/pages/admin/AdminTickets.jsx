@@ -8,7 +8,7 @@ const adminApi = () => axios.create({
 })
 
 const STATUS_COLORS = {
-  open: { bg: 'rgba(229,9,20,0.08)', color: '#e50914', border: 'rgba(229,9,20,0.2)' },
+  open: { bg: 'rgba(255,59,48,0.08)', color: '#ff3b30', border: 'rgba(255,59,48,0.2)' },
   'in-progress': { bg: 'rgba(245,158,11,0.08)', color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
   resolved: { bg: 'rgba(16,185,129,0.08)', color: '#6ee7b7', border: 'rgba(16,185,129,0.2)' },
   closed: { bg: 'rgba(100,116,139,0.08)', color: '#94a3b8', border: 'rgba(100,116,139,0.2)' }
@@ -75,17 +75,17 @@ export default function AdminTickets() {
         }
         .admin-filter-btn:hover {
           color: #f5f0e8;
-          border-color: rgba(229,9,20,0.2);
+          border-color: rgba(255,59,48,0.2);
         }
         .admin-filter-btn.active {
-          background: linear-gradient(135deg, #e50914, #99060d);
+          background: linear-gradient(135deg, #ff3b30, #a3151a);
           color: #ffffff;
           border-color: transparent;
-          box-shadow: 0 4px 10px rgba(229,9,20,0.2);
+          box-shadow: 0 4px 10px rgba(255,59,48,0.2);
         }
         .admin-ticket-card {
           background: #0d0d0d;
-          border: 1px solid rgba(229, 9, 20, 0.08);
+          border: 1px solid rgba(255, 59, 48, 0.08);
           border-radius: 14px;
           padding: 18px 22px;
           cursor: pointer;
@@ -93,9 +93,9 @@ export default function AdminTickets() {
           animation: adminFadeInUp 0.5s ease both;
         }
         .admin-ticket-card:hover {
-          border-color: rgba(229,9,20,0.35);
+          border-color: rgba(255,59,48,0.35);
           background: #111111;
-          box-shadow: 0 8px 24px rgba(229,9,20,0.05);
+          box-shadow: 0 8px 24px rgba(255,59,48,0.05);
           transform: translateY(-2px);
         }
         .admin-modal-overlay {
@@ -110,14 +110,14 @@ export default function AdminTickets() {
         }
         .admin-modal-content {
           background: #0d0d0d;
-          border: 1px solid rgba(229, 9, 20, 0.15);
+          border: 1px solid rgba(255, 59, 48, 0.15);
           border-radius: 20px;
           padding: 32px;
           max-width: 560px;
           width: 90%;
           max-height: 85vh;
           overflow-y: auto;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(229,9,20,0.05);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,59,48,0.05);
           animation: adminModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         .admin-modal-close {
@@ -201,7 +201,7 @@ export default function AdminTickets() {
                     From: <span style={{ fontWeight: '500', color: '#f5f0e8' }}>{ticket.userName}</span> ({ticket.userEmail || ticket.user?.email})
                   </div>
                 </div>
-                <div style={{ fontSize: '20px', color: '#e50914', marginLeft: '12px' }}>›</div>
+                <div style={{ fontSize: '20px', color: '#ff3b30', marginLeft: '12px' }}>›</div>
               </div>
             </div>
           )
@@ -226,7 +226,7 @@ export default function AdminTickets() {
 
             <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
-                background: 'rgba(229,9,20,0.08)', color: '#e50914', border: '1px solid rgba(229,9,20,0.2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                background: 'rgba(255,59,48,0.08)', color: '#ff3b30', border: '1px solid rgba(255,59,48,0.2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {selected.category}
               </span>
               <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
@@ -239,11 +239,11 @@ export default function AdminTickets() {
             <div style={{ marginBottom: '20px' }}>
               <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>From</div>
               <div style={{ color: '#f5f0e8', fontSize: '13px' }}>
-                {selected.userName} — <span style={{ color: '#e50914', fontWeight: '500' }}>{selected.userEmail || selected.user?.email}</span>
+                {selected.userName} — <span style={{ color: '#ff3b30', fontWeight: '500' }}>{selected.userEmail || selected.user?.email}</span>
               </div>
             </div>
 
-            <div style={{ background: '#070707', border: '1px solid rgba(229,9,20,0.08)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
+            <div style={{ background: '#070707', border: '1px solid rgba(255,59,48,0.08)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
               <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Message</div>
               <p style={{ color: '#a09880', fontSize: '13px', lineHeight: '1.7', margin: 0, whiteSpace: 'pre-wrap' }}>
                 {selected.message}
