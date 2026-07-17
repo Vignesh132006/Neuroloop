@@ -36,8 +36,8 @@ export default function MotivationBanner({ streak = 0 }) {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg,rgba(229,9,20,0.1),rgba(229,9,20,0.04))',
-      border: '1px solid rgba(229,9,20,0.2)',
+      background: 'rgba(255,59,48,0.02)',
+      border: '1px solid rgba(255,59,48,0.2)',
       borderRadius: 12,
       padding: '11px 18px',
       display: 'flex',
@@ -51,19 +51,19 @@ export default function MotivationBanner({ streak = 0 }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         {streak > 0 && (
           <div style={{
-            background: 'rgba(229,9,20,0.15)',
-            border: '1px solid rgba(229,9,20,0.3)',
+            background: 'rgba(255,59,48,0.15)',
+            border: '1px solid rgba(255,59,48,0.3)',
             borderRadius: '9999px',
             padding: '4px 12px',
             fontSize: '0.82rem',
             fontWeight: 700,
-            color: '#e50914',
+            color: '#ff3b30',
             whiteSpace: 'nowrap',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
           }}>
-            <FiZap size={12} fill="#e50914" /> {streak} day{streak !== 1 ? 's' : ''}
+            <FiZap size={12} fill="#ff3b30" /> {streak} day{streak !== 1 ? 's' : ''}
           </div>
         )}
         <p style={{ margin: 0, color: 'var(--t2)', fontSize: '0.875rem' }}>{quotes[quoteIdx]}</p>
