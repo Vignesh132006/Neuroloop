@@ -106,7 +106,7 @@ export default function SupportPanel() {
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 998,
-          background: 'linear-gradient(135deg, #e50914, #99060d)',
+          background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
           color: '#ffffff',
           border: 'none',
           borderRadius: '0 8px 8px 0',
@@ -120,7 +120,7 @@ export default function SupportPanel() {
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '2px 0 12px rgba(229,9,20,0.35)'
+          boxShadow: '2px 0 12px rgba(255,59,48,0.35)'
         }}
         title="Open Support Panel"
       >
@@ -191,10 +191,10 @@ export default function SupportPanel() {
           ].map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
               flex: 1, padding: '12px', border: 'none', cursor: 'pointer',
-              background: activeTab === tab.id ? 'rgba(229,9,20,0.08)' : 'transparent',
-              color: activeTab === tab.id ? '#e50914' : '#94a3b8',
+              background: activeTab === tab.id ? 'rgba(255,59,48,0.08)' : 'transparent',
+              color: activeTab === tab.id ? '#ff3b30' : '#94a3b8',
               fontSize: '13px', fontWeight: activeTab === tab.id ? '600' : '400',
-              borderBottom: activeTab === tab.id ? '2px solid #e50914' : '2px solid transparent',
+              borderBottom: activeTab === tab.id ? '2px solid #ff3b30' : '2px solid transparent',
               transition: 'all 0.2s'
             }}>{tab.label}</button>
           ))}
@@ -213,8 +213,8 @@ export default function SupportPanel() {
                   </div>
                   <div style={{
                     fontFamily: 'monospace', fontSize: '13px',
-                    background: 'rgba(229,9,20,0.06)', border: '1px solid rgba(229,9,20,0.25)',
-                    borderRadius: '8px', padding: '8px 16px', color: '#e50914',
+                    background: 'rgba(255,59,48,0.06)', border: '1px solid rgba(255,59,48,0.25)',
+                    borderRadius: '8px', padding: '8px 16px', color: '#ff3b30',
                     display: 'inline-block', marginBottom: '12px'
                   }}>{ticketId}</div>
                   <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '20px', lineHeight: '1.6' }}>
@@ -222,9 +222,9 @@ export default function SupportPanel() {
                   </p>
                   <button onClick={() => { setSubmitted(false); setForm({ category: '', subject: '', message: '', priority: 'medium' }) }}
                     style={{
-                      padding: '10px 20px', background: 'rgba(229,9,20,0.08)',
-                      border: '1px solid rgba(229,9,20,0.25)', borderRadius: '8px',
-                      color: '#e50914', fontSize: '13px', cursor: 'pointer'
+                      padding: '10px 20px', background: 'rgba(255,59,48,0.08)',
+                      border: '1px solid rgba(255,59,48,0.25)', borderRadius: '8px',
+                      color: '#ff3b30', fontSize: '13px', cursor: 'pointer'
                     }}>Submit Another</button>
                 </div>
               ) : (
@@ -278,9 +278,9 @@ export default function SupportPanel() {
                         <button key={p.val} onClick={() => setForm({...form, priority: p.val})}
                           style={{
                             flex: 1, padding: '7px', borderRadius: '7px', cursor: 'pointer',
-                            border: `1px solid ${form.priority === p.val ? 'rgba(229,9,20,0.45)' : 'rgba(255,255,255,0.08)'}`,
-                            background: form.priority === p.val ? 'rgba(229,9,20,0.08)' : 'transparent',
-                            color: form.priority === p.val ? '#e50914' : '#94a3b8',
+                            border: `1px solid ${form.priority === p.val ? 'rgba(255,59,48,0.45)' : 'rgba(255,255,255,0.08)'}`,
+                            background: form.priority === p.val ? 'rgba(255,59,48,0.08)' : 'transparent',
+                            color: form.priority === p.val ? '#ff3b30' : '#94a3b8',
                             fontSize: '12px'
                           }}>{p.label}</button>
                       ))}
@@ -314,7 +314,7 @@ export default function SupportPanel() {
                     disabled={loading || !form.category || form.subject.length < 5 || form.message.length < 20}
                     style={{
                       width: '100%', padding: '12px',
-                      background: 'linear-gradient(135deg, #e50914, #99060d)',
+                      background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
                       color: '#ffffff', border: 'none', borderRadius: '10px',
                       fontSize: '14px', fontWeight: '700', cursor: 'pointer',
                       opacity: (loading || !form.category || form.subject.length < 5 || form.message.length < 20) ? 0.5 : 1
@@ -335,11 +335,11 @@ export default function SupportPanel() {
               ))}
               <div style={{
                 marginTop: '20px', padding: '14px',
-                background: 'rgba(229,9,20,0.06)',
-                border: '1px solid rgba(229,9,20,0.25)',
+                background: 'rgba(255,59,48,0.06)',
+                border: '1px solid rgba(255,59,48,0.25)',
                 borderRadius: '10px', textAlign: 'center'
               }}>
-                <div style={{ fontSize: '13px', color: '#e50914', marginBottom: '4px' }}>
+                <div style={{ fontSize: '13px', color: '#ff3b30', marginBottom: '4px' }}>
                   Still need help?
                 </div>
                 <div style={{ fontSize: '12px', color: '#94a3b8' }}>
