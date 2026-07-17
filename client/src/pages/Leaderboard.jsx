@@ -18,7 +18,7 @@ function PodiumSection({ top3 }) {
     <div className="podium-container">
       {slots.map((slot) => (
         <div key={slot.rank} className="podium-slot">
-          {slot.rank === 1 && <div className="crown-float" style={{fontSize:'1.2rem'}}><svg width="24" height="24" viewBox="0 0 24 24" fill="#e50914" stroke="none"><path d="M2 8l4 4 6-6 6 6 4-4-2 12H4L2 8z"/><rect x="4" y="18" width="16" height="2" rx="1"/></svg></div>}
+          {slot.rank === 1 && <div className="crown-float" style={{fontSize:'1.2rem'}}><svg width="24" height="24" viewBox="0 0 24 24" fill="#ff3b30" stroke="none"><path d="M2 8l4 4 6-6 6 6 4-4-2 12H4L2 8z"/><rect x="4" y="18" width="16" height="2" rx="1"/></svg></div>}
           <div
             className="podium-avatar"
             style={{
@@ -35,7 +35,7 @@ function PodiumSection({ top3 }) {
             {slot.user.name}
           </p>
           <span style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-            <FiZap size={12} fill="#e50914" /> {slot.user.streak} days
+            <FiZap size={12} fill="#ff3b30" /> {slot.user.streak} days
           </span>
           <div className="podium-block" style={{
             height: `${slot.blockHeight}px`,
@@ -136,7 +136,7 @@ export default function Leaderboard() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                               <div style={{
                                 width: '32px', height: '32px', borderRadius: '50%',
-                                background: isSelf ? 'linear-gradient(135deg, var(--gold), var(--goldl))' : 'rgba(229,9,20,0.2)',
+                                background: isSelf ? 'linear-gradient(135deg, var(--gold), var(--goldl))' : 'rgba(255,59,48,0.2)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 color: isSelf ? '#ffffff' : '#fff', fontWeight: 700, fontSize: '0.8rem',
                               }}>
@@ -162,7 +162,7 @@ export default function Leaderboard() {
                               fontWeight: 700, fontSize: '0.95rem', color: 'var(--gold)',
                               display: 'inline-flex', alignItems: 'center', gap: '4px',
                             }}>
-                              <FiZap size={14} fill="#e50914" /> {u.streak} day{u.streak !== 1 ? 's' : ''}
+                              <FiZap size={14} fill="#ff3b30" /> {u.streak} day{u.streak !== 1 ? 's' : ''}
                             </span>
                           </td>
                         </tr>
