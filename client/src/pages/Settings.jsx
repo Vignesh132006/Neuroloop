@@ -108,7 +108,7 @@ export default function Settings() {
                   <div className="detail-row">
                     <span className="detail-label">Current Streak</span>
                     <strong className="detail-value" style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      {user.streak} day{user.streak !== 1 ? "s" : ""} <FiZap fill="#e50914" />
+                      {user.streak} day{user.streak !== 1 ? "s" : ""} <FiZap fill="#ff3b30" />
                     </strong>
                   </div>
                 </div>
