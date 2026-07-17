@@ -82,7 +82,7 @@ export default function LoadingPage() {
 
         .loading-bar-track {
           height: 2px;
-          background: rgba(229,9,20, 0.12);
+          background: rgba(255,59,48, 0.12);
           border-radius: 1px;
           overflow: hidden;
           width: 100%;
@@ -108,7 +108,7 @@ export default function LoadingPage() {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: rgba(229,9,20, 0.6);
+          background: rgba(255,59,48, 0.6);
           animation: textFade 1.2s ease infinite;
         }
 
@@ -141,8 +141,8 @@ export default function LoadingPage() {
         <svg width="60" height="60" viewBox="0 0 60 60">
           <defs>
             <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#e50914" />
-              <stop offset="100%" stopColor="#ff4d4d" />
+              <stop offset="0%" stopColor="#ff3b30" />
+              <stop offset="100%" stopColor="#ff6b76" />
             </linearGradient>
           </defs>
           <rect x="8" y="8" width="44" height="44" rx="12"
