@@ -23,10 +23,10 @@ const S = `
   }
   .sb-logo-mark{
     width:34px;height:34px;border-radius:9px;
-    background:linear-gradient(135deg,#e50914,#99060d);
+    background:linear-gradient(135deg,#ff3b30,#a3151a);
     display:flex;align-items:center;justify-content:center;
     font-size:17px;
-    box-shadow:0 4px 14px rgba(229,9,20,0.35);
+    box-shadow:0 4px 14px rgba(255,59,48,0.35);
     flex-shrink:0;
   }
   .sb-logo-name{
@@ -34,7 +34,7 @@ const S = `
     font-size:1.15rem;color:#f5f0e8;
     letter-spacing:-0.01em;
   }
-  .sb-logo-name span{color:#e50914;}
+  .sb-logo-name span{color:#ff3b30;}
 
   .sb-group-label{
     font-size:0.6rem;font-weight:700;
@@ -57,7 +57,7 @@ const S = `
     content:'';
     position:absolute;left:0;top:20%;bottom:20%;
     width:2px;border-radius:99px;
-    background:#e50914;
+    background:#ff3b30;
     transform:scaleY(0);
     transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
     transform-origin:center;
@@ -68,13 +68,13 @@ const S = `
   }
   .sb-link:hover::after{transform:scaleY(0.5);opacity:0.5;}
   .sb-link.active{
-    background:rgba(229,9,20,0.1);
-    color:#e50914;
-    border-color:rgba(229,9,20,0.25);
+    background:rgba(255,59,48,0.1);
+    color:#ff3b30;
+    border-color:rgba(255,59,48,0.25);
   }
   .sb-link.active::after{transform:scaleY(1);}
   .sb-link.active .sb-link-icon{
-    filter:drop-shadow(0 0 5px rgba(229,9,20,0.7));
+    filter:drop-shadow(0 0 5px rgba(255,59,48,0.7));
   }
   .sb-link-icon{
     font-size:1rem;width:20px;
@@ -91,8 +91,8 @@ const S = `
   .sb-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
 
   .sb-streak{
-    background:linear-gradient(135deg,rgba(229,9,20,0.1),rgba(229,9,20,0.04));
-    border:1px solid rgba(229,9,20,0.22);
+    background:linear-gradient(135deg,rgba(255,59,48,0.1),rgba(255,59,48,0.04));
+    border:1px solid rgba(255,59,48,0.22);
     border-radius:11px;padding:11px 13px;
     display:flex;align-items:center;gap:9px;
     margin-top: 10px;
@@ -105,7 +105,7 @@ const S = `
     0%,100%{transform:scale(1) rotate(-4deg);}
     50%{transform:scale(1.2) rotate(4deg);}
   }
-  .sb-streak-num{font-weight:700;font-size:1rem;color:#e50914;}
+  .sb-streak-num{font-weight:700;font-size:1rem;color:#ff3b30;}
   .sb-streak-lbl{font-size:0.7rem;color:rgba(255,255,255,0.3);}
 
   .sb-user{
@@ -116,7 +116,7 @@ const S = `
   }
   .sb-avatar{
     width:33px;height:33px;border-radius:50%;
-    background:linear-gradient(135deg,#e50914,#99060d);
+    background:linear-gradient(135deg,#ff3b30,#a3151a);
     display:flex;align-items:center;justify-content:center;
     font-weight:700;font-size:0.85rem;color:#ffffff;
     flex-shrink:0;
@@ -160,8 +160,8 @@ const S = `
     transition: all 0.2s;
   }
   .sb-mobile-link.active {
-    color: #e50914;
-    background: rgba(229,9,20,0.12);
+    color: #ff3b30;
+    background: rgba(255,59,48,0.12);
   }
 
   @media (max-width: 768px) {
@@ -325,8 +325,8 @@ export default function Sidebar() {
           <div className="sb-bottom">
             {/* Streak Widget */}
             <div className="sb-streak">
-              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#e50914' }}>
-                <FiZap size={18} fill="#e50914" />
+              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#ff3b30' }}>
+                <FiZap size={18} fill="#ff3b30" />
               </span>
               <div>
                 <div className="sb-streak-num">
