@@ -58,8 +58,8 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-icon {
           width: 56px; height: 56px; border-radius: 16px;
-          background: linear-gradient(135deg,rgba(229,9,20,0.15),rgba(229,9,20,0.05));
-          border: 1px solid rgba(229,9,20,0.3);
+          background: linear-gradient(135deg,rgba(255,59,48,0.15),rgba(255,59,48,0.05));
+          border: 1px solid rgba(255,59,48,0.3);
           display: flex; align-items: center; justify-content: center;
           font-size: 1.6rem; margin-bottom: 16px;
           animation: iconPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
@@ -79,10 +79,10 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-email-badge {
           display: inline-block;
-          background: rgba(229,9,20,0.1);
-          border: 1px solid rgba(229,9,20,0.25);
+          background: rgba(255,59,48,0.1);
+          border: 1px solid rgba(255,59,48,0.25);
           border-radius: 99px; padding: 3px 14px;
-          font-size: 0.8rem; color: #e50914;
+          font-size: 0.8rem; color: #ff3b30;
           font-weight: 600; margin-bottom: 24px;
         }
         .evs-otp-wrap {
@@ -97,16 +97,16 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
           color: #f5f0e8; font-size: 1.4rem;
           font-weight: 700; text-align: center;
           transition: all 0.2s; outline: none;
-          caret-color: #e50914;
+          caret-color: #ff3b30;
         }
         .evs-otp-box:focus {
-          border-color: rgba(229,9,20,0.6);
-          box-shadow: 0 0 0 3px rgba(229,9,20,0.12);
-          background: rgba(229,9,20,0.04);
+          border-color: rgba(255,59,48,0.6);
+          box-shadow: 0 0 0 3px rgba(255,59,48,0.12);
+          background: rgba(255,59,48,0.04);
         }
         .evs-otp-box.filled {
-          border-color: rgba(229,9,20,0.4);
-          color: #e50914;
+          border-color: rgba(255,59,48,0.4);
+          color: #ff3b30;
         }
         .evs-error {
           width: 100%; font-size: 0.78rem; color: #fca5a5;
@@ -130,16 +130,16 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-btn {
           width: 100%; padding: 13px; border-radius: 10px;
-          border: none; background: #e50914;
+          border: none; background: #ff3b30;
           color: #ffffff; font-size: 0.92rem; font-weight: 700;
           letter-spacing: 0.02em; cursor: pointer;
-          box-shadow: 0 4px 20px rgba(229,9,20,0.35);
+          box-shadow: 0 4px 20px rgba(255,59,48,0.35);
           transition: all 0.2s; margin-bottom: 14px;
         }
         .evs-btn:hover:not(:disabled) {
-          background: #ff4d4d;
+          background: #ff6b76;
           transform: translateY(-1px);
-          box-shadow: 0 8px 28px rgba(229,9,20,0.45);
+          box-shadow: 0 8px 28px rgba(255,59,48,0.45);
         }
         .evs-btn:disabled {
           opacity: 0.55; cursor: not-allowed; transform: none;
@@ -151,7 +151,7 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-resend-btn {
           background: none; border: none;
-          color: #e50914; font-size: 0.78rem;
+          color: #ff3b30; font-size: 0.78rem;
           cursor: pointer; text-decoration: underline;
           transition: opacity 0.2s;
         }
@@ -188,7 +188,7 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
                style={{background:'#10b981',boxShadow:'0 0 6px #10b981'}}/>
           <div className="evs-step-line"/>
           <div className="evs-step-dot"
-               style={{background:'#e50914',boxShadow:'0 0 6px #e50914',
+               style={{background:'#ff3b30',boxShadow:'0 0 6px #ff3b30',
                        transform:'scale(1.4)'}}/>
           <div className="evs-step-line"/>
           <div className="evs-step-dot"
