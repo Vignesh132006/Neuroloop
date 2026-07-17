@@ -247,7 +247,7 @@ export default function IntroPage() {
           height: 600px;
           top: -200px;
           left: -200px;
-          background: radial-gradient(circle, rgba(229,9,20, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255, 59, 48, 0.08) 0%, transparent 70%);
         }
         .orb-2 {
           width: 500px;
@@ -262,7 +262,7 @@ export default function IntroPage() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          background: radial-gradient(circle, rgba(229,9,20, 0.04) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255, 59, 48, 0.04) 0%, transparent 70%);
         }
 
         .hero-content {
@@ -289,7 +289,7 @@ export default function IntroPage() {
         .label-line {
           width: 16px;
           height: 1px;
-          background-color: rgba(229,9,20, 0.3);
+          background-color: rgba(255, 59, 48, 0.3);
         }
 
         .main-heading {
@@ -297,7 +297,7 @@ export default function IntroPage() {
           font-weight: 600;
           line-height: 1.1;
           letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--t1) 0%, rgba(229,9,20,0.8) 100%);
+          background: linear-gradient(135deg, var(--t1) 0%, rgba(255, 59, 48, 0.8) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -341,7 +341,7 @@ export default function IntroPage() {
         .scroll-line {
           height: 40px;
           width: 1px;
-          background: rgba(229,9,20, 0.55);
+          background: rgba(255, 59, 48, 0.55);
           position: relative;
         }
 
@@ -409,8 +409,8 @@ export default function IntroPage() {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1px;
-          background-color: rgba(229,9,20, 0.15);
-          border: 1px solid rgba(229,9,20, 0.15);
+          background-color: rgba(255, 59, 48, 0.15);
+          border: 1px solid rgba(255, 59, 48, 0.15);
           border-radius: 8px;
           overflow: hidden;
         }
@@ -422,7 +422,7 @@ export default function IntroPage() {
           overflow: hidden;
           cursor: default;
           transition: background-color 0.3s ease;
-          border: 1px solid rgba(229,9,20, 0.08);
+          border: 1px solid rgba(255, 59, 48, 0.08);
           opacity: 0; /* Animated on scroll */
         }
 
@@ -474,8 +474,8 @@ export default function IntroPage() {
         .stats-section {
           background-color: #09090b;
           padding: 60px 24px;
-          border-top: 1px solid rgba(229,9,20, 0.08);
-          border-bottom: 1px solid rgba(229,9,20, 0.08);
+          border-top: 1px solid rgba(255, 59, 48, 0.08);
+          border-bottom: 1px solid rgba(255, 59, 48, 0.08);
           position: relative;
           z-index: 2;
         }
@@ -581,7 +581,7 @@ export default function IntroPage() {
         /* Footer */
         .footer {
           padding: 40px 24px;
-          border-top: 1px solid rgba(229,9,20, 0.08);
+          border-top: 1px solid rgba(255, 59, 48, 0.08);
           text-align: center;
           font-size: 12px;
           color: var(--t2);
