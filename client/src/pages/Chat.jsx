@@ -80,7 +80,7 @@ export default function Chat() {
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:rgba(229,9,20,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:rgba(255,59,48,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
       .replace(/\n/g, "<br/>")
   }
 
