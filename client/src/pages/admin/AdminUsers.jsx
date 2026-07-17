@@ -46,7 +46,7 @@ export default function AdminUsers() {
         }
         .admin-users-table-container {
           background: #0d0d0d;
-          border: 1px solid rgba(229, 9, 20, 0.08);
+          border: 1px solid rgba(255, 59, 48, 0.08);
           border-radius: 16px;
           overflow: hidden;
           animation: adminFadeInUp 0.5s ease both;
@@ -64,32 +64,32 @@ export default function AdminUsers() {
           transition: all 0.25s;
         }
         .admin-search-inp:focus {
-          border-color: rgba(229, 9, 20, 0.5);
-          box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
-          background: rgba(229, 9, 20, 0.01);
+          border-color: rgba(255, 59, 48, 0.5);
+          box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
+          background: rgba(255, 59, 48, 0.01);
         }
         .admin-user-row {
           border-bottom: 1px solid rgba(255, 255, 255, 0.03);
           transition: background 0.2s ease;
         }
         .admin-user-row:hover {
-          background: rgba(229, 9, 20, 0.02) !important;
+          background: rgba(255, 59, 48, 0.02) !important;
         }
         .admin-btn-action-view {
           padding: 5px 12px;
-          background: rgba(229, 9, 20, 0.08);
-          border: 1px solid rgba(229, 9, 20, 0.2);
+          background: rgba(255, 59, 48, 0.08);
+          border: 1px solid rgba(255, 59, 48, 0.2);
           border-radius: 6px;
-          color: #e50914;
+          color: #ff3b30;
           font-size: 12px;
           cursor: pointer;
           font-weight: 600;
           transition: all 0.2s;
         }
         .admin-btn-action-view:hover {
-          background: #e50914;
+          background: #ff3b30;
           color: #ffffff;
-          box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
+          box-shadow: 0 0 10px rgba(255, 59, 48, 0.2);
         }
         .admin-btn-action-delete {
           padding: 5px 12px;
@@ -118,10 +118,10 @@ export default function AdminUsers() {
           transition: all 0.2s;
         }
         .admin-page-btn.active {
-          background: linear-gradient(135deg, #e50914, #99060d);
+          background: linear-gradient(135deg, #ff3b30, #a3151a);
           color: #ffffff;
           font-weight: 600;
-          box-shadow: 0 4px 10px rgba(229, 9, 20, 0.2);
+          box-shadow: 0 4px 10px rgba(255, 59, 48, 0.2);
         }
       `}</style>
 
@@ -141,7 +141,7 @@ export default function AdminUsers() {
       <div className="admin-users-table-container">
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid rgba(229,9,20,0.1)', background: 'rgba(229,9,20,0.02)' }}>
+            <tr style={{ borderBottom: '1px solid rgba(255,59,48,0.1)', background: 'rgba(255,59,48,0.02)' }}>
               {['User', 'Email', 'Streak', 'Notes', 'Quizzes', 'Joined', 'Actions'].map(h => (
                 <th key={h} style={{ padding: '14px 18px', textAlign: 'left',
                   color: '#a09880', fontSize: '11px', fontWeight: '600',
@@ -160,7 +160,7 @@ export default function AdminUsers() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{
                       width: '32px', height: '32px', borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #e50914, #99060d)',
+                      background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: '#ffffff', fontSize: '13px', fontWeight: '700', flexShrink: 0
                     }}>{user.name?.charAt(0).toUpperCase()}</div>
@@ -191,7 +191,7 @@ export default function AdminUsers() {
 
         {data.pages > 1 && (
           <div style={{ padding: '16px', display: 'flex', gap: '8px', justifyContent: 'center',
-            borderTop: '1px solid rgba(229,9,20,0.08)', background: 'rgba(0,0,0,0.2)' }}>
+            borderTop: '1px solid rgba(255,59,48,0.08)', background: 'rgba(0,0,0,0.2)' }}>
             {Array.from({ length: data.pages }, (_, i) => i + 1).map(p => (
               <button key={p} onClick={() => setPage(p)}
                 className={`admin-page-btn ${p === page ? 'active' : ''}`}>{p}</button>
