@@ -351,38 +351,6 @@ export default function Sidebar() {
               </div>
             )}
 
-            {/* Admin Panel button */}
-            <a
-              href="/admin/login"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                background: 'rgba(124,58,237,0.08)',
-                border: '1px solid rgba(124,58,237,0.15)',
-                color: '#a78bfa',
-                fontSize: '12px',
-                fontWeight: '500',
-                textDecoration: 'none',
-                marginBottom: '8px',
-                transition: 'all 0.2s',
-                cursor: 'pointer',
-                justifyContent: 'center'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(124,58,237,0.15)'
-                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.3)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(124,58,237,0.08)'
-                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.15)'
-              }}
-            >
-              <i className="ti ti-shield-lock" aria-hidden="true" style={{ fontSize: '14px' }}></i>
-              Admin Panel
-            </a>
 
             {/* Logout */}
             <button onClick={handleLogout} className="sb-logout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>

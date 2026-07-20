@@ -188,18 +188,50 @@ export default function Onboarding() {
 
         .ob-card {
           padding: 24px 28px;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 12px;
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 14px;
           cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
+          transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
           position: relative;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
         }
         .ob-card:hover {
-          border-color: rgba(124,58,237,0.4);
-          background: rgba(124,58,237,0.04);
+          transform: translateY(-4px) scale(1.01);
+          background: rgba(255,255,255,0.04);
+          box-shadow: 0 12px 24px -10px rgba(0,0,0,0.5);
         }
+        .ob-card.beginner:hover {
+          border-color: rgba(16,185,129,0.35);
+          box-shadow: 0 12px 24px -10px rgba(16,185,129,0.15);
+        }
+        .ob-card.intermediate:hover {
+          border-color: rgba(245,158,11,0.35);
+          box-shadow: 0 12px 24px -10px rgba(245,158,11,0.15);
+        }
+        .ob-card.advanced:hover {
+          border-color: rgba(239,68,68,0.35);
+          box-shadow: 0 12px 24px -10px rgba(239,68,68,0.15);
+        }
+        .ob-card.beginner.selected {
+          border-color: #10b981;
+          background: rgba(16,185,129,0.07);
+          box-shadow: 0 8px 20px -8px rgba(16,185,129,0.25);
+        }
+        .ob-card.intermediate.selected {
+          border-color: #f59e0b;
+          background: rgba(245,158,11,0.07);
+          box-shadow: 0 8px 20px -8px rgba(245,158,11,0.25);
+        }
+        .ob-card.advanced.selected {
+          border-color: #ef4444;
+          background: rgba(239,68,68,0.07);
+          box-shadow: 0 8px 20px -8px rgba(239,68,68,0.25);
+        }
+        /* Fallback select border for goal cards */
         .ob-card.selected {
           border-color: #7c3aed;
           background: rgba(124,58,237,0.08);
@@ -219,14 +251,14 @@ export default function Onboarding() {
         }
         .ob-card-name {
           font-size: 17px;
-          font-weight: 500;
+          font-weight: 600;
           color: #f1f5f9;
-          margin-bottom: 6px;
+          margin-bottom: 2px;
           padding-left: 4px;
         }
         .ob-card-desc {
           font-size: 13px;
-          color: rgba(255,255,255,0.4);
+          color: rgba(255,255,255,0.45);
           line-height: 1.5;
           padding-left: 4px;
         }
@@ -423,7 +455,7 @@ export default function Onboarding() {
                 ].map((card) => (
                   <div
                     key={card.value}
-                    className={`ob-card${level === card.value ? ' selected' : ''}`}
+                    className={`ob-card ${card.value}${level === card.value ? ' selected' : ''}`}
                     onClick={() => setLevel(card.value)}
                     role="button"
                     aria-pressed={level === card.value}
@@ -431,7 +463,7 @@ export default function Onboarding() {
                   >
                     <div className="ob-card-accent" style={{ background: card.color }} />
                     {level === card.value && (
-                      <div className="ob-card-check" aria-label="Selected">
+                      <div className="ob-card-check" aria-label="Selected" style={{ background: card.color }}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <polyline points="2,6 5,9 10,3" stroke="white" strokeWidth="1.8"
                             strokeLinecap="round" strokeLinejoin="round" />

@@ -9,25 +9,40 @@ export default function SupportPanel() {
   const [submitted, setSubmitted] = useState(false)
   const [ticketId, setTicketId] = useState('')
   const [isSettingEnabled, setIsSettingEnabled] = useState(true)
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(false)
 
   useEffect(() => {
-    const checkSetting = () => {
+    const checkSettingAndOnboarding = () => {
       const stored = localStorage.getItem("showSupportPanel")
       setIsSettingEnabled(stored !== "false")
+
+      try {
+        const storedUser = localStorage.getItem("user")
+        if (storedUser && storedUser !== 'undefined') {
+          const userObj = JSON.parse(storedUser)
+          if (userObj && userObj.onboardingCompleted) {
+            setIsOnboardingCompleted(true)
+            return
+          }
+        }
+      } catch (e) {
+        console.error('[SupportPanel] Error parsing user:', e)
+      }
+      setIsOnboardingCompleted(false)
     }
 
-    checkSetting()
+    checkSettingAndOnboarding()
 
-    window.addEventListener("support-setting-changed", checkSetting)
-    window.addEventListener("storage", checkSetting)
+    window.addEventListener("support-setting-changed", checkSettingAndOnboarding)
+    window.addEventListener("storage", checkSettingAndOnboarding)
 
     return () => {
-      window.removeEventListener("support-setting-changed", checkSetting)
-      window.removeEventListener("storage", checkSetting)
+      window.removeEventListener("support-setting-changed", checkSettingAndOnboarding)
+      window.removeEventListener("storage", checkSettingAndOnboarding)
     }
   }, [])
 
-  if (!isSettingEnabled) return null
+  if (!isSettingEnabled || !isOnboardingCompleted || window.location.pathname === '/onboarding') return null
 
   const handleSubmit = async () => {
     if (!form.category || !form.subject || !form.message) return
