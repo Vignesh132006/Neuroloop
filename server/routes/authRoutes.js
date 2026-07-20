@@ -137,6 +137,11 @@ router.post('/verify-email', async (req, res) => {
         id:    user._id,
         name:  user.name,
         email: user.email,
+        onboardingCompleted: user.onboardingCompleted,
+        level:  user.level,
+        goal:   user.goal,
+        focusSubjects: user.focusSubjects,
+        streak: user.streak || 0,
       },
     });
   } catch (err) {
@@ -203,7 +208,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({ email }).select(
-      'name email password streak lastActiveDate weakTopics emailNotifications googleId isEmailVerified'
+      'name email password streak lastActiveDate weakTopics emailNotifications googleId isEmailVerified onboardingCompleted level goal focusSubjects'
     )
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" })
@@ -247,7 +252,16 @@ router.post("/login", async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email, streak: user.streak },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        streak: user.streak,
+        onboardingCompleted: user.onboardingCompleted,
+        level: user.level,
+        goal: user.goal,
+        focusSubjects: user.focusSubjects,
+      },
     })
   } catch (error) {
     const { sendAdminAlert } = require("../utils/adminAlert")
@@ -604,6 +618,70 @@ router.get('/google/callback', (req, res, next) => {
       }
     });
   })(req, res, next);
+})
+
+// POST /api/auth/onboarding — save user onboarding answers
+router.post('/onboarding', require('../middleware/authMiddleware'), async (req, res) => {
+  try {
+    const { level, goal, focusSubjects } = req.body
+
+    if (!level || !goal || !focusSubjects || focusSubjects.length === 0) {
+      return res.status(400).json({ error: 'All onboarding fields are required' })
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        level,
+        goal,
+        focusSubjects,
+        onboardingCompleted: true,
+        onboardingCompletedAt: new Date(),
+      },
+      { new: true }
+    ).select('-password')
+
+    res.json({
+      message: 'Onboarding completed successfully',
+      user,
+    })
+  } catch (err) {
+    console.error('[Onboarding] Error:', err)
+    res.status(500).json({ error: 'Failed to save onboarding data' })
+  }
+})
+
+// GET /api/auth/onboarding/status — check if onboarding is done
+router.get('/onboarding/status', require('../middleware/authMiddleware'), async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .select('onboardingCompleted level goal focusSubjects')
+    res.json(user)
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get onboarding status' })
+  }
+})
+
+// POST /api/auth/onboarding/skip — skip onboarding (mark as completed with null values)
+router.post('/onboarding/skip', require('../middleware/authMiddleware'), async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        onboardingCompleted: true,
+        onboardingCompletedAt: new Date(),
+      },
+      { new: true }
+    ).select('-password')
+
+    res.json({
+      message: 'Onboarding skipped',
+      user,
+    })
+  } catch (err) {
+    console.error('[Onboarding Skip] Error:', err)
+    res.status(500).json({ error: 'Failed to skip onboarding' })
+  }
 })
 
 module.exports = router
