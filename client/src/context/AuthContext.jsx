@@ -9,10 +9,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token")
-    const storedUser = localStorage.getItem("user")
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
+    const storedUser  = localStorage.getItem("user")
+    if (storedToken && storedUser && storedToken !== 'undefined' && storedUser !== 'undefined') {
+      try {
+        setToken(storedToken)
+        setUser(JSON.parse(storedUser))
+      } catch (e) {
+        // Corrupted localStorage — clear it
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+      }
     }
     setLoading(false)
   }, [])
@@ -26,10 +32,15 @@ export function AuthProvider({ children }) {
       u = tokenVal
     }
     console.log('[AuthContext] login final values:', { token: t ? 'Present' : 'Missing', user: u ? 'Present' : 'Missing' });
-    localStorage.setItem("token", t)
-    localStorage.setItem("user", JSON.stringify(u))
-    setToken(t)
-    setUser(u)
+    // Only persist valid values — never write undefined/null to localStorage
+    if (t && t !== 'undefined') {
+      localStorage.setItem("token", t)
+      setToken(t)
+    }
+    if (u && u !== 'undefined') {
+      localStorage.setItem("user", JSON.stringify(u))
+      setUser(u)
+    }
   }
 
   const logout = () => {
