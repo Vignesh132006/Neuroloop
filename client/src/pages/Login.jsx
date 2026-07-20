@@ -251,7 +251,11 @@ export default function Login() {
       }
 
       login(res.data.token, res.data.user)
-      navigate('/dashboard')
+      if (!res.data.user?.onboardingCompleted) {
+        navigate('/onboarding')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.')
     } finally {
@@ -293,7 +297,11 @@ export default function Login() {
       // If somehow token is returned directly (fallback)
       if (data.token) {
         login(data.token, data.user);
-        navigate('/dashboard');
+        if (!data.user?.onboardingCompleted) {
+          navigate('/onboarding');
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.')
@@ -305,7 +313,11 @@ export default function Login() {
   const handleVerified = (token, user) => {
     // Use the SAME login function your existing login form uses
     login(token, user);
-    navigate('/dashboard');
+    if (!user?.onboardingCompleted) {
+      navigate('/onboarding');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
 

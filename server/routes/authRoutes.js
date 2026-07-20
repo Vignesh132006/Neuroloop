@@ -606,10 +606,14 @@ router.get('/google/callback', (req, res, next) => {
           { expiresIn: '7d' }
         )
         const userData = encodeURIComponent(JSON.stringify({
-          id:     user._id,
-          name:   user.name,
-          email:  user.email,
-          streak: user.streak || 0
+          id:                 user._id,
+          name:               user.name,
+          email:              user.email,
+          streak:             user.streak || 0,
+          onboardingCompleted: user.onboardingCompleted || false,
+          level:              user.level || null,
+          goal:               user.goal || null,
+          focusSubjects:      user.focusSubjects || [],
         }))
         res.redirect(`${frontendURL}/auth/google/success?token=${token}&user=${userData}`)
       } catch (err) {

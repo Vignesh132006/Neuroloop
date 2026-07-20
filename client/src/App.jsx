@@ -16,6 +16,7 @@ import Settings   from "./pages/Settings"
 import GoogleAuthSuccess from './pages/GoogleAuthSuccess'
 import IntroPage from "./pages/IntroPage"
 import LoadingPage from "./pages/LoadingPage"
+import Onboarding from './pages/Onboarding'
 
 
 import AdminLogin from './pages/admin/AdminLogin'
@@ -39,6 +40,7 @@ export default function App() {
 
           {/* Protected */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
           <Route path="/journal"   element={<PrivateRoute><Journal /></PrivateRoute>} />
           <Route path="/notes"     element={<PrivateRoute><Notes /></PrivateRoute>} />
           <Route path="/quiz"      element={<PrivateRoute><Quiz /></PrivateRoute>} />

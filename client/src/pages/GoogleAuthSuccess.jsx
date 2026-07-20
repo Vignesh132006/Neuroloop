@@ -30,8 +30,12 @@ export default function GoogleAuthSuccess() {
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
       login(user, token)
-      console.log('[GoogleAuthSuccess] login context called. Navigating to dashboard...');
-      navigate('/dashboard', { replace: true })
+      console.log('[GoogleAuthSuccess] login context called. Navigating...');
+      if (!user?.onboardingCompleted) {
+        navigate('/onboarding', { replace: true })
+      } else {
+        navigate('/dashboard', { replace: true })
+      }
     } catch (e) {
       console.error('[GoogleAuthSuccess] Exception in parsing/login:', e);
       navigate('/login?error=parse_failed')

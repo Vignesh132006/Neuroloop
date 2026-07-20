@@ -390,6 +390,83 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* ── Personalised Level Banner ──────────────────────────────────── */}
+          {(() => {
+            const storedUser = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}') } catch { return {} } })()
+            const userLevel = user?.level || storedUser.level
+            if (!userLevel) return null
+
+            const bannerConfig = {
+              beginner: {
+                bg:     'rgba(16,185,129,0.08)',
+                border: '1px solid rgba(16,185,129,0.2)',
+                text:   'Beginner path active — Start by writing your first note and taking a quiz.',
+                btnLabel: 'Write First Note',
+                btnColor: '#10b981',
+                path: '/journal',
+              },
+              intermediate: {
+                bg:     'rgba(245,158,11,0.08)',
+                border: '1px solid rgba(245,158,11,0.2)',
+                text:   'Intermediate path — Focus on your weak topics and practice daily quizzes.',
+                btnLabel: 'View Weak Topics',
+                btnColor: '#f59e0b',
+                path: '/quiz',
+              },
+              advanced: {
+                bg:     'rgba(239,68,68,0.08)',
+                border: '1px solid rgba(239,68,68,0.2)',
+                text:   'Advanced path — Interview-focused study plans and hard-mode quizzes are active.',
+                btnLabel: 'Generate Study Plan',
+                btnColor: '#ef4444',
+                path: '/study-plans',
+              },
+            }
+
+            const cfg = bannerConfig[userLevel]
+            if (!cfg) return null
+
+            return (
+              <div style={{
+                background: cfg.bg,
+                border: cfg.border,
+                borderRadius: '10px',
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '16px',
+                flexWrap: 'wrap',
+                margin: '0 24px 20px',
+              }}>
+                <span style={{ fontSize: '13px', color: 'var(--text-secondary)', flex: 1 }}>
+                  {cfg.text}
+                </span>
+                <button
+                  id={`level-banner-btn-${userLevel}`}
+                  onClick={() => window.location.href = cfg.path}
+                  style={{
+                    background: 'none',
+                    border: `1px solid ${cfg.btnColor}`,
+                    color: cfg.btnColor,
+                    borderRadius: '6px',
+                    padding: '6px 14px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    transition: 'background 0.2s',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = `${cfg.btnColor}18`}
+                  onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                >
+                  {cfg.btnLabel}
+                </button>
+              </div>
+            )
+          })()}
+
           {/* Section B: STAT CARDS ROW */}
           <div className="stats-grid-row">
             {/* Card 1: Notes Written */}
