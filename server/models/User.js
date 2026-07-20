@@ -80,6 +80,30 @@ const userSchema = new mongoose.Schema(
     emailOtp:          { type: String,  default: null },
     emailOtpExpiry:    { type: Date,    default: null },
     emailOtpAttempts:  { type: Number,  default: 0 },
+
+    onboardingCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    level: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced'],
+      default: null,
+    },
+
+    goal: {
+      type: String,
+      enum: ['crack-interviews', 'learn-skills', 'improve-weak', 'build-projects'],
+      default: null,
+    },
+
+    focusSubjects: [{ type: String }],
+
+    onboardingCompletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
