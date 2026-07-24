@@ -7,7 +7,7 @@ const getCookie = (name) => {
   return null
 }
 
-const setCookie = (name, value, days = 7) => {
+const setCookie = (name, value, days = 1) => {
   const d = new Date()
   d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000)
   document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Lax`
@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
     // Only persist valid values — store in localStorage and temporary cookies
     if (t && t !== 'undefined') {
       localStorage.setItem("token", t)
-      setCookie("token", t, 7)
+      setCookie("token", t, 1)
       setToken(t)
     }
     if (u && u !== 'undefined') {

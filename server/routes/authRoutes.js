@@ -128,13 +128,13 @@ router.post('/verify-email', async (req, res) => {
 
     // Now issue the JWT token
     const jwt   = require('jsonwebtoken');
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     res.cookie('token', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000
     });
 
     res.json({
@@ -253,14 +253,14 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: user._id, name: user.name, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "1d" }
     )
 
     res.cookie('token', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000
     });
 
     res.status(200).json({
@@ -552,14 +552,14 @@ router.post('/admin/login', async (req, res) => {
     const token = jwt.sign(
       { id: 'admin', email: ADMIN_EMAIL, role: 'admin' },
       process.env.JWT_SECRET,
-      { expiresIn: '8h' }
+      { expiresIn: '1d' }
     )
 
     res.cookie('adminToken', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 8 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000
     });
 
     res.json({
@@ -624,14 +624,14 @@ router.get('/google/callback', (req, res, next) => {
         const token = jwt.sign(
           { id: user._id, name: user.name, email: user.email },
           process.env.JWT_SECRET,
-          { expiresIn: '7d' }
+          { expiresIn: '1d' }
         )
 
         res.cookie('token', token, {
           httpOnly: false,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
-          maxAge: 7 * 24 * 60 * 60 * 1000
+          maxAge: 24 * 60 * 60 * 1000
         });
 
         const userData = encodeURIComponent(JSON.stringify({
