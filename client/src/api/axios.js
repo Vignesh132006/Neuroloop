@@ -1,13 +1,21 @@
 import axios from "axios"
 
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+  return null
+}
+
 const backendBase = import.meta.env.VITE_API_URL || "http://localhost:5000"
 const api = axios.create({
   baseURL: `${backendBase}/api`,
+  withCredentials: true,
 })
 
 // Attach token to every request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token") || getCookie("token")
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

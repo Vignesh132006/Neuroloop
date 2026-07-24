@@ -130,6 +130,13 @@ router.post('/verify-email', async (req, res) => {
     const jwt   = require('jsonwebtoken');
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+    res.cookie('token', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000
+    });
+
     res.json({
       message: 'Email verified successfully!',
       token,
@@ -248,6 +255,13 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     )
+
+    res.cookie('token', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
     res.status(200).json({
       message: "Login successful",
@@ -541,6 +555,13 @@ router.post('/admin/login', async (req, res) => {
       { expiresIn: '8h' }
     )
 
+    res.cookie('adminToken', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 8 * 60 * 60 * 1000
+    });
+
     res.json({
       token,
       admin: { email: ADMIN_EMAIL, role: 'admin', name: 'NeuroLoop Admin' }
@@ -605,6 +626,14 @@ router.get('/google/callback', (req, res, next) => {
           process.env.JWT_SECRET,
           { expiresIn: '7d' }
         )
+
+        res.cookie('token', token, {
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
         const userData = encodeURIComponent(JSON.stringify({
           id:                 user._id,
           name:               user.name,
