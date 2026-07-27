@@ -39,57 +39,7 @@ export default function IntroPage() {
     return () => observer.disconnect()
   }, [])
 
-  // IntersectionObserver + Count-up for stats section
-  const statsRef = useRef(null)
-  const [statsIntersected, setStatsIntersected] = useState(false)
-  const [stats, setStats] = useState({ students: 0, retention: 0, features: 0 })
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setStatsIntersected(true)
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.2 }
-    )
-
-    if (statsRef.current) {
-      observer.observe(statsRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!statsIntersected) return
-
-    const duration = 1500 // 1.5 seconds count up
-    const startTime = performance.now()
-    let animationFrameId
-
-    const animateStats = (now) => {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const easeProgress = progress * (2 - progress) // easeOutQuad
-
-      setStats({
-        students: Math.floor(easeProgress * 2400),
-        retention: Math.floor(easeProgress * 94),
-        features: Math.floor(easeProgress * 5),
-      })
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animateStats)
-      }
-    }
-
-    animationFrameId = requestAnimationFrame(animateStats)
-    return () => cancelAnimationFrame(animationFrameId)
-  }, [statsIntersected])
 
   const handleLaunch = () => {
     navigate("/loading")
@@ -470,46 +420,7 @@ export default function IntroPage() {
           line-height: 1.7;
         }
 
-        /* Stats Row */
-        .stats-section {
-          background-color: #09090b;
-          padding: 60px 24px;
-          border-top: 1px solid rgba(255, 59, 48, 0.08);
-          border-bottom: 1px solid rgba(255, 59, 48, 0.08);
-          position: relative;
-          z-index: 2;
-        }
 
-        .stats-container {
-          max-width: 1000px;
-          margin: 0 auto;
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 40px;
-        }
-
-        .stat-item {
-          text-align: center;
-          flex: 1;
-          min-width: 200px;
-        }
-
-        .stat-number {
-          font-size: 40px;
-          font-weight: 600;
-          background: linear-gradient(135deg, var(--gold), var(--goldl));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .stat-label {
-          font-size: 13px;
-          color: var(--t2);
-          margin-top: 6px;
-        }
 
         /* CTA Section */
         .cta-section {
@@ -686,35 +597,13 @@ export default function IntroPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="stats-section" ref={statsRef}>
-        <div className="stats-container">
-          <div className="stat-item">
-            <div className="stat-number">
-              {stats.students.toLocaleString()}+
-            </div>
-            <div className="stat-label">Students Learning</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">
-              {stats.retention}%
-            </div>
-            <div className="stat-label">Retention Improvement</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">
-              {stats.features}
-            </div>
-            <div className="stat-label">AI Features Built In</div>
-          </div>
-        </div>
-      </section>
+
 
       {/* CTA Section */}
       <section className="cta-section">
         <h2 className="cta-heading">Ready to transform how you study?</h2>
         <p className="cta-subtext">
-          Join thousands of students who study with purpose, not just effort.
+          Join students who study with purpose, not just effort.
         </p>
 
         <div className="launch-btn-wrapper">
