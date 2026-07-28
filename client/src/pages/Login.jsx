@@ -250,11 +250,17 @@ export default function Login() {
         return;
       }
 
-      login(res.data.token, res.data.user)
-      if (!res.data.user?.onboardingCompleted) {
-        navigate('/onboarding')
+      const { token, user } = res.data
+      login(user, token)
+
+      if (user.role === 'admin' || user.role === 'subadmin') {
+        localStorage.setItem('adminToken', token)
+        localStorage.setItem('adminUser', JSON.stringify(user))
+        navigate('/admin/dashboard', { replace: true })
+      } else if (!user.onboardingCompleted) {
+        navigate('/onboarding', { replace: true })
       } else {
-        navigate('/dashboard')
+        navigate('/dashboard', { replace: true })
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.')
@@ -297,11 +303,7 @@ export default function Login() {
       // If somehow token is returned directly (fallback)
       if (data.token) {
         login(data.token, data.user);
-        if (!data.user?.onboardingCompleted) {
-          navigate('/onboarding');
-        } else {
-          navigate('/dashboard');
-        }
+        navigate('/onboarding', { replace: true });
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.')
@@ -311,12 +313,15 @@ export default function Login() {
   }
 
   const handleVerified = (token, user) => {
-    // Use the SAME login function your existing login form uses
     login(token, user);
-    if (!user?.onboardingCompleted) {
-      navigate('/onboarding');
+    if (user?.role === 'admin' || user?.role === 'subadmin') {
+      localStorage.setItem('adminToken', token);
+      localStorage.setItem('adminUser', JSON.stringify(user));
+      navigate('/admin/dashboard', { replace: true });
+    } else if (!user?.onboardingCompleted) {
+      navigate('/onboarding', { replace: true });
     } else {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   };
 
