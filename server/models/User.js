@@ -86,6 +86,13 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    role: {
+      type: String,
+      enum: ['user', 'admin', 'subadmin'],
+      default: 'user',
+      index: true,
+    },
+
     level: {
       type: String,
       enum: ['beginner', 'intermediate', 'advanced'],
