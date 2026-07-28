@@ -19,7 +19,6 @@ import LoadingPage from "./pages/LoadingPage"
 import Onboarding from './pages/Onboarding'
 
 
-import AdminLogin from './pages/admin/AdminLogin'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
@@ -52,7 +51,6 @@ export default function App() {
           <Route path="/support"     element={<Navigate to="/dashboard" replace />} />
 
           {/* Admin routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
