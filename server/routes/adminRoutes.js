@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const adminMiddleware = require('../middleware/adminMiddleware')
+const { adminMiddleware, staffMiddleware } = require('../middleware/adminMiddleware')
 const User = require('../models/User')
 const Note = require('../models/Note')
 const QuizResult = require('../models/QuizResult')
@@ -8,11 +8,8 @@ const RevisionLog = require('../models/RevisionLog')
 const StudyPlan = require('../models/StudyPlan')
 const SupportTicket = require('../models/SupportTicket')
 
-// All routes require admin middleware
-router.use(adminMiddleware)
-
 // ── DASHBOARD STATS ──────────────────────────────────
-router.get('/stats', async (req, res) => {
+router.get('/stats', staffMiddleware, async (req, res) => {
   try {
     const [
       totalUsers,
@@ -72,7 +69,7 @@ router.get('/stats', async (req, res) => {
 })
 
 // ── ALL USERS ────────────────────────────────────────
-router.get('/users', async (req, res) => {
+router.get('/users', staffMiddleware, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = 20
@@ -123,7 +120,7 @@ router.get('/users', async (req, res) => {
 })
 
 // ── SINGLE USER DETAIL ───────────────────────────────
-router.get('/users/:id', async (req, res) => {
+router.get('/users/:id', staffMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
       .select('-password -resetOtp -resetOtpExpiry')
@@ -143,7 +140,7 @@ router.get('/users/:id', async (req, res) => {
 })
 
 // ── DELETE USER ──────────────────────────────────────
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', adminMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
     if (!user) return res.status(404).json({ error: 'User not found' })
@@ -164,8 +161,38 @@ router.delete('/users/:id', async (req, res) => {
   }
 })
 
+// ── CHANGE USER ROLE ─────────────────────────────────
+router.put('/users/:id/role', adminMiddleware, async (req, res) => {
+  try {
+    const { role } = req.body
+
+    if (!['user', 'subadmin'].includes(role)) {
+      return res.status(400).json({
+        error: 'You can only assign user or subadmin roles'
+      })
+    }
+
+    // Admin cannot demote themselves
+    if (req.params.id === req.admin.id) {
+      return res.status(400).json({ error: 'Cannot change your own role' })
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true }
+    ).select('name email role')
+
+    if (!user) return res.status(404).json({ error: 'User not found' })
+
+    res.json({ message: `Role updated to ${role}`, user })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ── ALL SUPPORT TICKETS ──────────────────────────────
-router.get('/tickets', async (req, res) => {
+router.get('/tickets', staffMiddleware, async (req, res) => {
   try {
     const status = req.query.status || ''
     const query = status ? { status } : {}
@@ -182,7 +209,7 @@ router.get('/tickets', async (req, res) => {
 })
 
 // ── UPDATE TICKET STATUS ─────────────────────────────
-router.put('/tickets/:id', async (req, res) => {
+router.put('/tickets/:id', staffMiddleware, async (req, res) => {
   try {
     const { status } = req.body
     const ticket = await SupportTicket.findByIdAndUpdate(
@@ -198,7 +225,7 @@ router.put('/tickets/:id', async (req, res) => {
 })
 
 // ── DELETE TICKET ────────────────────────────────────
-router.delete('/tickets/:id', async (req, res) => {
+router.delete('/tickets/:id', adminMiddleware, async (req, res) => {
   try {
     await SupportTicket.findByIdAndDelete(req.params.id)
     res.json({ message: 'Ticket deleted' })
@@ -208,7 +235,7 @@ router.delete('/tickets/:id', async (req, res) => {
 })
 
 // ── RECENT ACTIVITY ──────────────────────────────────
-router.get('/activity', async (req, res) => {
+router.get('/activity', staffMiddleware, async (req, res) => {
   try {
     const [recentUsers, recentNotes, recentQuizzes, recentTickets] = await Promise.all([
       User.find().sort({ createdAt: -1 }).limit(5).select('name email createdAt streak'),
