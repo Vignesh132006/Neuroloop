@@ -4,7 +4,7 @@ import axios from 'axios'
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 const adminApi = () => axios.create({
   baseURL: API,
-  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token')}` }
 })
 
 const STATUS_COLORS = {
@@ -19,6 +19,9 @@ export default function AdminTickets() {
   const [filter, setFilter] = useState('')
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const adminUser = JSON.parse(localStorage.getItem('adminUser') || localStorage.getItem('user') || '{}')
+  const isFullAdmin = adminUser.role === 'admin'
 
   const fetchTickets = async () => {
     setLoading(true)
@@ -265,9 +268,11 @@ export default function AdminTickets() {
               </div>
             </div>
 
-            <button onClick={() => deleteTicket(selected._id)} className="admin-ticket-delete-btn">
-              🗑️ Delete Ticket
-            </button>
+            {isFullAdmin && (
+              <button onClick={() => deleteTicket(selected._id)} className="admin-ticket-delete-btn">
+                🗑️ Delete Ticket
+              </button>
+            )}
           </div>
         </div>
       )}

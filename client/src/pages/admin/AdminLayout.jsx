@@ -13,16 +13,27 @@ export default function AdminLayout() {
   const [admin, setAdmin] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken')
-    const user = localStorage.getItem('adminUser')
-    if (!token || !user) { navigate('/admin/login'); return }
-    setAdmin(JSON.parse(user))
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('token')
+    const user = localStorage.getItem('adminUser') || localStorage.getItem('user')
+    if (!token || !user) { navigate('/login'); return }
+    try {
+      const parsed = JSON.parse(user)
+      if (!['admin', 'subadmin'].includes(parsed.role)) {
+        navigate('/login')
+        return
+      }
+      setAdmin(parsed)
+    } catch (e) {
+      navigate('/login')
+    }
   }, [])
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
     localStorage.removeItem('adminUser')
-    navigate('/admin/login')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    navigate('/login')
   }
 
   return (
@@ -124,7 +135,20 @@ export default function AdminLayout() {
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
           <div style={{ padding: '0 8px 14px' }}>
             <div style={{ color: '#f5f0e8', fontSize: '12px', fontWeight: '500', wordBreak: 'break-all' }}>{admin?.email}</div>
-            <div style={{ color: '#5a5040', fontSize: '11px', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Administrator</div>
+            <div style={{
+              display: 'inline-block',
+              marginTop: '4px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              background: admin?.role === 'subadmin' ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)',
+              color: admin?.role === 'subadmin' ? '#fcd34d' : '#fca5a5'
+            }}>
+              {admin?.role === 'subadmin' ? 'Sub Administrator' : 'Administrator'}
+            </div>
           </div>
           <button onClick={handleLogout} className="admin-logout-btn">
             🚪 Logout

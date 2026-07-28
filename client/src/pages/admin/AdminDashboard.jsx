@@ -4,7 +4,7 @@ import axios from 'axios'
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 const adminApi = () => axios.create({
   baseURL: API,
-  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token')}` }
 })
 
 export default function AdminDashboard() {
