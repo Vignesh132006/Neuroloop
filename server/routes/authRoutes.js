@@ -215,7 +215,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({ email }).select(
-      'name email password streak lastActiveDate weakTopics emailNotifications googleId isEmailVerified onboardingCompleted level goal focusSubjects'
+      'name email password role streak lastActiveDate weakTopics emailNotifications googleId isEmailVerified onboardingCompleted level goal focusSubjects'
     )
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" })
@@ -251,16 +251,21 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, name: user.name, email: user.email },
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: '7d' }
     )
 
     res.cookie('token', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     res.status(200).json({
@@ -270,9 +275,10 @@ router.post("/login", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        streak: user.streak,
+        role: user.role,
         onboardingCompleted: user.onboardingCompleted,
         level: user.level,
+        streak: user.streak,
         goal: user.goal,
         focusSubjects: user.focusSubjects,
       },
@@ -537,40 +543,6 @@ router.post('/report-error', async (req, res) => {
   }
 });
 
-// ── ADMIN LOGIN ─────────────────────────────────────
-router.post('/admin/login', async (req, res) => {
-  try {
-    const { email, password } = req.body
-
-    const ADMIN_EMAIL = 'neuroloopadmin@gmail.com'
-    const ADMIN_PASSWORD = 'Admin@2026'
-
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Invalid admin credentials' })
-    }
-
-    const token = jwt.sign(
-      { id: 'admin', email: ADMIN_EMAIL, role: 'admin' },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    )
-
-    res.cookie('adminToken', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000
-    });
-
-    res.json({
-      token,
-      admin: { email: ADMIN_EMAIL, role: 'admin', name: 'NeuroLoop Admin' }
-    })
-  } catch (err) {
-    console.error('[Admin] Login error:', err)
-    res.status(500).json({ error: 'Admin login failed' })
-  }
-})
 
 // ── GOOGLE OAUTH ─────────────────────────────────────
 router.get('/google', (req, res, next) => {
