@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom"
 import Sidebar from "../components/Sidebar"
 import QuizScoreCard from "../components/QuizScoreCard"
 import api from "../api/axios"
-import { FiCheckSquare, FiFileText, FiInfo, FiSmile, FiCpu, FiAward } from "react-icons/fi"
+import { FiCheckSquare, FiFileText, FiInfo, FiAward } from "react-icons/fi"
 
 export default function Quiz() {
   const navigate = useNavigate()
   const [notes, setNotes] = useState([])
   const [selectedNote, setSelectedNote] = useState(null)
   const [questions, setQuestions] = useState([])
+  const [detailedQuestions, setDetailedQuestions] = useState([])
   const [userAnswers, setUserAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [score, setScore] = useState(0)
@@ -25,6 +26,8 @@ export default function Quiz() {
   const [customTopic, setCustomTopic] = useState('')
   const [questionCount, setQuestionCount] = useState(5)
   const [quizType, setQuizType] = useState('mcq')
+
+
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type })
@@ -45,6 +48,7 @@ export default function Quiz() {
 
     setGenerating(true)
     setQuestions([])
+    setDetailedQuestions([])
     setUserAnswers({})
     setSubmitted(false)
     setShowResultModal(false)
@@ -70,7 +74,7 @@ export default function Quiz() {
       if (res.data && res.data.questions) {
         setQuestions(res.data.questions)
         setStartTime(Date.now())
-        showToast("Quiz ready!")
+        showToast("Quiz ready! Let's go.")
       } else {
         showToast("No questions returned", "error")
       }
@@ -94,7 +98,7 @@ export default function Quiz() {
     const timeTaken = Math.round((Date.now() - startTime) / 1000)
     let correct = 0
     const wrong = []
-    const detailedQuestions = questions.map((q, i) => {
+    const dq = questions.map((q, i) => {
       const isCorrect = q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim()
       if (isCorrect) correct++
       else wrong.push(q.question?.split(' ').slice(0, 4).join(' '))
@@ -102,6 +106,7 @@ export default function Quiz() {
     })
 
     setScore(correct)
+    setDetailedQuestions(dq)
     setSubmitted(true)
     setWeakAreas(wrong)
     setShowResultModal(true)
@@ -110,7 +115,7 @@ export default function Quiz() {
       await api.post("/quiz/submit", {
         topic: selectedNote?.topic || customTopic || 'Custom Topic',
         noteId: selectedNote?._id || null,
-        questions: detailedQuestions,
+        questions: dq,
         score: correct,
         totalQuestions: questions.length,
         timeTaken,
@@ -126,6 +131,7 @@ export default function Quiz() {
 
   const resetQuiz = () => {
     setQuestions([])
+    setDetailedQuestions([])
     setUserAnswers({})
     setSubmitted(false)
     setScore(0)
@@ -166,6 +172,7 @@ export default function Quiz() {
             total={questions.length}
             topic={selectedNote?.topic || customTopic || 'Quiz'}
             weakAreas={weakAreas}
+            questions={detailedQuestions}
             onRetry={() => { setShowResultModal(false); generateQuiz(); }}
             onClose={() => { setShowResultModal(false); navigate('/dashboard'); }}
           />
@@ -454,6 +461,7 @@ export default function Quiz() {
               </div>
             ) : (
               <div>
+
                 {/* Questions */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                   {questions.map((q, i) => (
@@ -524,14 +532,70 @@ export default function Quiz() {
                           </div>
                         )}
                       </div>
-                      {submitted && q.explanation && (
-                        <div style={{ background: 'var(--s3)', border: '1px solid var(--bd)', color: 'var(--t2)', fontSize: '0.85rem', padding: '12px 16px', borderRadius: '8px', marginTop: '16px' }}>
-                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><FiInfo style={{ color: 'var(--gold)', flexShrink: 0 }} /> <span>{q.explanation}</span></div>
-                        </div>
-                      )}
-                      {submitted && q.hint && (
-                        <div style={{ background: 'var(--s3)', border: '1px solid var(--bd)', color: 'var(--t2)', fontSize: '0.85rem', padding: '12px 16px', borderRadius: '8px', marginTop: '8px' }}>
-                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><FiInfo style={{ color: 'var(--gold)', flexShrink: 0 }} /> <span><strong>Hint/Concept:</strong> {q.hint}</span></div>
+
+                      {/* ── Post-submit answer review ────────────────────── */}
+                      {submitted && (
+                        <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+                          {/* Correct / Wrong status bar */}
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            padding: '8px 12px', borderRadius: '8px',
+                            background: (q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim())
+                              ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                            border: `1px solid ${(q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim()) ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`
+                          }}>
+                            <span style={{ fontSize: '16px' }}>
+                              {(q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim()) ? '✅' : '❌'}
+                            </span>
+                            <span style={{
+                              fontSize: '12px', fontWeight: '700',
+                              color: (q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim()) ? 'var(--em)' : 'var(--red)'
+                            }}>
+                              {(q.correctAnswer ? userAnswers[i] === q.correctAnswer : !!userAnswers[i]?.trim()) ? 'Correct!' : 'Incorrect'}
+                            </span>
+                            {q.correctAnswer && userAnswers[i] !== q.correctAnswer && (
+                              <span style={{ fontSize: '12px', color: 'var(--t3)', marginLeft: 'auto' }}>
+                                Correct answer: <strong style={{ color: 'var(--em)' }}>{q.correctAnswer}</strong>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Explanation block */}
+                          {q.explanation && (
+                            <div style={{
+                              padding: '12px 14px',
+                              background: 'rgba(99,102,241,0.07)',
+                              border: '1px solid rgba(99,102,241,0.2)',
+                              borderLeft: '3px solid #818cf8',
+                              borderRadius: '8px'
+                            }}>
+                              <div style={{ fontSize: '11px', fontWeight: '700', color: '#818cf8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '5px' }}>
+                                💡 Explanation
+                              </div>
+                              <div style={{ fontSize: '0.875rem', color: 'var(--t1)', lineHeight: 1.65 }}>
+                                {q.explanation}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Key Concept / Hint block (interview mode) */}
+                          {q.hint && (
+                            <div style={{
+                              padding: '12px 14px',
+                              background: 'rgba(245,158,11,0.06)',
+                              border: '1px solid rgba(245,158,11,0.2)',
+                              borderLeft: '3px solid #f59e0b',
+                              borderRadius: '8px'
+                            }}>
+                              <div style={{ fontSize: '11px', fontWeight: '700', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '5px' }}>
+                                🔑 Key Concept
+                              </div>
+                              <div style={{ fontSize: '0.875rem', color: 'var(--t1)', lineHeight: 1.65 }}>
+                                {q.hint}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
