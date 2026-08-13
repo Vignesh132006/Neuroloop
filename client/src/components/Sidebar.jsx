@@ -1,8 +1,9 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import { useTheme } from "../context/ThemeContext"
 import { useState, useEffect } from "react"
 import api from "../api/axios"
-import { FiGrid, FiBookOpen, FiFileText, FiRefreshCw, FiCheckSquare, FiCalendar, FiMessageSquare, FiAward, FiSettings, FiZap, FiLogOut } from "react-icons/fi"
+import { FiGrid, FiBookOpen, FiFileText, FiRefreshCw, FiCheckSquare, FiCalendar, FiMessageSquare, FiAward, FiSettings, FiZap, FiLogOut, FiSun, FiMoon } from "react-icons/fi"
 import NeuroLoopLogo from "./NeuroLoopLogo"
 
 const S = `
@@ -13,6 +14,51 @@ const S = `
     display:flex;flex-direction:column;
     padding:20px 12px;
     position:fixed;left:0;top:0;z-index:900;
+  }
+
+  [data-theme="light"] .sb {
+    background: #ffffff;
+    border-right: 1px solid rgba(0,0,0,0.08);
+  }
+  [data-theme="light"] .sb-link {
+    color: rgba(15,23,42,0.6);
+  }
+  [data-theme="light"] .sb-link:hover {
+    background: rgba(0,0,0,0.04);
+    color: #0f172a;
+  }
+  [data-theme="light"] .sb-group-label {
+    color: rgba(15,23,42,0.4);
+  }
+  [data-theme="light"] .sb-user {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.06);
+  }
+  [data-theme="light"] .sb-user-name {
+    color: #0f172a;
+  }
+  [data-theme="light"] .sb-user-email {
+    color: rgba(15,23,42,0.5);
+  }
+
+  .sb-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .sb-theme-toggle:hover {
+    background: rgba(255,255,255,0.06);
   }
 
   .sb-logo{
@@ -221,6 +267,7 @@ const toolsItems = [
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dueCount, setDueCount] = useState(0)
@@ -337,6 +384,17 @@ export default function Sidebar() {
                 </div>
               </div>
             </div>
+
+            {/* Theme Toggle */}
+            <button onClick={toggleTheme} className="sb-theme-toggle" id="theme-toggle-sidebar">
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {theme === 'dark' ? <FiMoon size={15} style={{ color: 'var(--gold)' }} /> : <FiSun size={15} style={{ color: 'var(--gold)' }} />}
+                <span>{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
+              </span>
+              <span style={{ fontSize: '0.7rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+                {theme === 'dark' ? 'ON' : 'OFF'}
+              </span>
+            </button>
 
             {/* User section */}
             {user && (

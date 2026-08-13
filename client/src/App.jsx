@@ -1,18 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
+import { ThemeProvider } from "./context/ThemeContext"
 import PrivateRoute from "./components/PrivateRoute"
 import "./index.css"
 
-import Login     from "./pages/Login"
+import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
-import Journal   from "./pages/Journal"
-import Notes     from "./pages/Notes"
-import Quiz      from "./pages/Quiz"
-import Revision  from "./pages/Revision"
-import Chat      from "./pages/Chat"
+import Journal from "./pages/Journal"
+import Notes from "./pages/Notes"
+import Quiz from "./pages/Quiz"
+import Revision from "./pages/Revision"
+import Chat from "./pages/Chat"
 import Leaderboard from "./pages/Leaderboard"
 import StudyPlans from "./pages/StudyPlans"
-import Settings   from "./pages/Settings"
+import Settings from "./pages/Settings"
 import GoogleAuthSuccess from './pages/GoogleAuthSuccess'
 import IntroPage from "./pages/IntroPage"
 import LoadingPage from "./pages/LoadingPage"
@@ -26,41 +27,43 @@ import AdminTickets from './pages/admin/AdminTickets'
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<IntroPage />} />
-          <Route path="/loading" element={<LoadingPage />} />
-          <Route path="/login"  element={<Login />} />
-          <Route path="/signup" element={<Navigate to="/login" replace />} />
-          <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            {/* Public */}
+            <Route path="/" element={<IntroPage />} />
+            <Route path="/loading" element={<LoadingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Navigate to="/login" replace />} />
+            <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
 
 
-          {/* Protected */}
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
-          <Route path="/journal"   element={<PrivateRoute><Journal /></PrivateRoute>} />
-          <Route path="/notes"     element={<PrivateRoute><Notes /></PrivateRoute>} />
-          <Route path="/quiz"      element={<PrivateRoute><Quiz /></PrivateRoute>} />
-          <Route path="/revision"  element={<PrivateRoute><Revision /></PrivateRoute>} />
-          <Route path="/chat"      element={<PrivateRoute><Chat /></PrivateRoute>} />
-          <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
-          <Route path="/study-plans" element={<PrivateRoute><StudyPlans /></PrivateRoute>} />
-          <Route path="/settings"    element={<PrivateRoute><Settings /></PrivateRoute>} />
-          <Route path="/support"     element={<Navigate to="/dashboard" replace />} />
+            {/* Protected */}
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
+            <Route path="/journal" element={<PrivateRoute><Journal /></PrivateRoute>} />
+            <Route path="/notes" element={<PrivateRoute><Notes /></PrivateRoute>} />
+            <Route path="/quiz" element={<PrivateRoute><Quiz /></PrivateRoute>} />
+            <Route path="/revision" element={<PrivateRoute><Revision /></PrivateRoute>} />
+            <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
+            <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
+            <Route path="/study-plans" element={<PrivateRoute><StudyPlans /></PrivateRoute>} />
+            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+            <Route path="/support" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Admin routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="tickets" element={<AdminTickets />} />
-          </Route>
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="tickets" element={<AdminTickets />} />
+            </Route>
 
-          {/* Redirect */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+            {/* Redirect */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }

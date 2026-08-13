@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import Sidebar from "../components/Sidebar"
 import api from "../api/axios"
-import { FiSettings, FiUser, FiZap, FiSliders, FiLock, FiCheck } from "react-icons/fi"
+import { useTheme } from "../context/ThemeContext"
+import { FiSettings, FiUser, FiZap, FiSliders, FiLock, FiCheck, FiSun, FiMoon } from "react-icons/fi"
 import Loader from "../components/Loader"
 
 export default function Settings() {
+  const { theme, setTheme } = useTheme()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [githubUsername, setGithubUsername] = useState("")
@@ -168,6 +170,61 @@ export default function Settings() {
                   )}
                 </div>
               </form>
+            </div>
+
+            {/* Appearance & Theme */}
+            <div className="card">
+              <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.1rem", fontWeight: 600, marginBottom: "1.25rem" }}>
+                {theme === 'dark' ? <FiMoon style={{ color: 'var(--gold)' }} /> : <FiSun style={{ color: 'var(--gold)' }} />} Appearance Theme
+              </h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--t2)', marginBottom: '1rem' }}>
+                Select your preferred color theme across all NeuroLoop tools and pages.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: '12px',
+                    background: theme === 'dark' ? 'rgba(255,59,48,0.12)' : 'var(--s2)',
+                    border: theme === 'dark' ? '2px solid var(--gold)' : '1px solid var(--bd)',
+                    color: 'var(--t1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <FiMoon size={22} color="var(--gold)" />
+                  <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Dark Theme</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--t2)' }}>Sleek OLED dark design</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: '12px',
+                    background: theme === 'light' ? 'rgba(255,59,48,0.12)' : 'var(--s2)',
+                    border: theme === 'light' ? '2px solid var(--gold)' : '1px solid var(--bd)',
+                    color: 'var(--t1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <FiSun size={22} color="var(--gold)" />
+                  <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Light Theme</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--t2)' }}>Bright & clear UI theme</span>
+                </button>
+              </div>
             </div>
 
             {/* Change Password */}
