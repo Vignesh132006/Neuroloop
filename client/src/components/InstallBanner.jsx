@@ -6,18 +6,25 @@ export default function InstallBanner() {
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
-    // Check if already installed or dismissed
-    const wasDismissed = localStorage.getItem('pwa-banner-dismissed')
-    if (wasDismissed) return
-
-    // Check if already running as PWA
+    // Check if already installed or running in standalone mode
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true
     if (isStandalone) return
 
+    // Check if dismissed previously
+    const wasDismissed = localStorage.getItem('pwa-banner-dismissed')
+    if (wasDismissed) return
+
+    // Check if an install prompt was captured prior to component mounting
+    if (window.deferredPWAInstallPrompt) {
+      setDeferredPrompt(window.deferredPWAInstallPrompt)
+      setShowBanner(true)
+    }
+
     const handler = (e) => {
       e.preventDefault()
+      window.deferredPWAInstallPrompt = e
       setDeferredPrompt(e)
       setShowBanner(true)
     }
@@ -27,12 +34,14 @@ export default function InstallBanner() {
   }, [])
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
+    const promptEvent = deferredPrompt || window.deferredPWAInstallPrompt
+    if (!promptEvent) return
+    promptEvent.prompt()
+    const { outcome } = await promptEvent.userChoice
     console.log('[PWA] Install outcome:', outcome)
     setShowBanner(false)
     setDeferredPrompt(null)
+    window.deferredPWAInstallPrompt = null
     if (outcome === 'accepted') {
       localStorage.setItem('pwa-installed', 'true')
     }

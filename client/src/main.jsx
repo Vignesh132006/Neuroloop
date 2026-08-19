@@ -3,6 +3,12 @@ import { createRoot } from "react-dom/client"
 import App from "./App.jsx"
 import "./index.css"
 
+// Capture PWA install prompt early before React components mount
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  window.deferredPWAInstallPrompt = e
+})
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />
@@ -11,7 +17,7 @@ createRoot(document.getElementById("root")).render(
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+  const registerSW = () => {
     navigator.serviceWorker
       .register('/sw.js')
       .then((reg) => {
@@ -20,5 +26,11 @@ if ('serviceWorker' in navigator) {
       .catch((err) => {
         console.warn('[PWA] Service worker registration failed:', err)
       })
-  })
+  }
+
+  if (document.readyState === 'complete') {
+    registerSW()
+  } else {
+    window.addEventListener('load', registerSW)
+  }
 }

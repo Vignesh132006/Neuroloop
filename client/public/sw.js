@@ -5,13 +5,22 @@ const STATIC_ASSETS = [
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
+  '/icon-maskable-512.png',
+  '/screenshot-wide.png',
+  '/screenshot-narrow.png',
 ]
 
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker')
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS)
+      return Promise.allSettled(
+        STATIC_ASSETS.map((asset) =>
+          cache.add(asset).catch((err) => {
+            console.warn('[SW] Caching asset failed:', asset, err)
+          })
+        )
+      )
     })
   )
   self.skipWaiting()
@@ -34,8 +43,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
 
-  // Skip API calls — always fetch from network
-  if (url.pathname.startsWith('/api/') ||
+  // Skip non-GET requests and API calls — always fetch live
+  if (event.request.method !== 'GET' ||
+      url.pathname.startsWith('/api/') ||
       url.hostname.includes('onrender.com') ||
       url.hostname.includes('groq.com')) {
     return
@@ -44,9 +54,11 @@ self.addEventListener('fetch', (event) => {
   // For navigation requests — serve index.html (SPA support)
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() =>
-        caches.match('/index.html')
-      )
+      fetch(event.request).catch(async () => {
+        const cachedIndex = await caches.match('/index.html')
+        const cachedRoot = await caches.match('/')
+        return cachedIndex || cachedRoot || fetch(event.request)
+      })
     )
     return
   }
@@ -56,7 +68,7 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((cached) => {
       if (cached) return cached
       return fetch(event.request).then((response) => {
-        if (response.ok) {
+        if (response.ok && response.status === 200) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then((cache) =>
             cache.put(event.request, clone)
