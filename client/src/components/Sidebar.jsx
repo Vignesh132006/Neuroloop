@@ -16,29 +16,79 @@ const S = `
     position:fixed;left:0;top:0;z-index:900;
   }
 
-  [data-theme="light"] .sb {
-    background: #ffffff;
-    border-right: 1px solid rgba(0,0,0,0.08);
+  [data-theme="light"] .sb,
+  :root[data-theme="light"] .sb,
+  [data-theme="light"] .sidebar,
+  :root[data-theme="light"] .sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid rgba(0,0,0,0.08) !important;
   }
-  [data-theme="light"] .sb-link {
-    color: rgba(15,23,42,0.6);
+  [data-theme="light"] .sb-link,
+  :root[data-theme="light"] .sb-link {
+    color: #475569 !important;
   }
-  [data-theme="light"] .sb-link:hover {
-    background: rgba(0,0,0,0.04);
-    color: #0f172a;
+  [data-theme="light"] .sb-link:hover,
+  :root[data-theme="light"] .sb-link:hover {
+    background: rgba(0,0,0,0.04) !important;
+    color: #0f172a !important;
   }
-  [data-theme="light"] .sb-group-label {
-    color: rgba(15,23,42,0.4);
+  [data-theme="light"] .sb-link.active,
+  :root[data-theme="light"] .sb-link.active {
+    background: rgba(255,59,48,0.08) !important;
+    color: #ff3b30 !important;
+    border-color: rgba(255,59,48,0.2) !important;
   }
-  [data-theme="light"] .sb-user {
-    background: rgba(0,0,0,0.03);
-    border-color: rgba(0,0,0,0.06);
+  [data-theme="light"] .sb-group-label,
+  :root[data-theme="light"] .sb-group-label {
+    color: #94a3b8 !important;
   }
-  [data-theme="light"] .sb-user-name {
-    color: #0f172a;
+  [data-theme="light"] .sb-logo-name,
+  :root[data-theme="light"] .sb-logo-name {
+    color: #0f172a !important;
   }
-  [data-theme="light"] .sb-user-email {
-    color: rgba(15,23,42,0.5);
+  [data-theme="light"] .sb-user,
+  :root[data-theme="light"] .sb-user {
+    background: rgba(0,0,0,0.03) !important;
+    border-color: rgba(0,0,0,0.08) !important;
+  }
+  [data-theme="light"] .sb-user-name,
+  :root[data-theme="light"] .sb-user-name {
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .sb-user-email,
+  :root[data-theme="light"] .sb-user-email {
+    color: #64748b !important;
+  }
+  [data-theme="light"] .sb-theme-toggle,
+  :root[data-theme="light"] .sb-theme-toggle {
+    background: rgba(0,0,0,0.03) !important;
+    border-color: rgba(0,0,0,0.08) !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .sb-theme-toggle:hover,
+  :root[data-theme="light"] .sb-theme-toggle:hover {
+    background: rgba(0,0,0,0.06) !important;
+  }
+  [data-theme="light"] .sb-streak,
+  :root[data-theme="light"] .sb-streak {
+    background: rgba(255,59,48,0.06) !important;
+    border-color: rgba(255,59,48,0.18) !important;
+  }
+  [data-theme="light"] .sb-streak-lbl,
+  :root[data-theme="light"] .sb-streak-lbl {
+    color: #64748b !important;
+  }
+  [data-theme="light"] .sb-logout,
+  :root[data-theme="light"] .sb-logout {
+    background: rgba(239,68,68,0.08) !important;
+    border-color: rgba(239,68,68,0.2) !important;
+    color: #dc2626 !important;
+  }
+  [data-theme="light"] #mobile-menu-toggle,
+  :root[data-theme="light"] #mobile-menu-toggle {
+    background: rgba(255,255,255,0.9) !important;
+    border-color: rgba(0,0,0,0.12) !important;
+    color: #0f172a !important;
   }
 
   .sb-theme-toggle {
@@ -221,7 +271,7 @@ const S = `
       height: 100vh !important;
       min-height: 100vh !important;
       flex-direction: column !important;
-      border-right: 1px solid rgba(255,255,255,0.06) !important;
+      border-right: 1px solid rgba(255,255,255,0.06);
       border-top: none !important;
       padding: 20px 12px !important;
       z-index: 9999 !important;
@@ -229,7 +279,14 @@ const S = `
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
       display: flex !important;
       overflow-y: auto !important;
-      background: #0d0d1a !important;
+      background: #0d0d1a;
+    }
+    [data-theme="light"] .sidebar,
+    [data-theme="light"] .sb,
+    :root[data-theme="light"] .sidebar,
+    :root[data-theme="light"] .sb {
+      background: #ffffff !important;
+      border-right: 1px solid rgba(0,0,0,0.08) !important;
     }
     .sidebar.open, .sb.open {
       transform: translateX(0) !important;
