@@ -25,6 +25,8 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminTickets from './pages/admin/AdminTickets'
 
+import InstallBanner from './components/InstallBanner'
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -62,6 +64,7 @@ export default function App() {
             {/* Redirect */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          <InstallBanner />
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
