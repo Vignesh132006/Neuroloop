@@ -8,30 +8,30 @@
 
     <!-- iOS PWA support -->
     <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
     <meta name="apple-mobile-web-app-title" content="NeuroLoop"/>
     <link rel="apple-touch-icon" href="/icon-192.png"/>
 
     <!-- Theme color for browser chrome -->
-    <meta name="theme-color" content="#ff3b30"/>
+    <meta name="theme-color" content="#E91E8C"/>
 
     <!-- Windows tile -->
-    <meta name="msapplication-TileColor" content="#ff3b30"/>
+    <meta name="msapplication-TileColor" content="#E91E8C"/>
     <meta name="msapplication-TileImage" content="/icon-192.png"/>
 
     <!-- Viewport — important for mobile app feel -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
     <!-- Description for SEO and share -->
-    <meta name="description" content="NeuroLoop — AI-powered learning tracker with spaced repetition, quiz generation, and weakness detection for CS students."/>
+    <meta name="description" content="NeuroLoop — AI-powered learning tracker with spaced repetition, quiz generation, and weakness detection."/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-    <title>NeuroLoop — AI Learning Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <title>NeuroLoop — AI Learning Platform</title>
     <style>
       body {
         margin: 0;
-        background: #0a0a0a;
+        background: #FFF0F5;
       }
       .initial-loader-screen {
         position: fixed;
@@ -40,9 +40,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: #0a0a0a;
+        background: #FFF0F5;
         z-index: 99999;
-        font-family: system-ui, -apple-system, sans-serif;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
         gap: 24px;
       }
       .initial-loader-container {
@@ -65,8 +65,8 @@
         width: 90px;
         height: 90px;
         border: 2px solid transparent;
-        border-top-color: #d4af37;
-        border-bottom-color: #d4af37;
+        border-top-color: #E91E8C;
+        border-bottom-color: #FF6B9D;
         border-radius: 50%;
         animation: initialSpinClockwise 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         z-index: 1;
@@ -76,25 +76,25 @@
         width: 72px;
         height: 72px;
         border: 2px solid transparent;
-        border-left-color: #10b981;
-        border-right-color: #10b981;
+        border-left-color: #E91E8C;
+        border-right-color: #F9C0D8;
         border-radius: 50%;
         animation: initialSpinCounterClockwise 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         opacity: 0.8;
         z-index: 1;
       }
       .initial-loader-text {
-        font-size: 0.95rem;
-        font-weight: 500;
-        letter-spacing: 0.12em;
-        color: #a09880;
-        text-transform: uppercase;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #1A1A2E;
         text-align: center;
         animation: initialTextFade 1.6s ease-in-out infinite alternate;
       }
       @keyframes initialLogoPulse {
-        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.2)); }
-        50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.6)); }
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(233, 30, 140, 0.2)); }
+        50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(233, 30, 140, 0.4)); }
       }
       @keyframes initialSpinClockwise {
         0% { transform: rotate(0deg); }
@@ -105,8 +105,8 @@
         100% { transform: rotate(-360deg); }
       }
       @keyframes initialTextFade {
-        0% { opacity: 0.5; color: #a09880; }
-        100% { opacity: 1; color: #d4af37; }
+        0% { opacity: 0.6; color: #4A4A6A; }
+        100% { opacity: 1; color: #E91E8C; }
       }
     </style>
   </head>
@@ -119,17 +119,17 @@
           <div class="initial-loader-logo">
             <svg width="56" height="56" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="18" cy="18" r="16" stroke="url(#init-grad-logo)" stroke-width="2.5" fill="none" stroke-dasharray="70 30" stroke-linecap="round"/>
-              <circle cx="18" cy="8" r="2.5" fill="#d4af37"/>
-              <circle cx="27" cy="22" r="2.5" fill="#10b981"/>
-              <circle cx="9" cy="22" r="2.5" fill="#f0d060"/>
-              <line x1="18" y1="10.5" x2="25" y2="20" stroke="#d4af37" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-              <line x1="18" y1="10.5" x2="11" y2="20" stroke="#f0d060" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
-              <line x1="11" y1="22" x2="25" y2="22" stroke="#10b981" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <circle cx="18" cy="8" r="2.5" fill="#E91E8C"/>
+              <circle cx="27" cy="22" r="2.5" fill="#FF6B9D"/>
+              <circle cx="9" cy="22" r="2.5" fill="#E91E8C"/>
+              <line x1="18" y1="10.5" x2="25" y2="20" stroke="#E91E8C" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <line x1="18" y1="10.5" x2="11" y2="20" stroke="#FF6B9D" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+              <line x1="11" y1="22" x2="25" y2="22" stroke="#E91E8C" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
               <defs>
                 <linearGradient id="init-grad-logo" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#d4af37"/>
-                  <stop offset="50%" stop-color="#10b981"/>
-                  <stop offset="100%" stop-color="#f0d060"/>
+                  <stop offset="0%" stop-color="#E91E8C"/>
+                  <stop offset="50%" stop-color="#FF6B9D"/>
+                  <stop offset="100%" stop-color="#E91E8C"/>
                 </linearGradient>
               </defs>
             </svg>
