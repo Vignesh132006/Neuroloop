@@ -30,8 +30,8 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, questions = [], onRetry
       <style>{`
         .qs-overlay {
           position: fixed; inset: 0;
-          background: rgba(0,0,0,0.88);
-          backdrop-filter: blur(12px);
+          background: rgba(255, 240, 245, 0.88);
+          backdrop-filter: blur(8px);
           display: flex; align-items: center; justify-content: center;
           z-index: 9999;
           animation: qsOverlayIn 0.25s ease;
@@ -40,9 +40,9 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, questions = [], onRetry
         @keyframes qsOverlayIn { from{opacity:0} to{opacity:1} }
 
         .qs-card {
-          background: #13132A;
-          border: 1px solid rgba(124,58,237,0.35);
-          border-radius: 28px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 24px;
           width: 90%;
           max-width: 600px;
           max-height: 90vh;
@@ -50,51 +50,50 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, questions = [], onRetry
           flex-direction: column;
           position: relative;
           animation: qsCardIn 0.45s cubic-bezier(0.34,1.56,0.64,1);
-          box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+          box-shadow: 0 16px 48px rgba(233, 30, 140, 0.15);
           overflow: hidden;
         }
         @keyframes qsCardIn {
-          from { opacity:0; transform: scale(0.65) translateY(40px); }
+          from { opacity:0; transform: scale(0.85) translateY(20px); }
           to   { opacity:1; transform: scale(1)    translateY(0); }
         }
 
         .qs-top-bar {
           position: absolute; top: 0; left: 0; right: 0;
-          height: 4px; border-radius: 28px 28px 0 0;
+          height: 4px; border-radius: 24px 24px 0 0;
           flex-shrink: 0;
+          background: linear-gradient(90deg, #E91E8C, #FF6B9D);
         }
 
         .qs-tab-bar {
           display: flex;
-          border-bottom: 1px solid rgba(255,255,255,0.08);
+          background: #FFF0F5;
+          border-bottom: 1.5px solid #F9C0D8;
           flex-shrink: 0;
           margin-top: 4px;
         }
         .qs-tab {
           flex: 1; padding: 12px 8px;
           background: none; border: none;
-          color: rgba(255,255,255,0.45);
-          font-size: 0.82rem; font-weight: 600;
+          color: #8888AA;
+          font-size: 0.85rem; font-weight: 600;
           cursor: pointer; transition: all 0.2s;
           border-bottom: 2px solid transparent;
           letter-spacing: 0.03em;
         }
         .qs-tab.active {
-          color: white;
-          border-bottom-color: #7C3AED;
+          color: #E91E8C;
+          border-bottom-color: #E91E8C;
         }
-        .qs-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
+        .qs-tab:hover:not(.active) { color: #1A1A2E; }
 
         .qs-scroll-body {
           overflow-y: auto;
           flex: 1;
           padding: 1.5rem 1.75rem;
           scrollbar-width: thin;
-          scrollbar-color: rgba(124,58,237,0.4) transparent;
+          scrollbar-color: #F9C0D8 transparent;
         }
-        .qs-scroll-body::-webkit-scrollbar { width: 5px; }
-        .qs-scroll-body::-webkit-scrollbar-track { background: transparent; }
-        .qs-scroll-body::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 4px; }
 
         /* Score tab */
         .qs-emoji {
@@ -102,87 +101,85 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, questions = [], onRetry
           display: block; margin-bottom: 0.5rem; text-align: center;
           animation: emojiPop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
         }
-        @keyframes emojiPop {
-          from { transform: scale(0) rotate(-25deg); }
-          to   { transform: scale(1) rotate(0); }
-        }
 
         .qs-ring { margin: 0.5rem auto 1rem; display: block; }
 
         .qs-title {
-          font-size: 1.6rem; font-weight: 800;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 1.6rem; font-weight: 700;
           letter-spacing: -0.02em; margin: 0 0 0.4rem;
-          text-align: center;
+          text-align: center; color: #1A1A2E;
         }
         .qs-topic {
-          color: rgba(255,255,255,0.45); font-size: 0.78rem;
+          color: #8888AA; font-size: 0.8rem;
           text-transform: uppercase; letter-spacing: 0.08em;
-          margin: 0 0 0.75rem; text-align: center;
+          margin: 0 0 0.75rem; text-align: center; font-weight: 600;
         }
         .qs-message {
-          color: rgba(255,255,255,0.75); font-size: 0.86rem;
+          color: #4A4A6A; font-size: 0.88rem;
           line-height: 1.65; margin: 0 0 1.2rem;
-          background: rgba(255,255,255,0.04);
-          border-left: 3px solid rgba(124,58,237,0.6);
-          border-radius: 0 10px 10px 0;
-          padding: 10px 14px; text-align: left;
+          background: #FFF0F5;
+          border-left: 3.5px solid #E91E8C;
+          border-radius: 0 12px 12px 0;
+          padding: 12px 16px; text-align: left;
         }
         .qs-stats {
           display: grid; grid-template-columns: 1fr 1fr 1fr;
           gap: 10px; margin-bottom: 1.2rem;
         }
         .qs-stat {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 12px; padding: 12px; text-align: center;
+          background: #FCE4F0;
+          border: 1px solid #F9C0D8;
+          border-radius: 14px; padding: 12px; text-align: center;
         }
-        .qs-stat-val { font-size: 1.3rem; font-weight: 700; }
-        .qs-stat-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+        .qs-stat-val { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 700; }
+        .qs-stat-lbl { font-size: 0.75rem; color: #8888AA; margin-top: 2px; font-weight: 600; text-transform: uppercase; }
 
         .qs-xp {
           display: inline-flex; align-items: center; gap: 6px;
-          background: rgba(245,158,11,0.12);
-          border: 1px solid rgba(245,158,11,0.35);
-          color: #F59E0B; border-radius: 9999px;
-          padding: 5px 16px; font-size: 0.82rem; font-weight: 600;
+          background: #FCE4F0;
+          border: 1px solid #F9C0D8;
+          color: #E91E8C; border-radius: 50px;
+          padding: 6px 18px; font-size: 0.85rem; font-weight: 600;
           margin-bottom: 1rem; display: flex; justify-content: center;
         }
         .qs-weak {
           background: rgba(239,68,68,0.08);
           border: 1px solid rgba(239,68,68,0.2);
-          border-radius: 12px; padding: 12px 14px;
+          border-radius: 14px; padding: 12px 14px;
           margin-bottom: 1.2rem; text-align: left;
         }
-        .qs-weak-title { color: #FCA5A5; font-size: 0.78rem; font-weight: 600; margin: 0 0 8px; }
+        .qs-weak-title { color: #dc2626; font-size: 0.8rem; font-weight: 600; margin: 0 0 8px; }
         .qs-weak-tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .qs-weak-tag {
-          background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
-          color: #FCA5A5; border-radius: 9999px;
-          padding: 3px 11px; font-size: 0.73rem;
+          background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+          color: #dc2626; border-radius: 50px;
+          padding: 3px 12px; font-size: 0.75rem; font-weight: 500;
         }
 
         /* Review tab */
         .qs-review-q {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 16px;
-          padding: 1.1rem 1.25rem;
+          background: #FFF0F5;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 18px;
+          padding: 1.2rem 1.35rem;
           margin-bottom: 1rem;
         }
         .qs-review-qnum {
-          font-size: 0.7rem; font-weight: 700;
+          font-size: 0.72rem; font-weight: 700;
           text-transform: uppercase; letter-spacing: 0.07em;
-          color: rgba(255,255,255,0.4);
+          color: #8888AA;
           margin-bottom: 6px;
         }
         .qs-review-qtxt {
-          font-size: 0.9rem; font-weight: 600;
-          color: white; margin-bottom: 12px; line-height: 1.5;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 0.98rem; font-weight: 700;
+          color: #1A1A2E; margin-bottom: 12px; line-height: 1.5;
         }
         .qs-opt {
           display: flex; align-items: flex-start; gap: 10px;
-          padding: 9px 12px; border-radius: 10px;
-          margin-bottom: 6px; font-size: 0.85rem;
+          padding: 10px 14px; border-radius: 12px;
+          margin-bottom: 6px; font-size: 0.88rem;
           border: 1px solid transparent;
           transition: all 0.15s;
         }
@@ -191,100 +188,99 @@ const QuizScoreCard = ({ score, total, topic, weakAreas, questions = [], onRetry
         .qs-opt.correct {
           background: rgba(16,185,129,0.1);
           border-color: rgba(16,185,129,0.35);
-          color: #6ee7b7;
+          color: #059669; font-weight: 600;
         }
         .qs-opt.wrong-picked {
           background: rgba(239,68,68,0.1);
           border-color: rgba(239,68,68,0.35);
-          color: #fca5a5;
+          color: #dc2626; font-weight: 600;
         }
         .qs-opt.neutral {
-          background: rgba(255,255,255,0.03);
-          border-color: rgba(255,255,255,0.07);
-          color: rgba(255,255,255,0.55);
+          background: #FFFFFF;
+          border-color: #F9C0D8;
+          color: #4A4A6A;
         }
 
-        /* Correct answer definition box */
         .qs-answer-def {
-          background: rgba(16,185,129,0.07);
-          border: 1px solid rgba(16,185,129,0.2);
-          border-radius: 10px;
+          background: rgba(16,185,129,0.08);
+          border: 1px solid rgba(16,185,129,0.25);
+          border-radius: 12px;
           padding: 10px 14px;
           margin-top: 12px;
-          font-size: 0.84rem;
-          color: #a7f3d0;
+          font-size: 0.86rem;
+          color: #059669;
           line-height: 1.6;
         }
         .qs-answer-def-label {
-          font-size: 0.7rem; font-weight: 700;
+          font-size: 0.72rem; font-weight: 700;
           text-transform: uppercase; letter-spacing: 0.07em;
           color: #10B981; margin-bottom: 5px;
         }
 
-        /* Explanation box */
         .qs-explanation {
-          background: rgba(124,58,237,0.07);
-          border: 1px solid rgba(124,58,237,0.2);
-          border-radius: 10px;
+          background: #FCE4F0;
+          border: 1px solid #F9C0D8;
+          border-radius: 12px;
           padding: 10px 14px;
           margin-top: 8px;
-          font-size: 0.84rem;
-          color: rgba(255,255,255,0.7);
+          font-size: 0.86rem;
+          color: #4A4A6A;
           line-height: 1.6;
         }
         .qs-explanation-label {
-          font-size: 0.7rem; font-weight: 700;
+          font-size: 0.72rem; font-weight: 700;
           text-transform: uppercase; letter-spacing: 0.07em;
-          color: #A78BFA; margin-bottom: 5px;
+          color: #E91E8C; margin-bottom: 5px;
         }
 
-        /* Status badges */
         .qs-qstatus {
           display: inline-flex; align-items: center; gap: 5px;
-          font-size: 0.71rem; font-weight: 700; padding: 3px 10px;
-          border-radius: 99px; margin-bottom: 10px;
+          font-size: 0.75rem; font-weight: 700; padding: 4px 14px;
+          border-radius: 50px; margin-bottom: 10px;
         }
         .qs-qstatus.pass {
           background: rgba(16,185,129,0.12);
           border: 1px solid rgba(16,185,129,0.3);
-          color: #6ee7b7;
+          color: #059669;
         }
         .qs-qstatus.fail {
           background: rgba(239,68,68,0.12);
           border: 1px solid rgba(239,68,68,0.3);
-          color: #fca5a5;
+          color: #dc2626;
         }
 
         .qs-footer {
           padding: 1rem 1.75rem 1.5rem;
-          display: flex; gap: 10px;
-          border-top: 1px solid rgba(255,255,255,0.07);
+          display: flex; gap: 12px;
+          border-top: 1.5px solid #F9C0D8;
           flex-shrink: 0;
+          background: #FFFFFF;
         }
         .qs-btn-retry {
-          flex: 1; padding: 12px; border-radius: 9999px;
-          background: rgba(255,255,255,0.07);
-          border: 1px solid rgba(255,255,255,0.15);
-          color: white; font-size: 0.86rem; cursor: pointer;
-          transition: background 0.2s; font-weight: 500;
+          flex: 1; padding: 12px; border-radius: 50px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          color: #E91E8C; font-size: 0.88rem; cursor: pointer;
+          transition: all 0.2s; font-weight: 600;
         }
-        .qs-btn-retry:hover { background: rgba(255,255,255,0.13); }
+        .qs-btn-retry:hover { background: #FCE4F0; }
         .qs-btn-continue {
-          flex: 1.6; padding: 12px; border-radius: 9999px;
-          background: linear-gradient(135deg,#7C3AED,#06B6D4);
-          border: none; color: white; font-size: 0.86rem;
-          font-weight: 700; cursor: pointer; transition: all 0.2s;
+          flex: 1.6; padding: 12px; border-radius: 50px;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          border: none; color: white; font-size: 0.88rem;
+          font-weight: 600; cursor: pointer; transition: all 0.2s;
+          box-shadow: 0 4px 18px rgba(233, 30, 140, 0.25);
         }
         .qs-btn-continue:hover {
           transform: translateY(-1px);
-          box-shadow: 0 8px 22px rgba(124,58,237,0.38);
+          box-shadow: 0 8px 26px rgba(233, 30, 140, 0.4);
         }
         .qs-review-hint {
           display: flex; align-items: center; gap: 8px;
-          background: rgba(124,58,237,0.08);
-          border: 1px solid rgba(124,58,237,0.2);
-          border-radius: 10px; padding: 10px 14px;
-          font-size: 0.8rem; color: rgba(255,255,255,0.6);
+          background: #FCE4F0;
+          border: 1px solid #F9C0D8;
+          border-radius: 12px; padding: 10px 14px;
+          font-size: 0.82rem; color: #4A4A6A;
           margin-bottom: 1rem;
         }
 
