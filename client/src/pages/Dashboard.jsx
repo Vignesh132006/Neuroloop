@@ -27,6 +27,23 @@ function ActivityHeatmap({ heatmapData }) {
 
   return (
     <div>
+      <style>{`
+        .heatmap-grid {
+          display: grid;
+          grid-template-columns: repeat(18, 1fr);
+          gap: 4px;
+        }
+        .heatmap-cell {
+          aspect-ratio: 1;
+          background: #FFF0F5;
+          border: 1px solid #F9C0D8;
+          border-radius: 4px;
+        }
+        .heatmap-cell.level-1 { background: #FCE4F0; border-color: #F9C0D8; }
+        .heatmap-cell.level-2 { background: #F9C0D8; border-color: #FF6B9D; }
+        .heatmap-cell.level-3 { background: #FF6B9D; border-color: #E91E8C; }
+        .heatmap-cell.level-4 { background: #E91E8C; border-color: #E91E8C; }
+      `}</style>
       <div className="heatmap-grid">
         {days.map((date) => (
           <div
@@ -36,10 +53,10 @@ function ActivityHeatmap({ heatmapData }) {
           />
         ))}
       </div>
-      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.75rem', fontSize: '0.72rem', color: 'var(--t2)' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.75rem', fontSize: '0.75rem', color: '#8888AA' }}>
         <span>Less</span>
         {['', 'level-1', 'level-2', 'level-3', 'level-4'].map((l, i) => (
-          <div key={i} className={`heatmap-cell ${l}`} />
+          <div key={i} className={`heatmap-cell ${l}`} style={{ width: '12px', height: '12px' }} />
         ))}
         <span>More</span>
       </div>
@@ -100,17 +117,12 @@ export default function Dashboard() {
         <Sidebar />
         <div className="page-wrap">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {/* Skeleton loaders */}
             <div className="skeleton" style={{ height: '32px', width: '250px', marginBottom: '12px' }} />
             <div className="skeleton" style={{ height: '14px', width: '40%' }} />
             <div className="stat-grid" style={{ marginTop: '1rem' }}>
               {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '120px' }} />)}
             </div>
             <div className="skeleton" style={{ height: '160px', marginTop: '0.5rem' }} />
-            <div className="grid-2" style={{ marginTop: '0.5rem' }}>
-              <div className="skeleton" style={{ height: '200px' }} />
-              <div className="skeleton" style={{ height: '200px' }} />
-            </div>
           </div>
         </div>
       </div>
@@ -133,7 +145,6 @@ export default function Dashboard() {
   const xpPercent = Math.min((xp / 1000) * 100, 100)
   const overallMastery = masteryScore
 
-  // Get motivational mastery message
   const getMasteryText = (val) => {
     if (val < 30) return "Keep reviewing to boost this!"
     if (val <= 60) return "You are making real progress!"
@@ -141,7 +152,6 @@ export default function Dashboard() {
     return "Outstanding mastery level!"
   }
 
-  // Daily Quote Selection
   const quotes = [
     { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
     { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
@@ -153,18 +163,15 @@ export default function Dashboard() {
   ]
   const quote = quotes[new Date().getDay()]
 
-  // Topic mastery bar color helper
   const getTopicColor = (index) => {
     switch (index) {
-      case 0: return "#ff6b76"
-      case 1: return "#ff3b30"
-      case 2: return "#b31b22"
-      case 3: return "#ff9999"
-      default: return "#ff3b30"
+      case 0: return "#E91E8C"
+      case 1: return "#FF6B9D"
+      case 2: return "#E91E8C"
+      default: return "#FF6B9D"
     }
   }
 
-  // Goal calculations
   const goals = [
     { text: "Write a note", done: stats.notesCount > 0 },
     { text: "Take a quiz", done: stats.quizzesCount > 0 },
@@ -173,7 +180,6 @@ export default function Dashboard() {
   const doneCount = goals.filter(g => g.done).length
   const donePercent = (doneCount / 3) * 100
 
-  // Neuro Tip Content Logic
   let neuroTip = ""
   if (weakTopics && weakTopics.length > 0) {
     const topSubtopic = weakTopics[0].weakSubtopics?.[0]?.name || "this area"
@@ -190,22 +196,22 @@ export default function Dashboard() {
     <div className="app-layout">
       <style>{`
         :root {
-          --text-primary: var(--t1, #f5f0e8);
-          --text-secondary: var(--t2, #a09880);
-          --text-muted: var(--t3, #5a5040);
-          --border: var(--bd, rgba(255,255,255,0.08));
-          --border-strong: rgba(255,255,255,0.18);
+          --text-primary: #1A1A2E;
+          --text-secondary: #4A4A6A;
+          --text-muted: #8888AA;
+          --border: #F9C0D8;
+          --border-strong: #E91E8C;
           
-          --bg-pro: var(--s2, #1a1a1a);
-          --border-pro: var(--bd, rgba(255,255,255,0.08));
-          --text-pro: var(--t1, #f5f0e8);
+          --bg-pro: #FCE4F0;
+          --border-pro: #F9C0D8;
+          --text-pro: #1A1A2E;
           
-          --bg-warning: rgba(239, 159, 39, 0.15);
-          --text-warning: #EF9F27;
-          --border-warning: rgba(239, 159, 39, 0.3);
+          --bg-warning: #FCE4F0;
+          --text-warning: #E91E8C;
+          --border-warning: #F9C0D8;
           
-          --fill-success: #1D9E75;
-          --surface-1: var(--s1, #111111);
+          --fill-success: #E91E8C;
+          --surface-1: #FFFFFF;
         }
 
         @keyframes pulse-dot {
@@ -214,17 +220,12 @@ export default function Dashboard() {
         }
 
         .pulse-dot {
-          width: 6px;
-          height: 6px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
-          background: #EF9F27;
+          background: #E91E8C;
           display: inline-block;
           animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes xp-fill {
-          from { width: 0; }
-          to { width: var(--target-width); }
         }
 
         @keyframes fadeUp {
@@ -233,91 +234,71 @@ export default function Dashboard() {
         }
 
         .command-centre-header {
-          padding: 24px;
-          border-bottom: 0.5px solid var(--border);
-          margin-bottom: 20px;
+          padding: 24px 32px;
+          border-bottom: 1.5px solid #F9C0D8;
+          margin-bottom: 24px;
         }
 
         .stats-grid-row {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 14px;
-          padding: 0 24px;
+          gap: 16px;
+          padding: 0 32px;
           margin-bottom: 24px;
         }
 
         .stat-card-custom {
-          background: var(--surface-1);
-          border: 0.5px solid var(--border);
-          border-radius: 12px;
-          padding: 16px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-top: 3px solid #E91E8C;
+          border-radius: 20px;
+          padding: 20px 22px;
           position: relative;
-          transition: border-color 0.2s ease, transform 0.2s ease;
+          transition: all 0.22s ease;
           overflow: hidden;
+          box-shadow: 0 4px 24px rgba(233, 30, 140, 0.08);
         }
 
         .stat-card-custom:hover {
-          border-color: var(--border-strong);
+          border-color: #E91E8C;
           transform: translateY(-2px);
-        }
-
-        .stat-card-top-border {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-        }
-
-        .stat-icon-container {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 12px;
+          box-shadow: 0 8px 32px rgba(233, 30, 140, 0.14);
         }
 
         .stat-number-large {
-          font-size: 24px;
-          font-weight: 500;
-          color: var(--text-primary);
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 28px;
+          font-weight: 700;
+          color: #E91E8C;
           line-height: 1.2;
-          margin-bottom: 2px;
+          margin-bottom: 4px;
         }
 
         .stat-label-caps {
           font-size: 11px;
           text-transform: uppercase;
-          color: var(--text-muted);
-          font-weight: 600;
-          letter-spacing: 0.05em;
+          color: #8888AA;
+          font-weight: 700;
+          letter-spacing: 0.06em;
           margin-bottom: 6px;
         }
 
         .stat-trend-text {
-          font-size: 11px;
-          color: var(--text-secondary);
+          font-size: 12px;
+          color: #4A4A6A;
         }
 
         .two-column-layout {
           display: grid;
           grid-template-columns: 2fr 1fr;
-          gap: 14px;
-          padding: 0 24px 24px 24px;
+          gap: 20px;
+          padding: 0 32px 32px 32px;
         }
 
-        .layout-col-left {
+        .layout-col-left, .layout-col-right {
           display: flex;
           flex-direction: column;
-          gap: 14px;
-        }
-
-        .layout-col-right {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
+          gap: 20px;
         }
 
         @media (max-width: 768px) {
@@ -326,12 +307,11 @@ export default function Dashboard() {
           }
           .stats-grid-row {
             grid-template-columns: repeat(2, 1fr);
+            padding: 0 16px;
           }
-        }
-
-        @media (max-width: 480px) {
-          .stats-grid-row {
-            grid-template-columns: 1fr;
+          .command-centre-header, .two-column-layout {
+            padding-left: 16px;
+            padding-right: 16px;
           }
         }
       `}</style>
@@ -344,47 +324,48 @@ export default function Dashboard() {
           <div className="command-centre-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <span className="pulse-dot" />
-              <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', fontWeight: 600 }}>
-                YOUR LEARNING COMMAND CENTRE
+              <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#E91E8C', letterSpacing: '0.1em', fontWeight: 700 }}>
+                LEARNING COMMAND CENTRE
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '26px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '30px', fontWeight: 700, color: '#1A1A2E', margin: 0 }}>
                 Welcome back, {user?.name}!
               </h1>
               <div style={{
-                background: 'rgba(255, 59, 48, 0.12)',
-                color: '#ff6b76',
-                border: '0.5px solid rgba(255, 59, 48, 0.3)',
-                padding: '3px 10px',
-                borderRadius: '20px',
+                background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)',
+                color: '#ffffff',
+                border: 'none',
+                padding: '4px 14px',
+                borderRadius: '50px',
                 fontSize: '12px',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px',
-                fontWeight: 500
+                gap: '6px',
+                fontWeight: 600,
+                boxShadow: '0 4px 14px rgba(233, 30, 140, 0.25)'
               }}>
                 <span>🔥</span> {streak} day streak
               </div>
             </div>
 
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
+            <p style={{ fontSize: '14px', color: '#4A4A6A', marginTop: '6px', margin: 0 }}>
               {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} — Keep your streak alive today
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '14px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>XP Progress</span>
-              <div style={{ flex: 1, height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px' }}>
+              <span style={{ fontSize: '12px', color: '#8888AA', fontWeight: 600, whiteSpace: 'nowrap' }}>XP Progress</span>
+              <div style={{ flex: 1, height: '8px', background: '#F9C0D8', borderRadius: '50px', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  background: 'linear-gradient(90deg, #b31b22, #ff6b76)',
-                  borderRadius: '3px',
+                  background: 'linear-gradient(90deg, #E91E8C, #FF6B9D)',
+                  borderRadius: '50px',
                   width: `${xpPercent}%`,
                   transition: 'width 1.2s ease'
                 }} />
               </div>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '12px', color: '#1A1A2E', fontWeight: 600, whiteSpace: 'nowrap' }}>
                 {xp} / 1000 XP
               </span>
             </div>
