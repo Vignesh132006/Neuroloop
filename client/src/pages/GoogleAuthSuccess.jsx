@@ -45,7 +45,7 @@ export default function GoogleAuthSuccess() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#050508',
+      background: '#FFF0F5',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -54,13 +54,13 @@ export default function GoogleAuthSuccess() {
       fontFamily: 'Inter, sans-serif'
     }}>
       <div style={{
-        width: '40px', height: '40px',
-        border: '3px solid rgba(124,58,237,0.2)',
-        borderTop: '3px solid #7c3aed',
+        width: '44px', height: '44px',
+        border: '3.5px solid #F9C0D8',
+        borderTop: '3.5px solid #E91E8C',
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite'
       }} />
-      <p style={{ color: '#94a3b8', fontSize: '14px' }}>
+      <p style={{ color: '#1A1A2E', fontSize: '15px', fontWeight: 600, fontFamily: "'Playfair Display', Georgia, serif" }}>
         Signing you in with Google...
       </p>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

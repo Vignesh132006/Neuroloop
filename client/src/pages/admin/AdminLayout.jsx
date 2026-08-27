@@ -37,7 +37,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0a0a0a', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#FFF0F5', fontFamily: 'Inter, sans-serif' }}>
       <style>{`
         @keyframes adminSideFade {
           from { opacity: 0; transform: translateX(-15px); }
@@ -57,66 +57,67 @@ export default function AdminLayout() {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 10px 14px;
-          border-radius: 10px;
+          padding: 12px 16px;
+          border-radius: 14px;
           cursor: pointer;
-          margin-bottom: 4px;
-          color: #a09880;
-          font-size: 13px;
-          font-weight: 500;
+          margin-bottom: 6px;
+          color: #4A4A6A;
+          font-size: 14px;
+          font-weight: 600;
           transition: all 0.25s ease;
-          border-left: 2px solid transparent;
+          border-left: 3px solid transparent;
         }
         .admin-nav-item:hover {
-          color: #f5f0e8;
-          background: rgba(255, 255, 255, 0.02);
+          color: #E91E8C;
+          background: #FCE4F0;
         }
         .admin-nav-item.active {
-          background: rgba(255, 59, 48, 0.08);
-          border-left: 2px solid #ff3b30;
-          color: #ff3b30;
-          font-weight: 600;
+          background: #FCE4F0;
+          border-left: 3px solid #E91E8C;
+          color: #E91E8C;
+          font-weight: 700;
         }
         .admin-logout-btn {
           width: 100%;
-          padding: 9px 12px;
-          background: rgba(239, 68, 68, 0.06);
-          border: 1px solid rgba(239, 68, 68, 0.15);
-          border-radius: 8px;
-          color: #fca5a5;
+          padding: 10px 16px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 50px;
+          color: #dc2626;
           font-size: 13px;
           cursor: pointer;
           font-weight: 600;
           transition: all 0.25s ease;
         }
         .admin-logout-btn:hover {
-          background: rgba(239, 68, 68, 0.12);
-          border-color: rgba(239, 68, 68, 0.25);
-          color: #ffffff;
+          background: #fee2e2;
+          border-color: #ef4444;
+          color: #dc2626;
         }
       `}</style>
 
       {/* Sidebar */}
       <div className="admin-sidebar" style={{
         width: '240px', flexShrink: 0,
-        background: '#0d0d0d',
-        borderRight: '1px solid rgba(255,59,48,0.08)',
+        background: '#FFFFFF',
+        borderRight: '1.5px solid #F9C0D8',
         display: 'flex', flexDirection: 'column',
-        padding: '24px 14px',
+        padding: '24px 16px',
         position: 'fixed', height: '100vh', top: 0, left: 0,
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        boxShadow: '4px 0 24px rgba(233, 30, 140, 0.06)'
       }}>
-        <div style={{ padding: '0 8px 24px', borderBottom: '1px solid rgba(255,255,255,0.05)', marginBottom: '20px' }}>
+        <div style={{ padding: '0 8px 24px', borderBottom: '1.5px solid #F9C0D8', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '36px', height: '36px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
+              width: '38px', height: '38px', borderRadius: '12px',
+              background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-              color: '#ffffff', boxShadow: '0 4px 10px rgba(255,59,48,0.2)'
+              color: '#ffffff', boxShadow: '0 4px 14px rgba(233, 30, 140, 0.25)'
             }}>🛡️</div>
             <div>
-              <div style={{ color: '#f5f0e8', fontSize: '14px', fontWeight: '700', fontFamily: "'DM Serif Display', serif" }}>Admin Panel</div>
-              <div style={{ color: '#a09880', fontSize: '11px', letterSpacing: '0.05em' }}>NEUROLOOP</div>
+              <div style={{ color: '#1A1A2E', fontSize: '15px', fontWeight: '700', fontFamily: "'Playfair Display', Georgia, serif" }}>Admin Panel</div>
+              <div style={{ color: '#E91E8C', fontSize: '11px', letterSpacing: '0.08em', fontWeight: 700 }}>NEUROLOOP</div>
             </div>
           </div>
         </div>
@@ -132,20 +133,21 @@ export default function AdminLayout() {
           ))}
         </nav>
 
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
+        <div style={{ borderTop: '1.5px solid #F9C0D8', paddingTop: '20px' }}>
           <div style={{ padding: '0 8px 14px' }}>
-            <div style={{ color: '#f5f0e8', fontSize: '12px', fontWeight: '500', wordBreak: 'break-all' }}>{admin?.email}</div>
+            <div style={{ color: '#1A1A2E', fontSize: '12px', fontWeight: '600', wordBreak: 'break-all' }}>{admin?.email}</div>
             <div style={{
               display: 'inline-block',
-              marginTop: '4px',
-              padding: '2px 8px',
-              borderRadius: '4px',
+              marginTop: '6px',
+              padding: '3px 10px',
+              borderRadius: '50px',
               fontSize: '10px',
-              fontWeight: '600',
+              fontWeight: '700',
               textTransform: 'uppercase',
               letterSpacing: '0.05em',
-              background: admin?.role === 'subadmin' ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)',
-              color: admin?.role === 'subadmin' ? '#fcd34d' : '#fca5a5'
+              background: '#FCE4F0',
+              color: '#E91E8C',
+              border: '1px solid #F9C0D8'
             }}>
               {admin?.role === 'subadmin' ? 'Sub Administrator' : 'Administrator'}
             </div>

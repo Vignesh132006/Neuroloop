@@ -8,10 +8,10 @@ const adminApi = () => axios.create({
 })
 
 const STATUS_COLORS = {
-  open: { bg: 'rgba(255,59,48,0.08)', color: '#ff3b30', border: 'rgba(255,59,48,0.2)' },
-  'in-progress': { bg: 'rgba(245,158,11,0.08)', color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
-  resolved: { bg: 'rgba(16,185,129,0.08)', color: '#6ee7b7', border: 'rgba(16,185,129,0.2)' },
-  closed: { bg: 'rgba(100,116,139,0.08)', color: '#94a3b8', border: 'rgba(100,116,139,0.2)' }
+  open: { bg: '#FCE4F0', color: '#E91E8C', border: '#F9C0D8' },
+  'in-progress': { bg: '#FEF3C7', color: '#D97706', border: '#FDE68A' },
+  resolved: { bg: '#D1FAE5', color: '#059669', border: '#A7F3D0' },
+  closed: { bg: '#F3F4F6', color: '#4B5563', border: '#E5E7EB' }
 }
 
 export default function AdminTickets() {
@@ -66,104 +66,114 @@ export default function AdminTickets() {
           animation: adminFadeInUp 0.4s ease both;
         }
         .admin-filter-btn {
-          padding: 6px 14px;
-          border-radius: 8px;
-          fontSize: 12px;
+          padding: 8px 18px;
+          border-radius: 50px;
+          fontSize: 13px;
           fontWeight: 600;
           cursor: pointer;
-          border: 1px solid rgba(255,255,255,0.06);
-          background: rgba(255,255,255,0.03);
-          color: #a09880;
+          border: 1.5px solid #F9C0D8;
+          background: #FFFFFF;
+          color: #E91E8C;
           transition: all 0.2s;
         }
         .admin-filter-btn:hover {
-          color: #f5f0e8;
-          border-color: rgba(255,59,48,0.2);
+          color: #E91E8C;
+          border-color: #E91E8C;
+          background: #FCE4F0;
         }
         .admin-filter-btn.active {
-          background: linear-gradient(135deg, #ff3b30, #a3151a);
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
           color: #ffffff;
-          border-color: transparent;
-          box-shadow: 0 4px 10px rgba(255,59,48,0.2);
+          border: none;
+          box-shadow: 0 4px 12px rgba(233, 30, 140, 0.25);
         }
         .admin-ticket-card {
-          background: #0d0d0d;
-          border: 1px solid rgba(255, 59, 48, 0.08);
-          border-radius: 14px;
-          padding: 18px 22px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 20px;
+          padding: 20px 24px;
           cursor: pointer;
           transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
           animation: adminFadeInUp 0.5s ease both;
+          box-shadow: 0 4px 24px rgba(233, 30, 140, 0.06);
         }
         .admin-ticket-card:hover {
-          border-color: rgba(255,59,48,0.35);
-          background: #111111;
-          box-shadow: 0 8px 24px rgba(255,59,48,0.05);
+          border-color: #E91E8C;
+          background: #FFF0F5;
+          box-shadow: 0 8px 28px rgba(233, 30, 140, 0.12);
           transform: translateY(-2px);
         }
         .admin-modal-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(0,0,0,0.85);
-          backdrop-filter: blur(8px);
+          background: rgba(255, 240, 245, 0.6);
+          backdrop-filter: blur(6px);
           zIndex: 1000;
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .admin-modal-content {
-          background: #0d0d0d;
-          border: 1px solid rgba(255, 59, 48, 0.15);
-          border-radius: 20px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 24px;
           padding: 32px;
-          max-width: 560px;
+          max-width: 580px;
           width: 90%;
           max-height: 85vh;
           overflow-y: auto;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,59,48,0.05);
+          box-shadow: 0 12px 40px rgba(233, 30, 140, 0.12);
           animation: adminModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         .admin-modal-close {
-          background: transparent;
-          border: none;
-          color: #a09880;
-          font-size: 22px;
+          background: #FCE4F0;
+          border: 1px solid #F9C0D8;
+          border-radius: 50%;
+          color: #E91E8C;
+          width: 32px;
+          height: 32px;
+          font-size: 14px;
+          font-weight: 700;
           cursor: pointer;
-          transition: color 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
         }
         .admin-modal-close:hover {
-          color: #f5f0e8;
+          background: #E91E8C;
+          color: #ffffff;
         }
         .admin-status-option {
-          padding: 6px 14px;
-          border-radius: 8px;
+          padding: 8px 16px;
+          border-radius: 50px;
           font-size: 12px;
-          font-weight: 600;
+          font-weight: 700;
           cursor: pointer;
           transition: all 0.2s;
         }
         .admin-ticket-delete-btn {
           width: 100%;
-          padding: 10px;
-          background: rgba(239, 68, 68, 0.06);
-          border: 1px solid rgba(239, 68, 68, 0.15);
-          border-radius: 8px;
-          color: #fca5a5;
+          padding: 12px;
+          background: #FFFFFF;
+          border: 1.5px solid #FECACA;
+          border-radius: 50px;
+          color: #DC2626;
           font-size: 13px;
           cursor: pointer;
           font-weight: 600;
           transition: all 0.2s;
         }
         .admin-ticket-delete-btn:hover {
-          background: rgba(239, 68, 68, 0.15);
+          background: #DC2626;
           color: #ffffff;
         }
       `}</style>
 
       <div className="admin-tickets-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ color: '#f5f0e8', fontSize: '24px', fontWeight: '400', margin: '0 0 4px', fontFamily: "'DM Serif Display', serif" }}>Support Tickets</h1>
-          <p style={{ color: '#a09880', fontSize: '13px', margin: 0 }}>{tickets.length} tickets</p>
+          <h1 style={{ color: '#1A1A2E', fontSize: '26px', fontWeight: '700', margin: '0 0 4px', fontFamily: "'Playfair Display', Georgia, serif" }}>Support Tickets</h1>
+          <p style={{ color: '#4A4A6A', fontSize: '13px', margin: 0 }}>{tickets.length} tickets</p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           {['', 'open', 'in-progress', 'resolved', 'closed'].map(s => (
@@ -175,9 +185,9 @@ export default function AdminTickets() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: '12px' }}>
-        {loading ? <div style={{ color: '#a09880', textAlign: 'center', padding: '40px', fontSize: '13px' }}>Loading tickets data...</div>
-        : tickets.length === 0 ? <div style={{ color: '#a09880', textAlign: 'center', padding: '40px', fontSize: '13px' }}>No tickets found</div>
+      <div style={{ display: 'grid', gap: '14px' }}>
+        {loading ? <div style={{ color: '#8888AA', textAlign: 'center', padding: '40px', fontSize: '13px', fontWeight: 600 }}>Loading tickets data...</div>
+        : tickets.length === 0 ? <div style={{ color: '#8888AA', textAlign: 'center', padding: '40px', fontSize: '13px', fontWeight: 600 }}>No tickets found</div>
         : tickets.map((ticket, i) => {
           const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open
           return (
@@ -188,23 +198,23 @@ export default function AdminTickets() {
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                    <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#5a5040', fontWeight: '600' }}>{ticket.ticketId}</span>
+                    <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#8888AA', fontWeight: '600' }}>{ticket.ticketId}</span>
                     <span style={{
-                      padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '600',
+                      padding: '3px 12px', borderRadius: '50px', fontSize: '10.5px', fontWeight: '700',
                       background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, textTransform: 'uppercase', letterSpacing: '0.04em'
                     }}>{ticket.status}</span>
-                    <span style={{ fontSize: '11px', color: '#5a5040', fontWeight: '500' }}>
+                    <span style={{ fontSize: '12px', color: '#8888AA', fontWeight: '500' }}>
                       {new Date(ticket.createdAt).toLocaleDateString('en-IN')}
                     </span>
                   </div>
-                  <div style={{ color: '#f5f0e8', fontSize: '14px', fontWeight: '600', marginBottom: '6px' }}>
+                  <div style={{ color: '#1A1A2E', fontSize: '15px', fontWeight: '700', marginBottom: '6px', fontFamily: "'Playfair Display', Georgia, serif" }}>
                     {ticket.subject}
                   </div>
-                  <div style={{ color: '#a09880', fontSize: '12px' }}>
-                    From: <span style={{ fontWeight: '500', color: '#f5f0e8' }}>{ticket.userName}</span> ({ticket.userEmail || ticket.user?.email})
+                  <div style={{ color: '#4A4A6A', fontSize: '13px' }}>
+                    From: <span style={{ fontWeight: '600', color: '#1A1A2E' }}>{ticket.userName}</span> ({ticket.userEmail || ticket.user?.email})
                   </div>
                 </div>
-                <div style={{ fontSize: '20px', color: '#ff3b30', marginLeft: '12px' }}>›</div>
+                <div style={{ fontSize: '22px', color: '#E91E8C', marginLeft: '12px', fontWeight: 700 }}>›</div>
               </div>
             </div>
           )
@@ -217,10 +227,10 @@ export default function AdminTickets() {
           <div onClick={e => e.stopPropagation()} className="admin-modal-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
               <div>
-                <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#5a5040', fontWeight: '600', marginBottom: '4px' }}>
+                <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#8888AA', fontWeight: '600', marginBottom: '4px' }}>
                   {selected.ticketId}
                 </div>
-                <h2 style={{ color: '#f5f0e8', fontSize: '20px', fontWeight: '400', margin: 0, fontFamily: "'DM Serif Display', serif" }}>
+                <h2 style={{ color: '#1A1A2E', fontSize: '22px', fontWeight: '700', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>
                   {selected.subject}
                 </h2>
               </div>
@@ -228,11 +238,11 @@ export default function AdminTickets() {
             </div>
 
             <div style={{ marginBottom: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
-                background: 'rgba(255,59,48,0.08)', color: '#ff3b30', border: '1px solid rgba(255,59,48,0.2)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <span style={{ padding: '4px 14px', borderRadius: '50px', fontSize: '11px', fontWeight: '700',
+                background: '#FCE4F0', color: '#E91E8C', border: '1px solid #F9C0D8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {selected.category}
               </span>
-              <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '600',
+              <span style={{ padding: '4px 14px', borderRadius: '50px', fontSize: '11px', fontWeight: '700',
                 background: STATUS_COLORS[selected.status]?.bg, color: STATUS_COLORS[selected.status]?.color,
                 border: `1px solid ${STATUS_COLORS[selected.status]?.border}`, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {selected.status}
@@ -240,28 +250,28 @@ export default function AdminTickets() {
             </div>
 
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>From</div>
-              <div style={{ color: '#f5f0e8', fontSize: '13px' }}>
-                {selected.userName} — <span style={{ color: '#ff3b30', fontWeight: '500' }}>{selected.userEmail || selected.user?.email}</span>
+              <div style={{ color: '#8888AA', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>From</div>
+              <div style={{ color: '#1A1A2E', fontSize: '14px', fontWeight: 600 }}>
+                {selected.userName} — <span style={{ color: '#E91E8C', fontWeight: '600' }}>{selected.userEmail || selected.user?.email}</span>
               </div>
             </div>
 
-            <div style={{ background: '#070707', border: '1px solid rgba(255,59,48,0.08)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
-              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Message</div>
-              <p style={{ color: '#a09880', fontSize: '13px', lineHeight: '1.7', margin: 0, whiteSpace: 'pre-wrap' }}>
+            <div style={{ background: '#FFF0F5', border: '1.5px solid #F9C0D8', borderRadius: '16px', padding: '18px', marginBottom: '24px' }}>
+              <div style={{ color: '#8888AA', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Message</div>
+              <p style={{ color: '#4A4A6A', fontSize: '14px', lineHeight: '1.7', margin: 0, whiteSpace: 'pre-wrap' }}>
                 {selected.message}
               </p>
             </div>
 
             <div style={{ marginBottom: '24px' }}>
-              <div style={{ color: '#5a5040', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>Update Status</div>
+              <div style={{ color: '#8888AA', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>Update Status</div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {['open', 'in-progress', 'resolved', 'closed'].map(s => (
                   <button key={s} onClick={() => updateStatus(selected._id, s)}
                     className="admin-status-option"
                     style={{
-                      border: `1px solid ${STATUS_COLORS[s]?.border}`,
-                      background: selected.status === s ? STATUS_COLORS[s]?.bg : 'rgba(255,255,255,0.02)',
+                      border: `1.5px solid ${STATUS_COLORS[s]?.border}`,
+                      background: selected.status === s ? STATUS_COLORS[s]?.bg : '#FFFFFF',
                       color: STATUS_COLORS[s]?.color
                     }}>{s.toUpperCase()}</button>
                 ))}
