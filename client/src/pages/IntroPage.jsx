@@ -119,8 +119,8 @@ export default function IntroPage() {
     <div className="intro-container">
       <style>{`
         .intro-container {
-          background-color: #09090b;
-          color: var(--t1);
+          background-color: #FFF0F5;
+          color: #4A4A6A;
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           min-height: 100vh;
           overflow-x: hidden;
@@ -140,7 +140,7 @@ export default function IntroPage() {
 
         @keyframes lineExpand {
           from { width: 0; }
-          to { width: 60px; }
+          to { width: 80px; }
         }
 
         @keyframes pulse {
@@ -176,13 +176,14 @@ export default function IntroPage() {
 
         /* Hero section */
         .hero {
-          height: 100vh;
+          min-height: 90vh;
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
-          background: #09090b;
+          background: #FFF0F5;
           overflow: hidden;
+          padding: 80px 24px 60px;
         }
 
         /* Orbs */
@@ -197,14 +198,14 @@ export default function IntroPage() {
           height: 600px;
           top: -200px;
           left: -200px;
-          background: radial-gradient(circle, rgba(255, 59, 48, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(233, 30, 140, 0.08) 0%, transparent 70%);
         }
         .orb-2 {
           width: 500px;
           height: 500px;
           bottom: -100px;
           right: -100px;
-          background: radial-gradient(circle, rgba(244, 63, 94, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255, 107, 157, 0.08) 0%, transparent 70%);
         }
         .orb-3 {
           width: 300px;
@@ -212,11 +213,11 @@ export default function IntroPage() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          background: radial-gradient(circle, rgba(255, 59, 48, 0.04) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(233, 30, 140, 0.04) 0%, transparent 70%);
         }
 
         .hero-content {
-          max-width: 800px;
+          max-width: 850px;
           text-align: center;
           padding: 0 24px;
           position: relative;
@@ -228,41 +229,35 @@ export default function IntroPage() {
           align-items: center;
           gap: 12px;
           font-size: 11px;
-          font-weight: 500;
+          font-weight: 600;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: var(--gold);
+          color: #E91E8C;
           animation: fadeIn 0.8s ease 0.2s both;
           margin-bottom: 24px;
         }
 
         .label-line {
-          width: 16px;
-          height: 1px;
-          background-color: rgba(255, 59, 48, 0.3);
+          width: 24px;
+          height: 1.5px;
+          background-color: #F9C0D8;
         }
 
         .main-heading {
-          font-size: clamp(40px, 7vw, 80px);
-          font-weight: 600;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(42px, 7.5vw, 84px);
+          font-weight: 700;
           line-height: 1.1;
           letter-spacing: -0.02em;
-          background: linear-gradient(135deg, var(--t1) 0%, rgba(255, 59, 48, 0.8) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: #1A1A2E;
           animation: fadeUp 0.8s ease 0.4s both;
         }
 
-        .heading-line {
-          display: block;
-        }
-
         .subtitle {
-          font-size: 18px;
-          color: var(--t2);
+          font-size: 19px;
+          color: #4A4A6A;
           line-height: 1.7;
-          max-width: 560px;
+          max-width: 580px;
           margin: 24px auto 0;
           animation: fadeUp 0.8s ease 0.6s both;
         }
@@ -270,8 +265,8 @@ export default function IntroPage() {
         .divider-line {
           margin: 40px auto;
           width: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, var(--gold), var(--goldl), transparent);
+          height: 2px;
+          background: linear-gradient(90deg, transparent, #E91E8C, transparent);
           animation: lineExpand 1s ease 0.8s both;
         }
 
@@ -291,7 +286,7 @@ export default function IntroPage() {
         .scroll-line {
           height: 40px;
           width: 1px;
-          background: rgba(255, 59, 48, 0.55);
+          background: rgba(233, 30, 140, 0.3);
           position: relative;
         }
 
@@ -299,7 +294,7 @@ export default function IntroPage() {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: var(--gold);
+          background: #E91E8C;
           position: absolute;
           left: -1.5px;
           top: 0;
@@ -324,15 +319,15 @@ export default function IntroPage() {
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.1em;
-          color: var(--t1);
-          font-weight: 500;
+          color: #E91E8C;
+          font-weight: 600;
           animation: pulse 2s infinite;
         }
 
         /* Features Section */
         .features-section {
-          background-color: #09090b;
-          padding: 100px 24px;
+          background-color: #FFF0F5;
+          padding: 80px 24px 100px;
           position: relative;
           z-index: 2;
         }
@@ -346,11 +341,11 @@ export default function IntroPage() {
           display: inline-flex;
           align-items: center;
           gap: 12px;
-          font-size: 11px;
-          font-weight: 500;
+          font-size: 12px;
+          font-weight: 600;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: var(--t2);
+          color: #E91E8C;
         }
 
         .features-grid {
@@ -358,22 +353,20 @@ export default function IntroPage() {
           margin: 0 auto;
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 1px;
-          background-color: rgba(255, 59, 48, 0.15);
-          border: 1px solid rgba(255, 59, 48, 0.15);
-          border-radius: 8px;
-          overflow: hidden;
+          gap: 24px;
         }
 
         .feature-card {
-          background: var(--s1);
-          padding: 32px 28px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-top: 3px solid #E91E8C;
+          border-radius: 20px;
+          padding: 36px 30px;
           position: relative;
           overflow: hidden;
-          cursor: default;
-          transition: background-color 0.3s ease;
-          border: 1px solid rgba(255, 59, 48, 0.08);
-          opacity: 0; /* Animated on scroll */
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 24px rgba(233, 30, 140, 0.06);
+          opacity: 0;
         }
 
         .feature-card.is-visible {
@@ -381,42 +374,37 @@ export default function IntroPage() {
         }
 
         .feature-card:hover {
-          background: var(--s2);
-        }
-
-        .card-accent-line {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 1px;
-          width: 0;
-          transition: width 0.4s ease;
-        }
-
-        .feature-card:hover .card-accent-line {
-          width: 100%;
+          transform: translateY(-4px);
+          box-shadow: 0 12px 36px rgba(233, 30, 140, 0.14);
+          border-color: #E91E8C;
         }
 
         .icon-area {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
+          width: 52px;
+          height: 52px;
+          border-radius: 14px;
+          background: #FCE4F0;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 20px;
+          margin-bottom: 22px;
+        }
+
+        .icon-area svg {
+          stroke: #E91E8C !important;
         }
 
         .card-title {
-          font-size: 17px;
-          font-weight: 500;
-          color: var(--t1);
-          margin-bottom: 10px;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 20px;
+          font-weight: 600;
+          color: #1A1A2E;
+          margin-bottom: 12px;
         }
 
         .card-description {
           font-size: 14px;
-          color: var(--t2);
+          color: #4A4A6A;
           line-height: 1.7;
         }
 
@@ -424,23 +412,24 @@ export default function IntroPage() {
 
         /* CTA Section */
         .cta-section {
-          background-color: #09090b;
-          padding: 120px 24px;
+          background-color: #FFF0F5;
+          padding: 80px 24px 100px;
           text-align: center;
           position: relative;
           z-index: 2;
         }
 
         .cta-heading {
-          font-size: clamp(28px, 4vw, 48px);
-          font-weight: 600;
-          color: var(--t1);
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(32px, 4.5vw, 52px);
+          font-weight: 700;
+          color: #1A1A2E;
         }
 
         .cta-subtext {
-          font-size: 16px;
-          color: var(--t2);
-          margin: 16px 0 48px;
+          font-size: 17px;
+          color: #4A4A6A;
+          margin: 16px 0 40px;
         }
 
         .launch-btn-wrapper {
@@ -449,21 +438,19 @@ export default function IntroPage() {
         }
 
         .launch-btn {
-          padding: 18px 56px;
-          font-size: 16px;
-          font-weight: 500;
+          padding: 16px 48px;
+          font-size: 15px;
+          font-weight: 600;
           border: none;
-          border-radius: 4px;
+          border-radius: 50px;
           cursor: pointer;
-          background: linear-gradient(135deg, var(--gold), var(--goldl));
-          background-size: 200% 200%;
-          animation: gradientShift 3s ease infinite;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
           color: white;
           position: relative;
           overflow: hidden;
-          transition: transform 0.2s, box-shadow 0.2s;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
+          transition: all 0.25s ease;
+          box-shadow: 0 4px 24px rgba(233, 30, 140, 0.3);
+          letter-spacing: 0.05em;
         }
 
         .btn-shimmer {
@@ -472,30 +459,32 @@ export default function IntroPage() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
           animation: shimmer 2.5s infinite;
           pointer-events: none;
         }
 
         .launch-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 20px 60px var(--goldg);
+          box-shadow: 0 8px 32px rgba(233, 30, 140, 0.45);
+          background: linear-gradient(135deg, #FF6B9D, #E91E8C);
         }
 
         .cta-footer-note {
           display: block;
           font-size: 11px;
-          color: var(--t2);
+          color: #8888AA;
           margin-top: 12px;
         }
 
         /* Footer */
         .footer {
           padding: 40px 24px;
-          border-top: 1px solid rgba(255, 59, 48, 0.08);
+          border-top: 1.5px solid #F9C0D8;
+          background: #FFFFFF;
           text-align: center;
-          font-size: 12px;
-          color: var(--t2);
+          font-size: 13px;
+          color: #8888AA;
           position: relative;
           z-index: 2;
         }

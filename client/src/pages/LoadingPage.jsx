@@ -14,9 +14,12 @@ export default function LoadingPage() {
   return (
     <div className="loading-container">
       <style>{`
+  return (
+    <div className="loading-container">
+      <style>{`
         .loading-container {
-          background-color: #09090b;
-          color: var(--t1);
+          background-color: #FFF0F5;
+          color: #1A1A2E;
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           height: 100vh;
           width: 100vw;
@@ -60,16 +63,17 @@ export default function LoadingPage() {
         }
 
         .app-name {
-          font-size: 22px;
-          font-weight: 600;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 26px;
+          font-weight: 700;
           margin-top: 16px;
-          color: var(--gold);
+          color: #1A1A2E;
           animation: fadeUp 0.5s ease 0.2s both;
         }
 
         .tagline {
-          font-size: 13px;
-          color: var(--t2);
+          font-size: 14px;
+          color: #8888AA;
           margin-top: 8px;
           animation: fadeIn 0.5s ease 0.4s both;
         }
@@ -81,17 +85,17 @@ export default function LoadingPage() {
         }
 
         .loading-bar-track {
-          height: 2px;
-          background: rgba(255,59,48, 0.12);
-          border-radius: 1px;
+          height: 4px;
+          background: #F9C0D8;
+          border-radius: 99px;
           overflow: hidden;
           width: 100%;
         }
 
         .loading-bar-fill {
           height: 100%;
-          background: linear-gradient(90deg, var(--gold), var(--goldl));
-          border-radius: 1px;
+          background: linear-gradient(90deg, #E91E8C, #FF6B9D);
+          border-radius: 99px;
           animation: progressFill 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
           width: 0%;
         }
@@ -105,10 +109,10 @@ export default function LoadingPage() {
         }
 
         .dot {
-          width: 4px;
-          height: 4px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
-          background: rgba(255,59,48, 0.6);
+          background: #E91E8C;
           animation: textFade 1.2s ease infinite;
         }
 
@@ -130,7 +134,7 @@ export default function LoadingPage() {
           left: 50%;
           transform: translateX(-50%);
           font-size: 11px;
-          color: var(--t3);
+          color: #8888AA;
           letter-spacing: 0.1em;
           text-transform: uppercase;
         }
@@ -138,17 +142,17 @@ export default function LoadingPage() {
 
       {/* Logo Mark */}
       <div className="logo-wrapper">
-        <svg width="60" height="60" viewBox="0 0 60 60">
+        <svg width="64" height="64" viewBox="0 0 60 60">
           <defs>
             <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ff3b30" />
-              <stop offset="100%" stopColor="#ff6b76" />
+              <stop offset="0%" stopColor="#E91E8C" />
+              <stop offset="100%" stopColor="#FF6B9D" />
             </linearGradient>
           </defs>
-          <rect x="8" y="8" width="44" height="44" rx="12"
-            fill="none" stroke="url(#logoGrad)" strokeWidth="2" />
+          <rect x="8" y="8" width="44" height="44" rx="14"
+            fill="#FCE4F0" stroke="url(#logoGrad)" strokeWidth="2.5" />
           <path d="M18 42 L18 18 L30 36 L42 18 L42 42"
-            fill="none" stroke="url(#logoGrad)" strokeWidth="2.5"
+            fill="none" stroke="url(#logoGrad)" strokeWidth="3"
             strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
@@ -174,7 +178,8 @@ export default function LoadingPage() {
       </div>
 
       {/* Version Text */}
-      <span className="version-text">NeuroLoop v1.0</span>
+      <span className="version-text">NeuroLoop v4.0</span>
     </div>
+  )
   )
 }
