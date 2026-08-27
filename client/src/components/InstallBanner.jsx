@@ -64,42 +64,41 @@ export default function InstallBanner() {
           to { transform: translate(-50%, 0); opacity: 1; }
         }
         .pwa-install-btn {
-          padding: 8px 18px;
-          background: linear-gradient(135deg, #ff3b30, #e02e24);
+          padding: 8px 20px;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
           color: #ffffff;
           border: none;
-          border-radius: 9999px;
+          border-radius: 50px;
           font-size: 13px;
           font-weight: 600;
           cursor: pointer;
           white-space: nowrap;
-          box-shadow: 0 4px 16px rgba(255, 59, 48, 0.35);
+          box-shadow: 0 4px 16px rgba(233, 30, 140, 0.25);
           transition: all 0.2s ease;
         }
         .pwa-install-btn:hover {
           transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(255, 59, 48, 0.5);
-          background: linear-gradient(135deg, #ff5247, #ff3b30);
+          box-shadow: 0 6px 20px rgba(233, 30, 140, 0.4);
+          background: linear-gradient(135deg, #FF6B9D, #E91E8C);
         }
         .pwa-install-btn:active {
           transform: translateY(0);
         }
         .pwa-dismiss-btn {
-          padding: 6px 18px;
-          background: rgba(255, 255, 255, 0.04);
-          color: #a1a1aa;
-          border: 1px solid rgba(255, 59, 48, 0.2);
-          border-radius: 9999px;
+          padding: 6px 20px;
+          background: transparent;
+          color: #E91E8C;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 50px;
           font-size: 12px;
-          font-weight: 500;
+          font-weight: 600;
           cursor: pointer;
           white-space: nowrap;
           transition: all 0.2s ease;
         }
         .pwa-dismiss-btn:hover {
-          background: rgba(255, 59, 48, 0.1);
-          color: #f5f5f7;
-          border-color: rgba(255, 59, 48, 0.4);
+          background: #FCE4F0;
+          border-color: #E91E8C;
         }
       `}</style>
       <div style={{
@@ -109,14 +108,12 @@ export default function InstallBanner() {
         transform: 'translateX(-50%)',
         width: 'calc(100% - 32px)',
         maxWidth: '480px',
-        background: '#121214',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 59, 48, 0.3)',
-        borderRadius: '20px',
+        background: '#FFFFFF',
+        border: '1.5px solid #F9C0D8',
+        borderRadius: '24px',
         padding: '16px 20px',
         zIndex: 9999,
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 59, 48, 0.15)',
+        boxShadow: '0 8px 32px rgba(233, 30, 140, 0.15)',
         animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
         display: 'flex',
         alignItems: 'center',
@@ -124,34 +121,33 @@ export default function InstallBanner() {
       }}>
         {/* App icon */}
         <div style={{
-          width: '50px',
-          height: '50px',
-          borderRadius: '14px',
-          background: 'linear-gradient(135deg, rgba(255, 59, 48, 0.15), rgba(255, 107, 118, 0.05))',
-          border: '1px solid rgba(255, 59, 48, 0.35)',
+          width: '48px',
+          height: '48px',
+          borderRadius: '16px',
+          background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          boxShadow: '0 4px 14px rgba(255, 59, 48, 0.2)'
+          boxShadow: '0 4px 14px rgba(233, 30, 140, 0.3)'
         }}>
-          <NeuroLoopLogo size={32} showWordmark={false} />
+          <NeuroLoopLogo size={30} showWordmark={false} />
         </div>
 
         {/* Text */}
         <div style={{ flex: 1 }}>
           <div style={{
             fontSize: '14px',
-            fontWeight: '600',
-            color: '#f5f5f7',
-            marginBottom: '2px',
-            letterSpacing: '-0.01em'
+            fontWeight: '700',
+            fontFamily: "'Playfair Display', Georgia, serif",
+            color: '#1A1A2E',
+            marginBottom: '2px'
           }}>
             Install NeuroLoop
           </div>
           <div style={{
             fontSize: '12px',
-            color: '#a1a1aa',
+            color: '#4A4A6A',
             lineHeight: '1.4'
           }}>
             Add to your home screen for quick access to your learning dashboard.

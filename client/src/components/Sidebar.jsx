@@ -9,230 +9,130 @@ import NeuroLoopLogo from "./NeuroLoopLogo"
 const S = `
   .sb{
     width:220px;min-height:100vh;
-    background:#0d0d0d;
-    border-right:1px solid rgba(255,255,255,0.06);
+    background:#FFFFFF;
+    border-right:1px solid #F9C0D8;
     display:flex;flex-direction:column;
     padding:20px 12px;
     position:fixed;left:0;top:0;z-index:900;
-  }
-
-  [data-theme="light"] .sb,
-  :root[data-theme="light"] .sb,
-  [data-theme="light"] .sidebar,
-  :root[data-theme="light"] .sidebar {
-    background: #ffffff !important;
-    border-right: 1px solid rgba(0,0,0,0.08) !important;
-  }
-  [data-theme="light"] .sb-link,
-  :root[data-theme="light"] .sb-link {
-    color: #475569 !important;
-  }
-  [data-theme="light"] .sb-link:hover,
-  :root[data-theme="light"] .sb-link:hover {
-    background: rgba(0,0,0,0.04) !important;
-    color: #0f172a !important;
-  }
-  [data-theme="light"] .sb-link.active,
-  :root[data-theme="light"] .sb-link.active {
-    background: rgba(255,59,48,0.08) !important;
-    color: #ff3b30 !important;
-    border-color: rgba(255,59,48,0.2) !important;
-  }
-  [data-theme="light"] .sb-group-label,
-  :root[data-theme="light"] .sb-group-label {
-    color: #94a3b8 !important;
-  }
-  [data-theme="light"] .sb-logo-name,
-  :root[data-theme="light"] .sb-logo-name {
-    color: #0f172a !important;
-  }
-  [data-theme="light"] .sb-user,
-  :root[data-theme="light"] .sb-user {
-    background: rgba(0,0,0,0.03) !important;
-    border-color: rgba(0,0,0,0.08) !important;
-  }
-  [data-theme="light"] .sb-user-name,
-  :root[data-theme="light"] .sb-user-name {
-    color: #0f172a !important;
-  }
-  [data-theme="light"] .sb-user-email,
-  :root[data-theme="light"] .sb-user-email {
-    color: #64748b !important;
-  }
-  [data-theme="light"] .sb-theme-toggle,
-  :root[data-theme="light"] .sb-theme-toggle {
-    background: rgba(0,0,0,0.03) !important;
-    border-color: rgba(0,0,0,0.08) !important;
-    color: #0f172a !important;
-  }
-  [data-theme="light"] .sb-theme-toggle:hover,
-  :root[data-theme="light"] .sb-theme-toggle:hover {
-    background: rgba(0,0,0,0.06) !important;
-  }
-  [data-theme="light"] .sb-streak,
-  :root[data-theme="light"] .sb-streak {
-    background: rgba(255,59,48,0.06) !important;
-    border-color: rgba(255,59,48,0.18) !important;
-  }
-  [data-theme="light"] .sb-streak-lbl,
-  :root[data-theme="light"] .sb-streak-lbl {
-    color: #64748b !important;
-  }
-  [data-theme="light"] .sb-logout,
-  :root[data-theme="light"] .sb-logout {
-    background: rgba(239,68,68,0.08) !important;
-    border-color: rgba(239,68,68,0.2) !important;
-    color: #dc2626 !important;
-  }
-  [data-theme="light"] #mobile-menu-toggle,
-  :root[data-theme="light"] #mobile-menu-toggle {
-    background: rgba(255,255,255,0.9) !important;
-    border-color: rgba(0,0,0,0.12) !important;
-    color: #0f172a !important;
-  }
-
-  .sb-theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 9px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.6);
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-    margin-bottom: 8px;
-  }
-  .sb-theme-toggle:hover {
-    background: rgba(255,255,255,0.06);
+    box-shadow: 4px 0 24px rgba(233, 30, 140, 0.04);
   }
 
   .sb-logo{
     display:flex;align-items:center;gap:10px;
     padding:6px 8px 22px;
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    border-bottom:1px solid #F9C0D8;
     margin-bottom:20px;
   }
-  .sb-logo-mark{
-    width:34px;height:34px;border-radius:9px;
-    background:linear-gradient(135deg,#ff3b30,#a3151a);
-    display:flex;align-items:center;justify-content:center;
-    font-size:17px;
-    box-shadow:0 4px 14px rgba(255,59,48,0.35);
-    flex-shrink:0;
-  }
-  .sb-logo-name{
-    font-family:'DM Serif Display',Georgia,serif;
-    font-size:1.15rem;color:#f5f0e8;
-    letter-spacing:-0.01em;
-  }
-  .sb-logo-name span{color:#ff3b30;}
 
   .sb-group-label{
-    font-size:0.6rem;font-weight:700;
-    letter-spacing:0.14em;text-transform:uppercase;
-    color:rgba(255,255,255,0.18);
-    padding:0 8px;margin:12px 0 4px;
+    font-size:0.65rem;font-weight:700;
+    letter-spacing:0.12em;text-transform:uppercase;
+    color:#8888AA;
+    padding:0 8px;margin:14px 0 6px;
   }
 
   .sb-link{
     display:flex;align-items:center;gap:10px;
-    padding:9px 10px;border-radius:9px;
-    color:rgba(255,255,255,0.4);
-    font-size:0.84rem;font-weight:500;
-    margin-bottom:1px;
+    padding:10px 12px;border-radius:12px;
+    color:#4A4A6A;
+    font-size:0.86rem;font-weight:500;
+    margin-bottom:3px;
     border:1px solid transparent;
-    transition:all 0.17s ease;
+    transition:all 0.2s ease;
     text-decoration:none;position:relative;
   }
-  .sb-link::after{
-    content:'';
-    position:absolute;left:0;top:20%;bottom:20%;
-    width:2px;border-radius:99px;
-    background:#ff3b30;
-    transform:scaleY(0);
-    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-    transform-origin:center;
-  }
   .sb-link:hover{
-    background:rgba(255,255,255,0.04);
-    color:rgba(255,255,255,0.75);
+    background:#FCE4F0;
+    color:#E91E8C;
   }
-  .sb-link:hover::after{transform:scaleY(0.5);opacity:0.5;}
   .sb-link.active{
-    background:rgba(255,59,48,0.1);
-    color:#ff3b30;
-    border-color:rgba(255,59,48,0.25);
-  }
-  .sb-link.active::after{transform:scaleY(1);}
-  .sb-link.active .sb-link-icon{
-    filter:drop-shadow(0 0 5px rgba(255,59,48,0.7));
+    background:#FCE4F0;
+    color:#E91E8C;
+    border-left:3px solid #E91E8C;
+    font-weight:600;
   }
   .sb-link-icon{
-    font-size:1rem;width:20px;
+    font-size:1.05rem;width:20px;
     text-align:center;flex-shrink:0;
+    color:#E91E8C;
   }
   .sb-badge{
     margin-left:auto;
-    background:#ef4444;color:#fff;
-    font-size:0.62rem;font-weight:700;
-    border-radius:99px;padding:1px 6px;
+    background:linear-gradient(135deg, #E91E8C, #FF6B9D);
+    color:#fff;
+    font-size:0.65rem;font-weight:700;
+    border-radius:99px;padding:2px 7px;
     min-width:18px;text-align:center;
   }
 
-  .sb-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+  .sb-bottom{margin-top:auto;display:flex;flex-direction:column;gap:10px;}
 
   .sb-streak{
-    background:linear-gradient(135deg,rgba(255,59,48,0.1),rgba(255,59,48,0.04));
-    border:1px solid rgba(255,59,48,0.22);
-    border-radius:11px;padding:11px 13px;
-    display:flex;align-items:center;gap:9px;
+    background:#FFFFFF;
+    border:1px solid #F9C0D8;
+    border-radius:14px;padding:12px 14px;
+    display:flex;align-items:center;gap:10px;
     margin-top: 10px;
+    box-shadow: 0 2px 12px rgba(233, 30, 140, 0.05);
   }
   .sb-streak-fire{
     font-size:1.35rem;
+    color:#F59E0B;
     animation:fireAnim 2.2s ease-in-out infinite;
   }
   @keyframes fireAnim{
     0%,100%{transform:scale(1) rotate(-4deg);}
-    50%{transform:scale(1.2) rotate(4deg);}
+    50%{transform:scale(1.15) rotate(4deg);}
   }
-  .sb-streak-num{font-weight:700;font-size:1rem;color:#ff3b30;}
-  .sb-streak-lbl{font-size:0.7rem;color:rgba(255,255,255,0.3);}
+  .sb-streak-num{font-weight:700;font-size:1.05rem;color:#F59E0B;}
+  .sb-streak-lbl{font-size:0.7rem;color:#8888AA;font-weight:500;}
 
   .sb-user{
-    display:flex;align-items:center;gap:9px;
-    padding:10px 10px;border-radius:11px;
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.06);
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:14px;
+    background:#FCE4F0;
+    border:1px solid #F9C0D8;
   }
   .sb-avatar{
-    width:33px;height:33px;border-radius:50%;
-    background:linear-gradient(135deg,#ff3b30,#a3151a);
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#E91E8C,#FF6B9D);
     display:flex;align-items:center;justify-content:center;
     font-weight:700;font-size:0.85rem;color:#ffffff;
     flex-shrink:0;
+    box-shadow: 0 2px 8px rgba(233,30,140,0.3);
   }
-  .sb-user-name{font-size:0.82rem;font-weight:600;color:#f5f0e8;}
-  .sb-user-email{font-size:0.68rem;color:rgba(255,255,255,0.28);}
+  .sb-user-name{font-size:0.84rem;font-weight:600;color:#1A1A2E;}
+  .sb-user-email{font-size:0.7rem;color:#8888AA;}
 
   .sb-logout{
-    display:flex;align-items:center;justify-content:center;gap:7px;
-    padding:9px;border-radius:9px;
-    background:rgba(239,68,68,0.07);
-    border:1px solid rgba(239,68,68,0.18);
-    color:#f87171;font-size:0.82rem;font-weight:600;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px;border-radius:50px;
+    background:transparent;
+    border:1.5px solid #F9C0D8;
+    color:#E91E8C;font-size:0.84rem;font-weight:600;
     width:100%;transition:all 0.2s;
     cursor: pointer;
   }
   .sb-logout:hover{
-    background:rgba(239,68,68,0.14);
-    border-color:rgba(239,68,68,0.35);
-    color:#fca5a5;
+    background:#FCE4F0;
+    border-color:#E91E8C;
+    color:#E91E8C;
+  }
+
+  .sb-admin-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px;border-radius:50px;
+    background:linear-gradient(135deg, #E91E8C, #FF6B9D);
+    border:none;
+    color:#FFFFFF;font-size:0.84rem;font-weight:600;
+    width:100%;transition:all 0.2s;
+    cursor: pointer;
+    box-shadow:0 4px 14px rgba(233,30,140,0.25);
+    text-decoration:none;
+  }
+  .sb-admin-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(233,30,140,0.35);
   }
 
   .sb-desktop-only {
@@ -241,24 +141,6 @@ const S = `
     height: 100%;
     flex: 1;
   }
-  .sb-mobile-only {
-    display: none;
-  }
-  .sb-mobile-link {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: rgba(255,255,255,0.4);
-    transition: all 0.2s;
-  }
-  .sb-mobile-link.active {
-    color: #ff3b30;
-    background: rgba(255,59,48,0.12);
-  }
 
   @media (max-width: 768px) {
     .sidebar, .sb {
@@ -266,40 +148,19 @@ const S = `
       top: 0 !important;
       bottom: 0 !important;
       left: 0 !important;
-      right: auto !important;
       width: 240px !important;
       height: 100vh !important;
-      min-height: 100vh !important;
-      flex-direction: column !important;
-      border-right: 1px solid rgba(255,255,255,0.06);
-      border-top: none !important;
+      border-right: 1px solid #F9C0D8;
       padding: 20px 12px !important;
       z-index: 9999 !important;
       transform: translateX(-100%) !important;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
       display: flex !important;
       overflow-y: auto !important;
-      background: #0d0d1a;
-    }
-    [data-theme="light"] .sidebar,
-    [data-theme="light"] .sb,
-    :root[data-theme="light"] .sidebar,
-    :root[data-theme="light"] .sb {
-      background: #ffffff !important;
-      border-right: 1px solid rgba(0,0,0,0.08) !important;
+      background: #FFFFFF !important;
     }
     .sidebar.open, .sb.open {
       transform: translateX(0) !important;
-    }
-    .sb-desktop-only {
-      display: flex !important;
-      flex-direction: column;
-      height: 100%;
-      flex: 1;
-      width: 100%;
-    }
-    .sb-mobile-only {
-      display: none !important;
     }
     #mobile-menu-toggle {
       display: flex !important;
@@ -367,14 +228,14 @@ export default function Sidebar() {
           zIndex: 9990, display: 'none',
           width: '40px', height: '40px',
           borderRadius: '50%',
-          background: 'rgba(13,13,26,0.9)',
-          border: '1px solid var(--bd)',
-          color: 'var(--t1)',
+          background: '#FFFFFF',
+          border: '1.5px solid #F9C0D8',
+          color: '#E91E8C',
           fontSize: '1.2rem',
           cursor: 'pointer',
           alignItems: 'center',
           justifyContent: 'center',
-          backdropFilter: 'blur(12px)',
+          boxShadow: '0 4px 16px rgba(233, 30, 140, 0.15)',
         }}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -429,8 +290,8 @@ export default function Sidebar() {
           <div className="sb-bottom">
             {/* Streak Widget */}
             <div className="sb-streak">
-              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center', color: '#ff3b30' }}>
-                <FiZap size={18} fill="#ff3b30" />
+              <span className="sb-streak-fire" style={{ display: 'flex', alignItems: 'center' }}>
+                <FiZap size={18} fill="#F59E0B" />
               </span>
               <div>
                 <div className="sb-streak-num">
@@ -442,16 +303,12 @@ export default function Sidebar() {
               </div>
             </div>
 
-            {/* Theme Toggle */}
-            <button onClick={toggleTheme} className="sb-theme-toggle" id="theme-toggle-sidebar">
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {theme === 'dark' ? <FiMoon size={15} style={{ color: 'var(--gold)' }} /> : <FiSun size={15} style={{ color: 'var(--gold)' }} />}
-                <span>{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
-              </span>
-              <span style={{ fontSize: '0.7rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
-                {theme === 'dark' ? 'ON' : 'OFF'}
-              </span>
-            </button>
+            {/* Admin link if user is admin */}
+            {user?.role === 'admin' && (
+              <NavLink to="/admin/dashboard" className="sb-admin-btn">
+                Admin Panel
+              </NavLink>
+            )}
 
             {/* User section */}
             {user && (
@@ -466,14 +323,12 @@ export default function Sidebar() {
               </div>
             )}
 
-
             {/* Logout */}
-            <button onClick={handleLogout} className="sb-logout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <button onClick={handleLogout} className="sb-logout">
               <FiLogOut size={14} /> Logout
             </button>
           </div>
         </div>
-
       </nav>
 
       {/* Mobile Overlay */}
