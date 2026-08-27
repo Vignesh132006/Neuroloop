@@ -88,21 +88,33 @@ export default function Notes() {
 
         {/* Search + Filter */}
         <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
-          <div className="search-bar" style={{ flex: 1, minWidth: "200px", marginBottom: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: "var(--t2)", display: "flex", alignItems: "center" }}><FiSearch /></span>
+          <div className="search-bar" style={{ flex: 1, minWidth: "200px", marginBottom: 0, display: "flex", alignItems: "center", gap: "10px", background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "50px", padding: "8px 18px" }}>
+            <span style={{ color: "#E91E8C", display: "flex", alignItems: "center" }}><FiSearch /></span>
             <input
               placeholder="Search notes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ border: "none", background: "transparent", outline: "none", width: "100%", color: "#1A1A2E", fontSize: "0.9rem" }}
             />
           </div>
-          <div className="filter-row" style={{ marginBottom: 0 }}>
+          <div className="filter-row" style={{ marginBottom: 0, display: "flex", gap: "8px" }}>
             {["all", "easy", "medium", "hard"].map((f) => (
               <button
                 key={f}
-                className={`filter-btn ${filter === f ? "active" : ""}`}
                 onClick={() => setFilter(f)}
-                style={{ textTransform: "capitalize" }}
+                style={{
+                  textTransform: "capitalize",
+                  padding: "8px 20px",
+                  borderRadius: "50px",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.25s",
+                  border: filter === f ? "none" : "1.5px solid #F9C0D8",
+                  background: filter === f ? "linear-gradient(135deg, #E91E8C, #FF6B9D)" : "#FFFFFF",
+                  color: filter === f ? "#ffffff" : "#E91E8C",
+                  boxShadow: filter === f ? "0 4px 14px rgba(233, 30, 140, 0.25)" : "none"
+                }}
               >
                 {f}
               </button>
@@ -112,50 +124,83 @@ export default function Notes() {
 
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
-            <div className="skeleton" style={{ height: "150px", width: "100%" }} />
+            <div className="skeleton" style={{ height: "150px", width: "100%", borderRadius: "20px" }} />
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <p style={{ fontSize: '0.8rem', color: 'var(--t2)', marginBottom: '0.25rem' }}>
+            <p style={{ fontSize: '0.82rem', color: '#8888AA', marginBottom: '0.25rem', fontWeight: 600 }}>
               {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} found
             </p>
             {filteredNotes.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiFileText /></div>
-                <h3 className="empty-title">No notes found</h3>
-                <p className="empty-sub">Try adjusting your search or add notes in the Journal</p>
+              <div className="empty-state" style={{ background: "#FFFFFF", border: "1.5px dashed #F9C0D8", borderRadius: "20px", padding: "48px 24px", textAlign: "center" }}>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E91E8C', fontSize: '2.5rem', marginBottom: '16px' }}><FiFileText /></div>
+                <h3 className="empty-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.4rem", color: "#1A1A2E", marginBottom: "8px" }}>No notes found</h3>
+                <p className="empty-sub" style={{ color: "#4A4A6A", fontSize: "0.9rem" }}>Try adjusting your search or add notes in the Journal</p>
               </div>
             ) : (
               filteredNotes.map((note, i) => (
                 <div key={note._id}>
                   <div
                     className="card anim-card"
-                    style={{ cursor: "pointer", position: "relative", '--i': i }}
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      background: "#FFFFFF",
+                      border: "1.5px solid #F9C0D8",
+                      borderRadius: "20px",
+                      padding: "20px 24px",
+                      boxShadow: "0 4px 24px rgba(233, 30, 140, 0.06)",
+                      '--i': i
+                    }}
                     onClick={() => setSelected(selected?._id === note._id ? null : note)}
                   >
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: note.difficulty === 'easy' ? 'var(--em)' : note.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--t1)" }}>{note.topic}</h3>
+                    {/* Left Accent Bar */}
+                    <div style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: '5px',
+                      borderTopLeftRadius: '20px',
+                      borderBottomLeftRadius: '20px',
+                      background: note.difficulty === 'easy' ? '#10B981' : note.difficulty === 'hard' ? '#EF4444' : '#F59E0B'
+                    }} />
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.15rem", color: "#1A1A2E", margin: 0 }}>{note.topic}</h3>
                       <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <span className={`badge ${note.difficulty === "easy" ? "badge-em" : note.difficulty === "hard" ? "badge-red" : "badge-gold"}`}>
+                        <span style={{
+                          background: note.difficulty === "easy" ? "rgba(16, 185, 129, 0.12)" : note.difficulty === "hard" ? "rgba(239, 68, 68, 0.12)" : "#FCE4F0",
+                          color: note.difficulty === "easy" ? "#059669" : note.difficulty === "hard" ? "#dc2626" : "#E91E8C",
+                          border: `1px solid ${note.difficulty === "easy" ? "rgba(16, 185, 129, 0.3)" : note.difficulty === "hard" ? "rgba(239, 68, 68, 0.3)" : "#F9C0D8"}`,
+                          padding: "3px 12px",
+                          borderRadius: "50px",
+                          fontSize: "0.72rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase"
+                        }}>
                           {note.difficulty}
                         </span>
-                        <span className="badge badge-neutral">Mastery: {note.masteryScore}%</span>
+                        <span style={{ background: "#FCE4F0", color: "#E91E8C", border: "1px solid #F9C0D8", padding: "3px 12px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 600 }}>
+                          Mastery: {note.masteryScore}%
+                        </span>
                       </div>
                     </div>
-                    <p style={{ color: "var(--t2)", fontSize: "0.85rem", lineHeight: 1.6 }}>
+                    <p style={{ color: "#4A4A6A", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: "12px" }}>
                       {note.notes.slice(0, 160)}...
                     </p>
-                    <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden', marginTop: '8px' }}>
-                      <div style={{ height: '100%', background: 'var(--gold)', width: `${note.masteryScore}%`, transition: 'width 0.4s' }} />
+                    <div style={{ width: '100%', height: '6px', background: '#FFF0F5', borderRadius: '50px', overflow: 'hidden', marginBottom: '12px' }}>
+                      <div style={{ height: '100%', background: 'linear-gradient(90deg, #E91E8C, #FF6B9D)', width: `${note.masteryScore}%`, borderRadius: '50px', transition: 'width 0.4s' }} />
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                         {(note.tags || []).slice(0, 3).map((t) => (
-                          <span key={t} className="badge badge-neutral">{t}</span>
+                          <span key={t} style={{ background: "#FFF0F5", color: "#8888AA", border: "1px solid #F9C0D8", padding: "2px 10px", borderRadius: "50px", fontSize: "0.7rem", fontWeight: 500 }}>
+                            #{t}
+                          </span>
                         ))}
                       </div>
-                      <span style={{ color: "var(--t3)", fontSize: "0.78rem" }}>
+                      <span style={{ color: "#8888AA", fontSize: "0.78rem" }}>
                         Rev: {note.revisionCount} · {new Date(note.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -163,11 +208,11 @@ export default function Notes() {
 
                   {/* Expanded AI Panel */}
                   {selected?._id === note._id && (
-                    <div className="card" style={{ marginTop: "0.5rem", background: "var(--s2)", border: '1px solid var(--bd)' }}>
-                      <h4 style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.95rem", marginBottom: "1rem", color: 'var(--t1)' }}>
-                        <FiCpu style={{ color: 'var(--gold)' }} /> AI Tools for "{note.topic}"
+                    <div style={{ marginTop: "0.75rem", background: "#FFFFFF", border: '1.5px solid #F9C0D8', borderRadius: "20px", padding: "20px", boxShadow: "0 4px 24px rgba(233, 30, 140, 0.08)" }}>
+                      <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1.05rem", marginBottom: "1rem", color: '#1A1A2E' }}>
+                        <FiCpu style={{ color: '#E91E8C' }} /> AI Tools for "{note.topic}"
                       </h4>
-                      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+                      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1.25rem" }}>
                         <button className="btn-gold" onClick={() => generateMCQ(note)} disabled={!!aiLoading}>
                           {aiLoading === "mcq" ? "Generating..." : "Generate MCQ"}
                         </button>
@@ -176,34 +221,34 @@ export default function Notes() {
                         </button>
                       </div>
 
-                      <div className="ai-output" style={{ marginBottom: "1.5rem", fontSize: "0.85rem", lineHeight: 1.6, background: 'var(--s1)', border: '1px solid var(--bd)', color: 'var(--t2)' }}>
+                      <div className="ai-output" style={{ marginBottom: "1.5rem", padding: "16px", borderRadius: "14px", fontSize: "0.9rem", lineHeight: 1.7, background: '#FFF0F5', border: '1px solid #F9C0D8', color: '#4A4A6A' }}>
                         {note.notes}
                       </div>
 
                       {/* MCQ */}
                       {mcqQuestions.length > 0 && (
                         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem", color: 'var(--t1)' }}>MCQ Questions</h5>
+                          <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1rem", color: '#1A1A2E' }}>MCQ Questions</h5>
                           {mcqQuestions.map((q, i) => (
-                            <div key={i} style={{ padding: "1rem", background: "var(--s3)", borderRadius: "12px", border: "1px solid var(--bd)" }}>
-                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.75rem", color: 'var(--t1)' }}>{i + 1}. {q.question}</p>
+                            <div key={i} style={{ padding: "1.25rem", background: "#FFF0F5", borderRadius: "14px", border: "1px solid #F9C0D8" }}>
+                              <p style={{ fontWeight: 600, fontSize: "0.92rem", marginBottom: "0.75rem", color: '#1A1A2E' }}>{i + 1}. {q.question}</p>
                               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                                 {(q.options || []).map((opt, j) => (
                                   <div key={j} style={{
-                                    padding: "0.5rem 0.75rem", borderRadius: "8px", fontSize: "0.85rem",
-                                    background: opt === q.correctAnswer ? "var(--emg)" : "rgba(255,255,255,0.03)",
-                                    border: opt === q.correctAnswer ? "1px solid var(--em)" : "1px solid var(--bd)",
-                                    color: opt === q.correctAnswer ? "var(--em)" : "var(--t1)",
+                                    padding: "0.6rem 0.85rem", borderRadius: "10px", fontSize: "0.88rem",
+                                    background: opt === q.correctAnswer ? "rgba(16,185,129,0.12)" : "#FFFFFF",
+                                    border: opt === q.correctAnswer ? "1.5px solid #10B981" : "1px solid #F9C0D8",
+                                    color: opt === q.correctAnswer ? "#059669" : "#1A1A2E",
                                     display: "flex", alignItems: "center", justifyContent: "space-between",
                                   }}>
                                     <span>{opt}</span>
-                                    {opt === q.correctAnswer && <span style={{ display: "flex", alignItems: "center", color: "var(--em)" }}><FiCheck /></span>}
+                                    {opt === q.correctAnswer && <span style={{ display: "flex", alignItems: "center", color: "#10B981" }}><FiCheck /></span>}
                                   </div>
                                 ))}
                               </div>
                               {q.explanation && (
-                                <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--t2)", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <FiInfo style={{ color: "var(--gold)" }} /> {q.explanation}
+                                <p style={{ marginTop: "0.75rem", fontSize: "0.82rem", color: "#4A4A6A", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <FiInfo style={{ color: "#E91E8C" }} /> {q.explanation}
                                 </p>
                               )}
                             </div>
@@ -214,19 +259,19 @@ export default function Notes() {
                       {/* Interview */}
                       {interviewQuestions.length > 0 && (
                         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: mcqQuestions.length > 0 ? '1.5rem' : 0 }}>
-                          <h5 style={{ fontWeight: 600, fontSize: "0.95rem", color: 'var(--t1)' }}>Interview Questions</h5>
+                          <h5 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1rem", color: '#1A1A2E' }}>Interview Questions</h5>
                           {interviewQuestions.map((q, i) => (
-                            <div key={i} style={{ padding: "1rem", background: "var(--s3)", borderRadius: "12px", border: "1px solid var(--bd)" }}>
+                            <div key={i} style={{ padding: "1.25rem", background: "#FFF0F5", borderRadius: "14px", border: "1px solid #F9C0D8" }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                 <span className={`badge ${q.difficulty === "hard" ? "badge-red" : q.difficulty === "easy" ? "badge-em" : "badge-gold"}`}>
                                   {q.difficulty}
                                 </span>
                                 <span className="badge badge-neutral">{q.type}</span>
                               </div>
-                              <p style={{ fontWeight: 600, fontSize: "0.9rem", marginBottom: "0.5rem", color: 'var(--t1)' }}>{i + 1}. {q.question}</p>
+                              <p style={{ fontWeight: 600, fontSize: "0.92rem", marginBottom: "0.5rem", color: '#1A1A2E' }}>{i + 1}. {q.question}</p>
                               {q.hint && (
-                                <p style={{ fontSize: "0.8rem", color: "var(--t2)", display: "flex", alignItems: "center", gap: "6px" }}>
-                                  <FiInfo style={{ color: "var(--gold)" }} /> Hint: {q.hint}
+                                <p style={{ fontSize: "0.82rem", color: "#4A4A6A", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <FiInfo style={{ color: "#E91E8C" }} /> Hint: {q.hint}
                                 </p>
                               )}
                             </div>

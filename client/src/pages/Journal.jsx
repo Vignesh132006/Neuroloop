@@ -150,14 +150,14 @@ export default function Journal() {
         </div>
 
         {/* Editor Card */}
-        <div className="card">
-          <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {editId ? <FiEdit3 /> : <FiPlus />} {editId ? "Edit Entry" : "New Entry"}
+        <div className="card" style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "24px", padding: "28px", boxShadow: "0 4px 24px rgba(233, 30, 140, 0.08)" }}>
+          <h2 className="card-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.35rem", fontWeight: 700, color: "#1A1A2E", display: 'flex', alignItems: 'center', gap: '10px', marginBottom: "20px" }}>
+            {editId ? <FiEdit3 style={{ color: "#E91E8C" }} /> : <FiPlus style={{ color: "#E91E8C" }} />} {editId ? "Edit Journal Entry" : "New Journal Entry"}
           </h2>
 
           {/* PDF Upload Section */}
           {!editId && (
-            <div className="upload-zone">
+            <div className="upload-zone" style={{ background: "#FFF0F5", border: "2px dashed #F9C0D8", borderRadius: "16px", padding: "24px", textAlign: "center", marginBottom: "24px" }}>
               <input
                 type="file"
                 accept="application/pdf"
@@ -167,33 +167,35 @@ export default function Journal() {
                 style={{ display: "none" }}
               />
               <label htmlFor="pdf-file-upload" style={{ cursor: "pointer", display: "block" }}>
-                <div className="upload-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiUpload /></div>
-                <div className="upload-title">PDF Note Upload</div>
-                <div className="upload-sub">Upload a PDF note and let AI automatically extract the topic, notes, and summary.</div>
-                <button className="btn-gold" type="button" style={{ pointerEvents: 'none' }}>
+                <div className="upload-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E91E8C', fontSize: '2.2rem', marginBottom: '10px' }}><FiUpload /></div>
+                <div className="upload-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700, color: "#1A1A2E", marginBottom: "4px" }}>PDF Note Upload</div>
+                <div className="upload-sub" style={{ color: "#4A4A6A", fontSize: "0.85rem", marginBottom: "16px" }}>Upload a PDF note and let AI automatically extract the topic, notes, and summary.</div>
+                <button className="btn-gold" type="button" style={{ pointerEvents: 'none', background: "linear-gradient(135deg, #E91E8C, #FF6B9D)", border: "none", color: "#ffffff", padding: "8px 24px", borderRadius: "50px", fontWeight: 600, fontSize: "0.85rem" }}>
                   {pdfLoading ? "Extracting..." : "Select PDF Note"}
                 </button>
               </label>
             </div>
           )}
 
-          <div className="grid-2" style={{ gap: "1rem", marginBottom: "1rem" }}>
+          <div className="grid-2" style={{ gap: "1.25rem", marginBottom: "1.25rem" }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Topic</label>
+              <label className="form-label" style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8888AA", marginBottom: "6px", display: "block" }}>Topic</label>
               <input
                 id="journal-topic"
                 className="form-input"
                 placeholder="What did you learn today?"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
+                style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "12px", padding: "12px 16px", color: "#1A1A2E", fontSize: "0.92rem", width: "100%" }}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Difficulty</label>
+              <label className="form-label" style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8888AA", marginBottom: "6px", display: "block" }}>Difficulty</label>
               <select
                 className="form-select"
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
+                style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "12px", padding: "12px 16px", color: "#1A1A2E", fontSize: "0.92rem", width: "100%" }}
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -202,37 +204,38 @@ export default function Journal() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Notes</label>
+          <div className="form-group" style={{ marginBottom: "1.25rem" }}>
+            <label className="form-label" style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8888AA", marginBottom: "6px", display: "block" }}>Notes</label>
             <textarea
               id="journal-notes"
               className="form-textarea"
               placeholder="Write everything you learned, understood, or want to remember..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              style={{ minHeight: "200px" }}
+              style={{ minHeight: "200px", background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "14px", padding: "14px 16px", color: "#1A1A2E", fontSize: "0.92rem", width: "100%", lineHeight: 1.6 }}
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Tags (comma separated)</label>
+          <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+            <label className="form-label" style={{ fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8888AA", marginBottom: "6px", display: "block" }}>Tags (comma separated)</label>
             <input
               className="form-input"
               placeholder="react, hooks, state management"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
+              style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "12px", padding: "12px 16px", color: "#1A1A2E", fontSize: "0.92rem", width: "100%" }}
             />
           </div>
 
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "1rem" }}>
-            <button id="journal-save" className="btn-gold" onClick={handleSave} disabled={loading} style={{ padding: '11px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+            <button id="journal-save" className="btn-gold" onClick={handleSave} disabled={loading} style={{ padding: '12px 28px', borderRadius: "50px", background: "linear-gradient(135deg, #E91E8C, #FF6B9D)", border: "none", color: "#ffffff", fontWeight: 600, fontSize: "0.92rem", cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: "0 4px 18px rgba(233, 30, 140, 0.25)" }}>
               <FiSave /> {loading ? "Saving..." : editId ? "Update Entry" : "Save Journal"}
             </button>
-            <button className="btn-outline" onClick={generateSummary} disabled={summaryLoading} style={{ padding: '11px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <button className="btn-outline" onClick={generateSummary} disabled={summaryLoading} style={{ padding: '12px 28px', borderRadius: "50px", background: "#FFFFFF", border: "1.5px solid #F9C0D8", color: "#E91E8C", fontWeight: 600, fontSize: "0.92rem", cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <FiCpu /> {summaryLoading ? "Generating..." : "AI Summary"}
             </button>
             {editId && (
-              <button className="btn-ghost" onClick={() => { setEditId(null); setTopic(""); setNotes(""); setSummary(""); setTags(""); setDifficulty("medium") }}>
+              <button className="btn-ghost" onClick={() => { setEditId(null); setTopic(""); setNotes(""); setSummary(""); setTags(""); setDifficulty("medium") }} style={{ padding: '12px 20px', borderRadius: "50px", color: "#8888AA", background: "none", border: "none", cursor: "pointer" }}>
                 Cancel Edit
               </button>
             )}
@@ -240,67 +243,83 @@ export default function Journal() {
 
           {/* AI Summary Output */}
           {summary && (
-            <div className="ai-output" style={{ marginTop: '20px', background: 'var(--s2)', border: '1px solid var(--bd)' }}>
-              <div style={{ fontWeight: 600, marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem", color: 'var(--t1)' }}>
-                <FiCpu style={{ color: 'var(--gold)' }} /> AI Summary
+            <div className="ai-output" style={{ marginTop: '24px', background: '#FCE4F0', border: '1.5px solid #F9C0D8', borderRadius: '16px', padding: '18px 20px' }}>
+              <div style={{ fontWeight: 700, fontFamily: "'Playfair Display', Georgia, serif", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem", color: '#1A1A2E', fontSize: "1rem" }}>
+                <FiCpu style={{ color: '#E91E8C' }} /> AI Summary
               </div>
-              <div style={{ color: 'var(--t2)', fontSize: '0.88rem' }}>{summary}</div>
+              <div style={{ color: '#4A4A6A', fontSize: '0.9rem', lineHeight: 1.6 }}>{summary}</div>
             </div>
           )}
         </div>
 
         {/* Journal List */}
-        <div style={{ marginTop: '30px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontWeight: 600, fontSize: "1.1rem", color: 'var(--t1)' }}>Saved Entries</h2>
-            <span className="badge badge-gold">{journals.length} entries</span>
+        <div style={{ marginTop: '36px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.4rem", color: '#1A1A2E', margin: 0 }}>Saved Entries</h2>
+            <span style={{ background: "#FCE4F0", color: "#E91E8C", border: "1px solid #F9C0D8", padding: "4px 16px", borderRadius: "50px", fontSize: "0.8rem", fontWeight: 600 }}>{journals.length} entries</span>
           </div>
 
           {journals.length === 0 ? (
-            <div className="card">
+            <div style={{ background: "#FFFFFF", border: "1.5px dashed #F9C0D8", borderRadius: "20px", padding: "48px 24px", textAlign: "center" }}>
               <div className="empty-state">
-                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiBookOpen /></div>
-                <h3 className="empty-title">Your learning journey starts with one note!</h3>
-                <p className="empty-sub">Write your first entry above to get started</p>
+                <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E91E8C', fontSize: '2.5rem', marginBottom: '12px' }}><FiBookOpen /></div>
+                <h3 className="empty-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", color: "#1A1A2E", marginBottom: "6px" }}>Your learning journey starts with one note!</h3>
+                <p className="empty-sub" style={{ color: "#4A4A6A", fontSize: "0.9rem" }}>Write your first entry above to get started</p>
               </div>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
               {journals.map((j) => (
-                <div key={j._id} className="card" style={{ position: 'relative' }}>
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: j.difficulty === 'easy' ? 'var(--em)' : j.difficulty === 'hard' ? 'var(--red)' : 'var(--gold)' }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--t1)" }}>{j.topic}</h3>
+                <div key={j._id} style={{ position: 'relative', background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "20px", padding: "20px 24px", boxShadow: "0 4px 24px rgba(233, 30, 140, 0.06)" }}>
+                  <div style={{
+                    position: 'absolute',
+                    left: 0, top: 0, bottom: 0,
+                    width: '5px',
+                    borderTopLeftRadius: '20px',
+                    borderBottomLeftRadius: '20px',
+                    background: j.difficulty === 'easy' ? '#10B981' : j.difficulty === 'hard' ? '#EF4444' : '#F59E0B'
+                  }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.15rem", color: "#1A1A2E", margin: 0 }}>{j.topic}</h3>
                     <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                      <span className={`badge ${j.difficulty === "easy" ? "badge-em" : j.difficulty === "hard" ? "badge-red" : "badge-gold"}`}>
+                      <span style={{
+                        background: j.difficulty === "easy" ? "rgba(16, 185, 129, 0.12)" : j.difficulty === "hard" ? "rgba(239, 68, 68, 0.12)" : "#FCE4F0",
+                        color: j.difficulty === "easy" ? "#059669" : j.difficulty === "hard" ? "#dc2626" : "#E91E8C",
+                        border: `1px solid ${j.difficulty === "easy" ? "rgba(16, 185, 129, 0.3)" : j.difficulty === "hard" ? "rgba(239, 68, 68, 0.3)" : "#F9C0D8"}`,
+                        padding: "3px 12px",
+                        borderRadius: "50px",
+                        fontSize: "0.72rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase"
+                      }}>
                         {j.difficulty}
                       </span>
-                      <span className="badge badge-neutral">Rev: {j.revisionCount}</span>
+                      <span style={{ background: "#FCE4F0", color: "#E91E8C", border: "1px solid #F9C0D8", padding: "3px 12px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 600 }}>Rev: {j.revisionCount}</span>
                     </div>
                   </div>
-                  <p style={{ color: "var(--t2)", fontSize: "0.85rem", marginBottom: "12px", lineHeight: 1.6 }}>
+                  <p style={{ color: "#4A4A6A", fontSize: "0.9rem", marginBottom: "12px", lineHeight: 1.6 }}>
                     {j.notes.length > 200 ? j.notes.slice(0, 200) + "..." : j.notes}
                   </p>
                   {(j.tags || []).length > 0 && (
                     <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "12px" }}>
-                      {j.tags.map((t) => <span key={t} className="badge badge-neutral">{t}</span>)}
+                      {j.tags.map((t) => <span key={t} style={{ background: "#FFF0F5", color: "#8888AA", border: "1px solid #F9C0D8", padding: "2px 10px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 500 }}>#{t}</span>)}
                     </div>
                   )}
                   {j.aiSummary && (
-                    <div style={{ background: "var(--s2)", border: "1px solid var(--bd)", borderRadius: "10px", padding: "12px", fontSize: "0.82rem", marginBottom: "12px", color: "var(--t2)", display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                      <FiCpu style={{ color: 'var(--gold)', marginTop: '2px', flexShrink: 0 }} />
+                    <div style={{ background: "#FFF0F5", border: "1px solid #F9C0D8", borderRadius: "14px", padding: "12px 16px", fontSize: "0.85rem", marginBottom: "12px", color: "#4A4A6A", display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <FiCpu style={{ color: '#E91E8C', marginTop: '3px', flexShrink: 0 }} />
                       <div>
-                        <strong>AI Summary:</strong> {j.aiSummary.slice(0, 150)}...
+                        <strong style={{ color: "#1A1A2E" }}>AI Summary:</strong> {j.aiSummary.slice(0, 150)}...
                       </div>
                     </div>
                   )}
                   <div style={{ display: "flex", gap: "0.5rem", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "var(--t3)", fontSize: "0.78rem" }}>
+                    <span style={{ color: "#8888AA", fontSize: "0.78rem" }}>
                       {new Date(j.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </span>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: '0.78rem' }} onClick={() => handleEdit(j)} title="Edit">Edit</button>
-                      <button className="btn-ghost" style={{ padding: '6px 12px', fontSize: '0.78rem' }} onClick={() => handleDelete(j._id)} title="Delete">Delete</button>
+                      <button style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", color: "#E91E8C", padding: '6px 16px', borderRadius: "50px", fontSize: '0.8rem', fontWeight: 600, cursor: "pointer" }} onClick={() => handleEdit(j)} title="Edit">Edit</button>
+                      <button style={{ background: "none", border: "none", color: "#dc2626", padding: '6px 12px', fontSize: '0.8rem', fontWeight: 600, cursor: "pointer" }} onClick={() => handleDelete(j._id)} title="Delete">Delete</button>
                     </div>
                   </div>
                 </div>
