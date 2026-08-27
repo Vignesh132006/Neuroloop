@@ -82,13 +82,13 @@ export default function Leaderboard() {
       <div className="page-wrap fade-in">
         {toast && <div className={`alert alert-${toast.type}`} style={{ position: "fixed", top: "1.5rem", right: "1.5rem", zIndex: 9999, maxWidth: "360px" }}>{toast.msg}</div>}
 
-        <div className="page-header flex-between">
+        <div className="page-header flex-between" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
           <div>
-            <div className="page-eyebrow">Community & Progress</div>
-            <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiAward /> Streak Leaderboard</h1>
-            <p className="page-subtitle">Compete with friends and keep your daily learning streak alive!</p>
+            <div className="page-eyebrow" style={{ color: "#E91E8C", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>Community & Progress</div>
+            <h1 className="page-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "30px", fontWeight: 700, color: "#1A1A2E", display: 'flex', alignItems: 'center', gap: '10px', margin: "4px 0" }}><FiAward style={{ color: "#E91E8C" }} /> Streak Leaderboard</h1>
+            <p className="page-subtitle" style={{ color: "#4A4A6A", fontSize: "14px" }}>Compete with friends and keep your daily learning streak alive!</p>
           </div>
-          <button className="btn btn-ghost" onClick={fetchLeaderboard} disabled={loading} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
+          <button onClick={fetchLeaderboard} disabled={loading} style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", color: "#E91E8C", padding: "8px 20px", borderRadius: "50px", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: "6px" }}>
             <FiRefreshCw /> Refresh
           </button>
         </div>
@@ -101,14 +101,20 @@ export default function Leaderboard() {
             {users.length >= 3 && <PodiumSection top3={users.slice(0, 3)} />}
 
             {/* Table */}
-            <div className="card">
+            <div style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 24px rgba(233, 30, 140, 0.06)" }}>
               <div style={{ overflowX: "auto" }}>
-                <table className="tbl">
+                <table className="tbl" style={{ width: "100%", borderCollapse: "collapse" }}>
                   <thead>
-                    <tr>
+                    <tr style={{ borderBottom: "1.5px solid #F9C0D8" }}>
                       {['Rank', 'Name', 'GitHub', 'Streak'].map(h => (
                         <th key={h} style={{
                           textAlign: h === 'Streak' ? 'right' : 'left',
+                          padding: "12px 16px",
+                          fontSize: "12px",
+                          color: "#8888AA",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em"
                         }}>{h}</th>
                       ))}
                     </tr>
@@ -122,47 +128,48 @@ export default function Leaderboard() {
                       return (
                         <tr
                           key={u._id}
-                          className="lb-row"
                           style={{
-                            '--i': idx,
-                            background: isSelf ? 'var(--goldg)' : 'transparent',
-                            borderLeft: isSelf ? '3px solid var(--gold)' : undefined,
+                            background: isSelf ? '#FCE4F0' : 'transparent',
+                            borderBottom: '1px solid #F9C0D8',
+                            borderLeft: isSelf ? '4px solid #E91E8C' : undefined,
+                            transition: 'background 0.2s'
                           }}
                         >
-                          <td style={{ fontWeight: 700, fontSize: '1rem', width: '80px' }}>
-                            {rank <= 3 ? <span style={{ color: 'var(--gold)', fontWeight: 700 }}>{rankLabels[rank - 1]}</span> : <span style={{ color: 'var(--t3)', fontSize: '0.85rem', paddingLeft: '4px' }}>{rank}</span>}
+                          <td style={{ padding: "14px 16px", fontWeight: 700, fontSize: '1rem', width: '80px' }}>
+                            {rank <= 3 ? <span style={{ color: '#E91E8C', fontWeight: 700, fontFamily: "'Playfair Display', Georgia, serif" }}>{rankLabels[rank - 1]}</span> : <span style={{ color: '#8888AA', fontSize: '0.9rem', paddingLeft: '4px' }}>{rank}</span>}
                           </td>
-                          <td>
+                          <td style={{ padding: "14px 16px" }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                               <div style={{
-                                width: '32px', height: '32px', borderRadius: '50%',
-                                background: isSelf ? 'linear-gradient(135deg, var(--gold), var(--goldl))' : 'rgba(255,59,48,0.2)',
+                                width: '34px', height: '34px', borderRadius: '50%',
+                                background: isSelf ? 'linear-gradient(135deg, #E91E8C, #FF6B9D)' : '#FCE4F0',
+                                border: isSelf ? 'none' : '1px solid #F9C0D8',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                color: isSelf ? '#ffffff' : '#fff', fontWeight: 700, fontSize: '0.8rem',
+                                color: isSelf ? '#ffffff' : '#E91E8C', fontWeight: 700, fontSize: '0.85rem',
                               }}>
                                 {u.name?.charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <span style={{ fontWeight: 600, fontSize: '0.9rem', color: isSelf ? 'var(--goldl)' : 'var(--t1)' }}>{u.name}</span>
-                                {isSelf && <span className="badge badge-gold" style={{ marginLeft: '8px', fontSize: '0.65rem', padding: '2px 6px' }}>You</span>}
+                                <span style={{ fontWeight: 600, fontSize: '0.92rem', color: isSelf ? '#E91E8C' : '#1A1A2E' }}>{u.name}</span>
+                                {isSelf && <span style={{ marginLeft: '8px', fontSize: '0.7rem', padding: '2px 8px', borderRadius: '50px', background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)', color: '#ffffff', fontWeight: 700 }}>You</span>}
                               </div>
                             </div>
                           </td>
-                          <td>
+                          <td style={{ padding: "14px 16px" }}>
                             {u.githubUsername ? (
-                              <span className="tag tag-gold" style={{ gap: '4px' }}>
+                              <span style={{ background: "#FCE4F0", color: "#E91E8C", border: "1px solid #F9C0D8", padding: "4px 12px", borderRadius: "50px", fontSize: "0.8rem", fontWeight: 600 }}>
                                 @{u.githubUsername}
                               </span>
                             ) : (
-                              <span style={{ color: 'var(--t3)', fontSize: '0.82rem' }}>Not linked</span>
+                              <span style={{ color: '#8888AA', fontSize: '0.85rem' }}>Not linked</span>
                             )}
                           </td>
-                          <td style={{ textAlign: 'right' }}>
+                          <td style={{ padding: "14px 16px", textAlign: 'right' }}>
                             <span style={{
-                              fontWeight: 700, fontSize: '0.95rem', color: 'var(--gold)',
+                              fontWeight: 700, fontSize: '0.95rem', color: '#E91E8C',
                               display: 'inline-flex', alignItems: 'center', gap: '4px',
                             }}>
-                              <FiZap size={14} fill="#ff3b30" /> {u.streak} day{u.streak !== 1 ? 's' : ''}
+                              <FiZap size={14} fill="#FF6B9D" /> {u.streak} day{u.streak !== 1 ? 's' : ''}
                             </span>
                           </td>
                         </tr>
@@ -173,10 +180,10 @@ export default function Leaderboard() {
               </div>
 
               {users.length === 0 && (
-                <div className="empty-state">
-                  <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiAward /></div>
-                  <h3 className="empty-title">No players on the leaderboard yet</h3>
-                  <p>Register and login to start your streak!</p>
+                <div style={{ textAlign: "center", padding: "48px 24px" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E91E8C', fontSize: '2.5rem', marginBottom: '12px' }}><FiAward /></div>
+                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", color: "#1A1A2E", marginBottom: "6px" }}>No players on the leaderboard yet</h3>
+                  <p style={{ color: "#4A4A6A", fontSize: "0.9rem" }}>Register and login to start your streak!</p>
                 </div>
               )}
             </div>

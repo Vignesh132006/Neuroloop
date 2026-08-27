@@ -121,21 +121,21 @@ export default function SupportPanel() {
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 998,
-          background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
+          background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)',
           color: '#ffffff',
           border: 'none',
-          borderRadius: '0 8px 8px 0',
-          padding: '14px 8px',
+          borderRadius: '0 12px 12px 0',
+          padding: '16px 10px',
           cursor: 'pointer',
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
           fontSize: '12px',
           fontWeight: '700',
-          letterSpacing: '0.05em',
+          letterSpacing: '0.08em',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '2px 0 12px rgba(255,59,48,0.35)'
+          boxShadow: '4px 0 20px rgba(233,30,140,0.3)'
         }}
         title="Open Support Panel"
       >
@@ -148,7 +148,7 @@ export default function SupportPanel() {
           onClick={() => setIsOpen(false)}
           style={{
             position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'rgba(255, 240, 245, 0.6)',
             backdropFilter: 'blur(4px)',
             zIndex: 999
           }}
@@ -160,45 +160,46 @@ export default function SupportPanel() {
         position: 'fixed',
         left: 0, top: 0, bottom: 0,
         width: '380px',
-        background: '#111118',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderLeft: 'none',
+        background: '#FFFFFF',
+        borderRight: '1.5px solid #F9C0D8',
         zIndex: 1000,
         transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
         transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxShadow: '8px 0 32px rgba(233, 30, 140, 0.12)'
       }}>
 
         {/* Panel Header */}
         <div style={{
-          padding: '20px 20px 16px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+          padding: '22px 20px 18px',
+          borderBottom: '1.5px solid #F9C0D8',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: '#FFF0F5'
         }}>
           <div>
-            <div style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9' }}>
+            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '18px', fontWeight: '700', color: '#1A1A2E' }}>
               Customer Support
             </div>
-            <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
+            <div style={{ fontSize: '12px', color: '#8888AA', marginTop: '2px', fontWeight: 500 }}>
               We respond within 24 hours
             </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
             style={{
-              background: 'rgba(255,255,255,0.06)', border: 'none',
-              borderRadius: '8px', color: '#94a3b8',
+              background: '#FCE4F0', border: '1px solid #F9C0D8',
+              borderRadius: '50%', color: '#E91E8C',
               width: '32px', height: '32px', cursor: 'pointer',
-              fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700'
             }}
           >✕</button>
         </div>
 
         {/* Tabs */}
         <div style={{
-          display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)'
+          display: 'flex', borderBottom: '1.5px solid #F9C0D8', background: '#FFF0F5'
         }}>
           {[
             { id: 'contact', label: 'Contact Us' },
@@ -206,10 +207,10 @@ export default function SupportPanel() {
           ].map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
               flex: 1, padding: '12px', border: 'none', cursor: 'pointer',
-              background: activeTab === tab.id ? 'rgba(255,59,48,0.08)' : 'transparent',
-              color: activeTab === tab.id ? '#ff3b30' : '#94a3b8',
-              fontSize: '13px', fontWeight: activeTab === tab.id ? '600' : '400',
-              borderBottom: activeTab === tab.id ? '2px solid #ff3b30' : '2px solid transparent',
+              background: activeTab === tab.id ? '#FFFFFF' : 'transparent',
+              color: activeTab === tab.id ? '#E91E8C' : '#8888AA',
+              fontSize: '13px', fontWeight: activeTab === tab.id ? '700' : '600',
+              borderBottom: activeTab === tab.id ? '2.5px solid #E91E8C' : '2.5px solid transparent',
               transition: 'all 0.2s'
             }}>{tab.label}</button>
           ))}
@@ -223,38 +224,38 @@ export default function SupportPanel() {
             <>
               {submitted ? (
                 <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-                  <div style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
+                  <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '20px', fontWeight: '700', color: '#1A1A2E', marginBottom: '8px' }}>
                     Ticket Submitted!
                   </div>
                   <div style={{
-                    fontFamily: 'monospace', fontSize: '13px',
-                    background: 'rgba(255,59,48,0.06)', border: '1px solid rgba(255,59,48,0.25)',
-                    borderRadius: '8px', padding: '8px 16px', color: '#ff3b30',
-                    display: 'inline-block', marginBottom: '12px'
+                    fontFamily: 'monospace', fontSize: '13px', fontWeight: '600',
+                    background: '#FCE4F0', border: '1.5px solid #F9C0D8',
+                    borderRadius: '50px', padding: '8px 20px', color: '#E91E8C',
+                    display: 'inline-block', marginBottom: '16px'
                   }}>{ticketId}</div>
-                  <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '20px', lineHeight: '1.6' }}>
+                  <p style={{ fontSize: '14px', color: '#4A4A6A', marginBottom: '24px', lineHeight: '1.6' }}>
                     We will respond to your email within 24 hours.
                   </p>
                   <button onClick={() => { setSubmitted(false); setForm({ category: '', subject: '', message: '', priority: 'medium' }) }}
                     style={{
-                      padding: '10px 20px', background: 'rgba(255,59,48,0.08)',
-                      border: '1px solid rgba(255,59,48,0.25)', borderRadius: '8px',
-                      color: '#ff3b30', fontSize: '13px', cursor: 'pointer'
+                      padding: '10px 24px', background: '#FFFFFF',
+                      border: '1.5px solid #F9C0D8', borderRadius: '50px',
+                      color: '#E91E8C', fontSize: '13px', fontWeight: '600', cursor: 'pointer'
                     }}>Submit Another</button>
                 </div>
               ) : (
                 <>
                   {/* Category */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '500' }}>
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#8888AA', marginBottom: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Category
                     </label>
                     <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}
                       style={{
-                        width: '100%', padding: '10px 12px',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        borderRadius: '8px', color: form.category ? '#f1f5f9' : '#64748b',
+                        width: '100%', padding: '10px 14px',
+                        background: '#FFFFFF',
+                        border: '1.5px solid #F9C0D8',
+                        borderRadius: '12px', color: form.category ? '#1A1A2E' : '#8888AA',
                         fontSize: '13px', outline: 'none', boxSizing: 'border-box'
                       }}>
                       <option value="">Select a category...</option>
@@ -263,28 +264,28 @@ export default function SupportPanel() {
                   </div>
 
                   {/* Subject */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '500' }}>
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#8888AA', marginBottom: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Subject
                     </label>
                     <input type="text" value={form.subject}
                       onChange={e => setForm({...form, subject: e.target.value})}
                       placeholder="Brief description..."
                       style={{
-                        width: '100%', padding: '10px 12px',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        borderRadius: '8px', color: '#f1f5f9',
+                        width: '100%', padding: '10px 14px',
+                        background: '#FFFFFF',
+                        border: '1.5px solid #F9C0D8',
+                        borderRadius: '12px', color: '#1A1A2E',
                         fontSize: '13px', outline: 'none', boxSizing: 'border-box'
                       }} />
                   </div>
 
                   {/* Priority */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '500' }}>
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#8888AA', marginBottom: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Priority
                     </label>
-                    <div style={{ display: 'flex', gap: '6px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
                       {[
                         { val: 'low', label: 'Low' },
                         { val: 'medium', label: 'Medium' },
@@ -292,19 +293,20 @@ export default function SupportPanel() {
                       ].map(p => (
                         <button key={p.val} onClick={() => setForm({...form, priority: p.val})}
                           style={{
-                            flex: 1, padding: '7px', borderRadius: '7px', cursor: 'pointer',
-                            border: `1px solid ${form.priority === p.val ? 'rgba(255,59,48,0.45)' : 'rgba(255,255,255,0.08)'}`,
-                            background: form.priority === p.val ? 'rgba(255,59,48,0.08)' : 'transparent',
-                            color: form.priority === p.val ? '#ff3b30' : '#94a3b8',
-                            fontSize: '12px'
+                            flex: 1, padding: '8px', borderRadius: '50px', cursor: 'pointer',
+                            border: form.priority === p.val ? 'none' : '1.5px solid #F9C0D8',
+                            background: form.priority === p.val ? 'linear-gradient(135deg, #E91E8C, #FF6B9D)' : '#FFFFFF',
+                            color: form.priority === p.val ? '#ffffff' : '#4A4A6A',
+                            fontSize: '12px', fontWeight: '600',
+                            boxShadow: form.priority === p.val ? '0 4px 12px rgba(233, 30, 140, 0.2)' : 'none'
                           }}>{p.label}</button>
                       ))}
                     </div>
                   </div>
 
                   {/* Message */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px', fontWeight: '500' }}>
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#8888AA', marginBottom: '6px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Message
                     </label>
                     <textarea value={form.message}
@@ -312,14 +314,14 @@ export default function SupportPanel() {
                       placeholder="Describe your issue in detail..."
                       rows={5}
                       style={{
-                        width: '100%', padding: '10px 12px',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        borderRadius: '8px', color: '#f1f5f9',
+                        width: '100%', padding: '12px 14px',
+                        background: '#FFFFFF',
+                        border: '1.5px solid #F9C0D8',
+                        borderRadius: '14px', color: '#1A1A2E',
                         fontSize: '13px', outline: 'none', resize: 'vertical',
-                        boxSizing: 'border-box', fontFamily: 'inherit'
+                        boxSizing: 'border-box', fontFamily: 'inherit', lineHeight: 1.6
                       }} />
-                    <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', textAlign: 'right' }}>
+                    <div style={{ fontSize: '11px', color: '#8888AA', marginTop: '4px', textAlign: 'right', fontWeight: 500 }}>
                       {form.message.length} characters {form.message.length < 20 ? '(min 20)' : '✓'}
                     </div>
                   </div>
@@ -328,10 +330,11 @@ export default function SupportPanel() {
                     onClick={handleSubmit}
                     disabled={loading || !form.category || form.subject.length < 5 || form.message.length < 20}
                     style={{
-                      width: '100%', padding: '12px',
-                      background: 'linear-gradient(135deg, #ff3b30, #a3151a)',
-                      color: '#ffffff', border: 'none', borderRadius: '10px',
+                      width: '100%', padding: '14px',
+                      background: 'linear-gradient(135deg, #E91E8C, #FF6B9D)',
+                      color: '#ffffff', border: 'none', borderRadius: '50px',
                       fontSize: '14px', fontWeight: '700', cursor: 'pointer',
+                      boxShadow: '0 4px 18px rgba(233, 30, 140, 0.25)',
                       opacity: (loading || !form.category || form.subject.length < 5 || form.message.length < 20) ? 0.5 : 1
                     }}
                   >
@@ -349,15 +352,15 @@ export default function SupportPanel() {
                 <FaqItem key={i} question={faq.q} answer={faq.a} />
               ))}
               <div style={{
-                marginTop: '20px', padding: '14px',
-                background: 'rgba(255,59,48,0.06)',
-                border: '1px solid rgba(255,59,48,0.25)',
-                borderRadius: '10px', textAlign: 'center'
+                marginTop: '20px', padding: '16px',
+                background: '#FCE4F0',
+                border: '1.5px solid #F9C0D8',
+                borderRadius: '16px', textAlign: 'center'
               }}>
-                <div style={{ fontSize: '13px', color: '#ff3b30', marginBottom: '4px' }}>
+                <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '14px', fontWeight: '700', color: '#E91E8C', marginBottom: '4px' }}>
                   Still need help?
                 </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                <div style={{ fontSize: '12px', color: '#4A4A6A' }}>
                   Switch to Contact Us tab to submit a ticket
                 </div>
               </div>
@@ -367,11 +370,12 @@ export default function SupportPanel() {
 
         {/* Footer */}
         <div style={{
-          padding: '12px 20px',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
+          padding: '14px 20px',
+          borderTop: '1.5px solid #F9C0D8',
+          background: '#FFF0F5',
           textAlign: 'center'
         }}>
-          <p style={{ fontSize: '11px', color: '#374151', margin: 0 }}>
+          <p style={{ fontSize: '12px', color: '#8888AA', margin: 0, fontWeight: 500 }}>
             neuroloopadmin@gmail.com
           </p>
         </div>
@@ -384,25 +388,25 @@ function FaqItem({ question, answer }) {
   const [open, setOpen] = useState(false)
   return (
     <div style={{
-      borderBottom: '1px solid rgba(255,255,255,0.06)',
+      borderBottom: '1px solid #F9C0D8',
       marginBottom: '4px'
     }}>
       <button onClick={() => setOpen(!open)} style={{
         width: '100%', padding: '12px 0',
         background: 'transparent', border: 'none',
-        color: '#f1f5f9', fontSize: '13px', fontWeight: '500',
+        color: '#1A1A2E', fontSize: '13.5px', fontWeight: '600',
         cursor: 'pointer', textAlign: 'left',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px'
       }}>
         {question}
-        <span style={{ color: '#64748b', fontSize: '16px', flexShrink: 0 }}>
+        <span style={{ color: '#E91E8C', fontSize: '14px', flexShrink: 0 }}>
           {open ? '▲' : '▽'}
         </span>
       </button>
       {open && (
         <div style={{
           padding: '0 0 12px',
-          fontSize: '13px', color: '#94a3b8', lineHeight: '1.6'
+          fontSize: '13px', color: '#4A4A6A', lineHeight: '1.6'
         }}>
           {answer}
         </div>

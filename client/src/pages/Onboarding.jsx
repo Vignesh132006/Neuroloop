@@ -169,10 +169,8 @@ export default function Onboarding() {
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: '100vh', background: '#050508', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#FFF0F5', fontFamily: 'Inter, system-ui, sans-serif' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -188,119 +186,100 @@ export default function Onboarding() {
 
         .ob-card {
           padding: 24px 28px;
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 14px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 20px;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
           position: relative;
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
+          box-shadow: 0 4px 20px rgba(233, 30, 140, 0.06);
         }
         .ob-card:hover {
-          transform: translateY(-4px) scale(1.01);
-          background: rgba(255,255,255,0.04);
-          box-shadow: 0 12px 24px -10px rgba(0,0,0,0.5);
+          transform: translateY(-3px);
+          border-color: #E91E8C;
+          box-shadow: 0 8px 28px rgba(233, 30, 140, 0.12);
         }
-        .ob-card.beginner:hover {
-          border-color: rgba(16,185,129,0.35);
-          box-shadow: 0 12px 24px -10px rgba(16,185,129,0.15);
-        }
-        .ob-card.intermediate:hover {
-          border-color: rgba(245,158,11,0.35);
-          box-shadow: 0 12px 24px -10px rgba(245,158,11,0.15);
-        }
-        .ob-card.advanced:hover {
-          border-color: rgba(239,68,68,0.35);
-          box-shadow: 0 12px 24px -10px rgba(239,68,68,0.15);
-        }
-        .ob-card.beginner.selected {
-          border-color: #10b981;
-          background: rgba(16,185,129,0.07);
-          box-shadow: 0 8px 20px -8px rgba(16,185,129,0.25);
-        }
-        .ob-card.intermediate.selected {
-          border-color: #f59e0b;
-          background: rgba(245,158,11,0.07);
-          box-shadow: 0 8px 20px -8px rgba(245,158,11,0.25);
-        }
-        .ob-card.advanced.selected {
-          border-color: #ef4444;
-          background: rgba(239,68,68,0.07);
-          box-shadow: 0 8px 20px -8px rgba(239,68,68,0.25);
-        }
-        /* Fallback select border for goal cards */
         .ob-card.selected {
-          border-color: #7c3aed;
-          background: rgba(124,58,237,0.08);
+          border-color: #E91E8C;
+          background: #FCE4F0;
+          box-shadow: 0 8px 28px rgba(233, 30, 140, 0.15);
         }
         .ob-card-accent {
           position: absolute;
           left: 0; top: 0; bottom: 0;
-          width: 3px;
+          width: 5px;
         }
         .ob-card-check {
           position: absolute;
-          top: 12px; right: 12px;
-          width: 20px; height: 20px;
+          top: 16px; right: 16px;
+          width: 22px; height: 22px;
           border-radius: 50%;
-          background: #7c3aed;
+          background: #E91E8C;
+          color: #ffffff;
           display: flex; align-items: center; justify-content: center;
+          font-size: 12px;
         }
         .ob-card-name {
-          font-size: 17px;
-          font-weight: 600;
-          color: #f1f5f9;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 19px;
+          font-weight: 700;
+          color: #1A1A2E;
           margin-bottom: 2px;
           padding-left: 4px;
         }
         .ob-card-desc {
-          font-size: 13px;
-          color: rgba(255,255,255,0.45);
+          font-size: 14px;
+          color: #4A4A6A;
           line-height: 1.5;
           padding-left: 4px;
         }
 
         .ob-pill {
-          padding: 10px 20px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 6px;
+          padding: 12px 24px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 50px;
           font-size: 14px;
-          color: rgba(255,255,255,0.6);
+          font-weight: 600;
+          color: #1A1A2E;
           cursor: pointer;
-          transition: border-color 0.2s, background 0.2s, color 0.2s;
+          transition: all 0.25s;
           user-select: none;
         }
         .ob-pill:hover {
-          border-color: rgba(124,58,237,0.4);
-          color: rgba(255,255,255,0.8);
+          border-color: #E91E8C;
+          color: #E91E8C;
         }
         .ob-pill.selected {
-          background: rgba(124,58,237,0.12);
-          border-color: #7c3aed;
-          color: #a78bfa;
+          background: #FCE4F0;
+          border-color: #E91E8C;
+          color: #E91E8C;
+          box-shadow: 0 4px 14px rgba(233, 30, 140, 0.15);
         }
 
         .ob-btn {
           margin-top: 32px;
-          padding: 14px 40px;
-          background: linear-gradient(135deg, #7c3aed, #2563eb);
+          padding: 16px 40px;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
           color: white;
           border: none;
-          border-radius: 8px;
-          font-size: 15px;
-          font-weight: 500;
+          border-radius: 50px;
+          font-size: 16px;
+          font-weight: 600;
           cursor: pointer;
           width: 100%;
-          transition: opacity 0.2s, transform 0.2s;
+          transition: all 0.25s;
+          box-shadow: 0 4px 20px rgba(233, 30, 140, 0.25);
           font-family: inherit;
         }
         .ob-btn:hover:not(:disabled) {
-          opacity: 0.9;
-          transform: translateY(-1px);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 28px rgba(233, 30, 140, 0.4);
+          background: linear-gradient(135deg, #FF6B9D, #E91E8C);
         }
         .ob-btn:disabled {
           opacity: 0.5;
@@ -311,7 +290,8 @@ export default function Onboarding() {
           position: fixed;
           top: 16px; right: 24px;
           font-size: 13px;
-          color: rgba(255,255,255,0.3);
+          color: #8888AA;
+          font-weight: 600;
           background: none;
           border: none;
           cursor: pointer;
@@ -321,19 +301,20 @@ export default function Onboarding() {
           padding: 4px 8px;
         }
         .ob-skip-btn:hover {
-          color: rgba(255,255,255,0.6);
+          color: #E91E8C;
         }
 
         .ob-heading {
-          font-size: clamp(24px, 4vw, 36px);
-          font-weight: 600;
-          color: #f1f5f9;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(26px, 4vw, 38px);
+          font-weight: 700;
+          color: #1A1A2E;
           margin: 0;
         }
         .ob-subtext {
-          font-size: 15px;
-          color: rgba(255,255,255,0.4);
-          margin: 12px 0 40px;
+          font-size: 16px;
+          color: #4A4A6A;
+          margin: 12px 0 36px;
           line-height: 1.6;
         }
 
@@ -341,21 +322,23 @@ export default function Onboarding() {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          padding: 10px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          padding: 12px 0;
+          border-bottom: 1.5px solid #F9C0D8;
           gap: 16px;
         }
         .ob-summary-row:last-child {
           border-bottom: none;
         }
         .ob-summary-label {
-          font-size: 13px;
-          color: rgba(255,255,255,0.4);
+          font-size: 14px;
+          color: #8888AA;
+          font-weight: 600;
           flex-shrink: 0;
         }
         .ob-summary-value {
-          font-size: 13px;
-          color: #f1f5f9;
+          font-size: 14px;
+          color: #1A1A2E;
+          font-weight: 600;
           text-align: right;
         }
 
@@ -370,12 +353,12 @@ export default function Onboarding() {
       {step < 4 && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%',
-          height: '3px', background: 'rgba(255,255,255,0.06)',
+          height: '4px', background: '#F9C0D8',
           zIndex: 100,
         }}>
           <div style={{
             height: '100%',
-            background: 'linear-gradient(90deg, #7c3aed, #06b6d4)',
+            background: 'linear-gradient(90deg, #E91E8C, #FF6B9D)',
             width: progressWidth,
             transition: 'width 0.5s ease',
           }} />
@@ -388,7 +371,8 @@ export default function Onboarding() {
           position: 'fixed', top: '20px', left: '50%',
           transform: 'translateX(-50%)',
           fontSize: '12px',
-          color: 'rgba(255,255,255,0.3)',
+          color: '#8888AA',
+          fontWeight: 700,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           zIndex: 101,
