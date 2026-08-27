@@ -125,46 +125,44 @@ export default function StudyPlans() {
         )}
 
         <div className="page-header">
-          <div className="page-eyebrow">NeuroLoop</div>
-          <h1 className="page-title">My Study Plans</h1>
-          <p className="page-subtitle">Your AI-generated personalized learning roadmaps</p>
+          <div className="page-eyebrow" style={{ color: "#E91E8C", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>NeuroLoop</div>
+          <h1 className="page-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "30px", fontWeight: 700, color: "#1A1A2E", margin: "4px 0" }}>My Study Plans</h1>
+          <p className="page-subtitle" style={{ color: "#4A4A6A", fontSize: "14px" }}>Your AI-generated personalized learning roadmaps</p>
         </div>
 
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: "40px" }}>
-            <div className="skeleton" style={{ height: "150px", width: "100%" }} />
+            <div className="skeleton" style={{ height: "150px", width: "100%", borderRadius: "20px" }} />
           </div>
         ) : plans.length === 0 ? (
-          <div className="card">
+          <div style={{ background: "#FFFFFF", border: "1.5px dashed #F9C0D8", borderRadius: "20px", padding: "48px 24px", textAlign: "center" }}>
             <div className="empty-state">
-              <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}><FiCalendar /></div>
-              <h3 className="empty-title">No study plans yet</h3>
-              <p className="empty-sub">Go to Revision → Weak Topics to generate one.</p>
+              <div className="empty-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E91E8C', fontSize: '2.5rem', marginBottom: '12px' }}><FiCalendar /></div>
+              <h3 className="empty-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.3rem", color: "#1A1A2E", marginBottom: "6px" }}>No study plans yet</h3>
+              <p className="empty-sub" style={{ color: "#4A4A6A", fontSize: "0.9rem" }}>Go to Revision → Weak Topics to generate one.</p>
             </div>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             {plans.map((plan) => (
-              <div key={plan._id} className="card" style={{ position: "relative" }}>
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'var(--gold)' }} />
+              <div key={plan._id} style={{ position: "relative", background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "20px", padding: "24px", boxShadow: "0 4px 24px rgba(233, 30, 140, 0.06)" }}>
+                <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '5px', borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px', background: 'linear-gradient(180deg, #E91E8C, #FF6B9D)' }} />
                 <div className="study-plan-card-header">
-                  <h3 style={{ fontWeight: 600, fontSize: "1.15rem", color: "var(--t1)" }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "1.25rem", color: "#1A1A2E", margin: 0 }}>
                     {plan.topic}
                   </h3>
 
                   {/* Action buttons */}
                   <div className="study-plan-actions">
                     <button
-                      className="btn-outline"
                       onClick={() => downloadPDF(plan)}
                       title="Download PDF"
-                      style={{ padding: '6px 10px', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      style={{ padding: '8px 18px', borderRadius: "50px", background: "#FFFFFF", border: "1.5px solid #F9C0D8", color: "#E91E8C", fontWeight: 600, fontSize: '0.82rem', cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     ><FiPrinter /> Print</button>
                     <button
-                      className="btn-ghost"
                       onClick={() => handleDelete(plan)}
                       title="Delete"
-                      style={{ padding: '6px 10px', fontSize: '0.82rem', color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      style={{ padding: '8px 16px', borderRadius: "50px", background: "none", border: "none", color: '#dc2626', fontWeight: 600, fontSize: '0.82rem', cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     ><FiTrash2 /> Delete</button>
                   </div>
                 </div>
@@ -173,16 +171,16 @@ export default function StudyPlans() {
                 {plan.weakSubtopics && plan.weakSubtopics.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.5rem", marginBottom: "0.5rem" }}>
                     {plan.weakSubtopics.map((sub, idx) => (
-                      <span key={idx} className="badge badge-gold">{sub}</span>
+                      <span key={idx} style={{ background: "#FCE4F0", color: "#E91E8C", border: "1px solid #F9C0D8", padding: "3px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 600 }}>{sub}</span>
                     ))}
                   </div>
                 )}
 
-                <p style={{ color: "var(--t3)", fontSize: "0.78rem", marginBottom: "1rem" }}>
+                <p style={{ color: "#8888AA", fontSize: "0.8rem", marginBottom: "1rem", fontWeight: 500 }}>
                   Created on {formatDate(plan.createdAt)}
                 </p>
 
-                <div className="ai-output" style={{ background: 'var(--s2)', border: '1px solid var(--bd)', color: 'var(--t2)', fontSize: '0.88rem' }}>
+                <div className="ai-output" style={{ background: '#FFF0F5', border: '1.5px solid #F9C0D8', borderRadius: '16px', padding: '20px', color: '#4A4A6A', fontSize: '0.9rem' }}>
                   {renderStudyPlan(plan.plan)}
                 </div>
               </div>
@@ -205,19 +203,16 @@ export default function StudyPlans() {
 function renderStudyPlan(planText) {
   if (!planText) return null
   
-  // Split by DAY sections
   const days = planText.split(/(?=DAY \d+)/g).filter(s => s.trim())
   
   if (days.length <= 1) {
-    // Fallback: render as formatted paragraphs
     return (
-      <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: 'var(--t2)', fontSize: '13px' }}>
+      <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: '#4A4A6A', fontSize: '14px' }}>
         {planText}
       </div>
     )
   }
 
-  // Check for special sections at the end
   const mainDays = days.filter(d => d.startsWith('DAY'))
   const footer = planText.split(/OVERALL GOAL:|WEEKLY GOAL:|SUCCESS METRIC:/)[1] || ''
 
@@ -228,25 +223,22 @@ function renderStudyPlan(planText) {
         const heading = lines[0] || ''
         const rest = lines.slice(1).join('\n')
         
-        const colors = ['#7c3aed','#2563eb','#059669','#d97706','#dc2626','#0891b2','#7c3aed']
-        const color = colors[i % colors.length]
-        
         return (
           <div key={i} style={{
             marginBottom: '16px',
-            background: 'var(--s2)',
-            border: '1px solid var(--bd)',
-            borderLeft: `3px solid ${color}`,
-            borderRadius: '10px',
-            padding: '14px 16px'
+            background: '#FFFFFF',
+            border: '1.5px solid #F9C0D8',
+            borderLeft: `4px solid #E91E8C`,
+            borderRadius: '16px',
+            padding: '18px 20px'
           }}>
             <div style={{
-              fontSize: '13px',
-              fontWeight: '600',
-              color: color,
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: '15px',
+              fontWeight: '700',
+              color: '#1A1A2E',
               marginBottom: '10px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em'
+              letterSpacing: '0.02em'
             }}>
               {heading}
             </div>
@@ -256,9 +248,9 @@ function renderStudyPlan(planText) {
               const isLabel = line.includes(':') && !line.startsWith('•') && line.split(':')[0].length < 20
               return (
                 <div key={j} style={{
-                  fontSize: '13px',
-                  color: isBullet ? 'var(--t2)' : 'var(--t1)',
-                  fontWeight: isLabel ? '500' : '400',
+                  fontSize: '13.5px',
+                  color: isBullet ? '#4A4A6A' : '#1A1A2E',
+                  fontWeight: isLabel ? '600' : '400',
                   marginBottom: '4px',
                   paddingLeft: isBullet ? '8px' : '0',
                   lineHeight: 1.6
@@ -272,15 +264,16 @@ function renderStudyPlan(planText) {
       })}
       {footer && (
         <div style={{
-          background: 'rgba(124,58,237,0.08)',
-          border: '1px solid rgba(124,58,237,0.2)',
-          borderRadius: '10px',
-          padding: '12px 16px',
-          fontSize: '13px',
-          color: '#a78bfa',
-          marginTop: '8px'
+          background: '#FCE4F0',
+          border: '1.5px solid #F9C0D8',
+          borderRadius: '16px',
+          padding: '16px 20px',
+          fontSize: '14px',
+          color: '#E91E8C',
+          marginTop: '12px',
+          fontWeight: '600'
         }}>
-          <span style={{ fontWeight: '600' }}>🎯 Overall Goal: </span>
+          <span style={{ fontWeight: '700', color: '#1A1A2E' }}>🎯 Overall Goal: </span>
           {footer.split('\n')[0]?.trim()}
         </div>
       )}

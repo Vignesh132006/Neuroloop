@@ -80,7 +80,7 @@ export default function Chat() {
     return content
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, '<code style="background:rgba(255,59,48,0.12);padding:0.1em 0.3em;border-radius:4px;font-family:monospace;border:1px solid var(--bd);color:var(--goldl)">$1</code>')
+      .replace(/`(.*?)`/g, '<code style="background:#FFFFFF;padding:0.2em 0.4em;border-radius:6px;font-family:monospace;border:1px solid #F9C0D8;color:#E91E8C;font-size:0.85em;">$1</code>')
       .replace(/\n/g, "<br/>")
   }
 
@@ -112,42 +112,132 @@ export default function Chat() {
           height: 100dvh;
           padding-bottom: 24px;
         }
+        .chat-container-layout {
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 24px;
+          box-shadow: 0 4px 24px rgba(233, 30, 140, 0.08);
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          overflow: hidden;
+        }
+        .chat-messages-area {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .chat-bubble-wrapper {
+          display: flex;
+          flex-direction: column;
+          max-width: 80%;
+        }
+        .chat-bubble-wrapper.user {
+          align-self: flex-end;
+          align-items: flex-end;
+        }
+        .chat-bubble-wrapper.assistant {
+          align-self: flex-start;
+          align-items: flex-start;
+        }
+        .chat-bubble-container.user {
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          color: #ffffff;
+          border-radius: 20px 20px 4px 20px;
+          padding: 14px 18px;
+          font-size: 0.92rem;
+          line-height: 1.6;
+          box-shadow: 0 4px 14px rgba(233, 30, 140, 0.2);
+        }
+        .chat-bubble-container.assistant {
+          background: #FCE4F0;
+          color: #1A1A2E;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 20px 20px 20px 4px;
+          padding: 14px 18px;
+          font-size: 0.92rem;
+          line-height: 1.6;
+        }
+        .chat-suggestions-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-top: 8px;
+        }
         @media (max-width: 768px) {
-          .chat-page-wrap {
-            padding-bottom: 24px !important;
-          }
-          .chat-container-layout {
-            height: calc(100vh - 170px);
-            height: calc(100dvh - 170px);
+          .chat-suggestions-grid {
+            grid-template-columns: 1fr;
           }
         }
-        @media (max-width: 600px) {
-          .chat-controls {
-            flex-direction: column;
-            align-items: stretch !important;
-            gap: 10px;
-          }
-          .chat-controls > div {
-            flex-direction: column;
-            align-items: stretch !important;
-            gap: 6px;
-          }
-          .chat-controls select {
-            width: 100% !important;
-          }
+        .chat-suggestion-item {
+          background: #FFF0F5;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 16px;
+          padding: 14px;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .chat-suggestion-item:hover {
+          border-color: #E91E8C;
+          background: #FCE4F0;
+        }
+        .chat-suggestion-item strong {
+          display: block;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 0.95rem;
+          color: #1A1A2E;
+          margin-bottom: 4px;
+        }
+        .chat-suggestion-item span {
+          font-size: 0.8rem;
+          color: #4A4A6A;
+          line-height: 1.4;
+          display: block;
+        }
+        .chat-input-panel {
+          padding: 16px 20px;
+          border-top: 1.5px solid #F9C0D8;
+          background: #FFFFFF;
+        }
+        .chat-input-textarea {
+          width: 100%;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 20px;
+          padding: 12px 18px;
+          font-family: inherit;
+          font-size: 0.92rem;
+          color: #1A1A2E;
+          background: #FFFFFF;
+          outline: none;
+          resize: none;
+          min-height: 48px;
+          transition: border-color 0.2s;
+        }
+        .chat-input-textarea:focus {
+          border-color: #E91E8C;
+        }
+        .chat-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 10px;
         }
       `}</style>
       <Sidebar />
       <div className="page-wrap chat-page-wrap fade-in">
         {/* Header */}
-        <div className="flex-between" style={{ marginBottom: "1rem" }}>
+        <div className="flex-between" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
           <div>
-            <div className="page-eyebrow">Interactive Learning</div>
-            <h1 className="page-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}><FiMessageSquare /> Neuro Chat</h1>
-            <p className="page-subtitle">Socratic learning assistant • Deepen your understanding</p>
+            <div className="page-eyebrow" style={{ color: "#E91E8C", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>Interactive Learning</div>
+            <h1 className="page-title" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "28px", fontWeight: 700, color: "#1A1A2E", display: "flex", alignItems: "center", gap: "10px", margin: "4px 0" }}><FiMessageSquare style={{ color: "#E91E8C" }} /> Neuro Chat</h1>
+            <p className="page-subtitle" style={{ color: "#4A4A6A", fontSize: "14px" }}>Socratic learning assistant • Deepen your understanding</p>
           </div>
           <div>
-            <button className="btn btn-ghost" onClick={clearChat} style={{ display: 'inline-flex', alignItems: 'center', gap: "0.35rem" }}>
+            <button onClick={clearChat} style={{ background: "#FFFFFF", border: "1.5px solid #F9C0D8", color: "#E91E8C", padding: "8px 18px", borderRadius: "50px", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: "6px" }}>
               <FiTrash2 /> Clear Chat
             </button>
           </div>
@@ -162,13 +252,13 @@ export default function Chat() {
                 {msg.role === "assistant" && (
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
                     <div style={{
-                      width: "24px", height: "24px",
-                      background: "linear-gradient(135deg, var(--gold), #af8f27)",
-                      color: "#0d0d0d", borderRadius: "50%",
+                      width: "26px", height: "26px",
+                      background: "linear-gradient(135deg, #E91E8C, #FF6B9D)",
+                      color: "#ffffff", borderRadius: "50%",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "0.7rem", fontWeight: 700,
+                      fontSize: "0.75rem", fontWeight: 700,
                     }}>N</div>
-                    <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--gold)" }}>Neuro</span>
+                    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#E91E8C" }}>Neuro</span>
                   </div>
                 )}
                 <div
@@ -181,7 +271,7 @@ export default function Chat() {
             {/* Suggestions on Empty / Start State */}
             {messages.length === 1 && (
               <div style={{ marginTop: "1rem" }}>
-                <p style={{ fontSize: "0.8rem", color: "var(--t2)", fontWeight: 500, marginBottom: "0.5rem" }}>Try one of these Socratic prompts to start:</p>
+                <p style={{ fontSize: "0.85rem", color: "#8888AA", fontWeight: 600, marginBottom: "0.75rem" }}>Try one of these Socratic prompts to start:</p>
                 <div className="chat-suggestions-grid">
                   {suggestions.map((s, idx) => (
                     <button
@@ -201,21 +291,21 @@ export default function Chat() {
               <div className="chat-bubble-wrapper assistant">
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
                   <div style={{
-                    width: "24px", height: "24px",
-                    background: "linear-gradient(135deg, var(--gold), #af8f27)",
-                    color: "#0d0d0d", borderRadius: "50%",
+                    width: "26px", height: "26px",
+                    background: "linear-gradient(135deg, #E91E8C, #FF6B9D)",
+                    color: "#ffffff", borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "0.7rem", fontWeight: 700,
+                    fontSize: "0.75rem", fontWeight: 700,
                   }}>N</div>
-                  <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--t2)" }}>Neuro is thinking...</span>
+                  <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "#8888AA" }}>Neuro is thinking...</span>
                 </div>
                 <div className="chat-bubble-container assistant" style={{ padding: "0.75rem 1.25rem" }}>
                   <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
                     {[0, 0.15, 0.3].map((delay, i) => (
                       <div key={i} style={{
                         width: "6px", height: "6px", borderRadius: "50%",
-                        background: "var(--gold)",
-                        animation: `glowPulse 1.2s ease-in-out ${delay}s infinite`,
+                        background: "#E91E8C",
+                        animation: `pulse 1.2s ease-in-out ${delay}s infinite`,
                       }} />
                     ))}
                   </div>
@@ -242,12 +332,12 @@ export default function Chat() {
             
             <div className="chat-controls">
               <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <span style={{ fontSize: "0.75rem", color: "var(--t2)", fontWeight: 500 }}>Select Context Notes:</span>
+                <span style={{ fontSize: "0.78rem", color: "#8888AA", fontWeight: 600 }}>Select Context Notes:</span>
                 <select
                   className="form-select"
                   value={context}
                   onChange={(e) => setContext(e.target.value)}
-                  style={{ width: "auto", minWidth: "160px", padding: "6px 12px", fontSize: "0.8rem", height: "32px", background: "var(--s3)" }}
+                  style={{ width: "auto", minWidth: "160px", padding: "6px 14px", fontSize: "0.82rem", height: "36px", background: "#FFFFFF", border: "1.5px solid #F9C0D8", borderRadius: "50px", color: "#1A1A2E" }}
                 >
                   <option value="">No Context Notes</option>
                   {notes.map((n) => (
@@ -257,10 +347,9 @@ export default function Chat() {
               </div>
               <button
                 id="chat-send"
-                className="btn btn-gold"
                 onClick={sendMessage}
                 disabled={loading || !input.trim()}
-                style={{ padding: "0.4rem 1.2rem", display: 'inline-flex', alignItems: 'center', gap: "0.4rem", height: "32px", fontSize: "0.85rem" }}
+                style={{ padding: "8px 24px", borderRadius: "50px", background: "linear-gradient(135deg, #E91E8C, #FF6B9D)", border: "none", color: "#ffffff", fontWeight: 600, fontSize: "0.88rem", cursor: "pointer", display: 'inline-flex', alignItems: 'center', gap: "6px", boxShadow: "0 4px 14px rgba(233, 30, 140, 0.25)", opacity: (loading || !input.trim()) ? 0.55 : 1 }}
               >
                 <FiSend /> Send
               </button>
