@@ -58,8 +58,8 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-icon {
           width: 56px; height: 56px; border-radius: 16px;
-          background: linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));
-          border: 1px solid rgba(212,175,55,0.3);
+          background: #FCE4F0;
+          border: 1.5px solid #F9C0D8;
           display: flex; align-items: center; justify-content: center;
           font-size: 1.6rem; margin-bottom: 16px;
           animation: iconPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
@@ -69,20 +69,20 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
           to   { transform: scale(1);   opacity: 1; }
         }
         .evs-title {
-          font-family: 'DM Serif Display', Georgia, serif;
-          font-size: 1.3rem; color: #f5f0e8;
-          margin: 0 0 6px; font-weight: 400;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 1.4rem; color: #1A1A2E;
+          margin: 0 0 6px; font-weight: 700;
         }
         .evs-sub {
-          font-size: 0.82rem; color: #a09880;
+          font-size: 0.85rem; color: #4A4A6A;
           margin: 0 0 6px; line-height: 1.5;
         }
         .evs-email-badge {
           display: inline-block;
-          background: rgba(212,175,55,0.1);
-          border: 1px solid rgba(212,175,55,0.25);
-          border-radius: 99px; padding: 3px 14px;
-          font-size: 0.8rem; color: #d4af37;
+          background: #FCE4F0;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 50px; padding: 4px 16px;
+          font-size: 0.82rem; color: #E91E8C;
           font-weight: 600; margin-bottom: 24px;
         }
         .evs-otp-wrap {
@@ -91,25 +91,25 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-otp-box {
           width: 44px; height: 52px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 10px;
-          color: #f5f0e8; font-size: 1.4rem;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 12px;
+          color: #1A1A2E; font-size: 1.4rem;
           font-weight: 700; text-align: center;
           transition: all 0.2s; outline: none;
-          caret-color: #d4af37;
+          caret-color: #E91E8C;
         }
         .evs-otp-box:focus {
-          border-color: rgba(212,175,55,0.6);
-          box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
-          background: rgba(212,175,55,0.04);
+          border-color: #E91E8C;
+          box-shadow: 0 0 0 3px rgba(233,30,140,0.12);
+          background: #FFFFFF;
         }
         .evs-otp-box.filled {
-          border-color: rgba(212,175,55,0.4);
-          color: #d4af37;
+          border-color: #E91E8C;
+          color: #E91E8C;
         }
         .evs-error {
-          width: 100%; font-size: 0.78rem; color: #fca5a5;
+          width: 100%; font-size: 0.78rem; color: #dc2626;
           background: rgba(239,68,68,0.08);
           border: 1px solid rgba(239,68,68,0.2);
           border-radius: 8px; padding: 8px 12px;
@@ -122,49 +122,50 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
           75%    { transform: translateX(5px); }
         }
         .evs-success {
-          width: 100%; font-size: 0.82rem; color: #6ee7b7;
+          width: 100%; font-size: 0.82rem; color: #059669;
           background: rgba(16,185,129,0.08);
           border: 1px solid rgba(16,185,129,0.2);
           border-radius: 8px; padding: 8px 12px;
           margin-bottom: 12px; text-align: center;
         }
         .evs-btn {
-          width: 100%; padding: 13px; border-radius: 10px;
-          border: none; background: var(--gold, #d4af37);
-          color: #111111; font-size: 0.92rem; font-weight: 700;
+          width: 100%; padding: 13px; border-radius: 50px;
+          border: none; background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          color: #ffffff; font-size: 0.92rem; font-weight: 600;
           letter-spacing: 0.02em; cursor: pointer;
-          box-shadow: 0 4px 20px rgba(212,175,55,0.35);
+          box-shadow: 0 4px 18px rgba(233, 30, 140, 0.25);
           transition: all 0.2s; margin-bottom: 14px;
         }
         .evs-btn:hover:not(:disabled) {
-          background: #e5c048;
+          background: linear-gradient(135deg, #FF6B9D, #E91E8C);
           transform: translateY(-1px);
-          box-shadow: 0 8px 28px rgba(212,175,55,0.45);
+          box-shadow: 0 8px 26px rgba(233, 30, 140, 0.4);
         }
         .evs-btn:disabled {
           opacity: 0.55; cursor: not-allowed; transform: none;
         }
         .evs-resend-row {
-          font-size: 0.78rem; color: #5a5040;
+          font-size: 0.8rem; color: #4A4A6A;
           display: flex; align-items: center;
           justify-content: center; gap: 6px;
         }
         .evs-resend-btn {
           background: none; border: none;
-          color: #d4af37; font-size: 0.78rem;
+          color: #E91E8C; font-size: 0.8rem;
+          font-weight: 600;
           cursor: pointer; text-decoration: underline;
           transition: opacity 0.2s;
         }
         .evs-resend-btn:disabled {
-          color: #5a5040; text-decoration: none; cursor: not-allowed;
+          color: #8888AA; text-decoration: none; cursor: not-allowed;
         }
         .evs-back {
           background: none; border: none;
-          color: #5a5040; font-size: 0.75rem;
+          color: #8888AA; font-size: 0.78rem;
           cursor: pointer; margin-top: 12px;
           transition: color 0.2s;
         }
-        .evs-back:hover { color: #a09880; }
+        .evs-back:hover { color: #E91E8C; }
         .evs-steps {
           display: flex; align-items: center;
           gap: 6px; margin-bottom: 20px;
@@ -175,7 +176,7 @@ const EmailVerificationScreen = ({ email, name, onVerified }) => {
         }
         .evs-step-line {
           flex: 1; height: 1px;
-          background: rgba(255,255,255,0.06);
+          background: #F9C0D8;
         }
       `}</style>
 

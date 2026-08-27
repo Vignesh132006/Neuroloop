@@ -45,13 +45,24 @@ export default function AuthLeftPanel() {
   const quote = quotes[quoteIdx]
 
   return (
-    <div className="auth-left-panel">
+    <div style={{
+      flex: 1,
+      background: 'linear-gradient(135deg, #FFF0F5 0%, #FCE4F0 100%)',
+      padding: '3rem',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      borderRight: '1px solid #F9C0D8'
+    }}>
       {/* Particles */}
       {particles.map((p) => (
         <div
           key={p.id}
-          className="particle"
           style={{
+            position: 'absolute',
+            borderRadius: '50%',
+            background: '#E91E8C',
             left: p.left,
             top: p.top,
             width: `${p.size}px`,
@@ -86,19 +97,20 @@ export default function AuthLeftPanel() {
           }}
         >
           <p style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
             fontSize: '1.65rem',
             fontWeight: 700,
             lineHeight: 1.35,
-            color: 'var(--text-primary)',
+            color: '#1A1A2E',
             marginBottom: '0.75rem',
-            letterSpacing: '-0.02em',
+            letterSpacing: '-0.01em',
           }}>
             "{quote.text}"
           </p>
           <p style={{
-            color: 'var(--primary-glow)',
+            color: '#E91E8C',
             fontSize: '0.95rem',
-            fontWeight: 500,
+            fontWeight: 600,
           }}>
             — {quote.author}
           </p>
@@ -111,21 +123,26 @@ export default function AuthLeftPanel() {
           gap: '0.75rem',
           marginTop: '3rem',
         }}>
-          {floatingStats.map((stat, i) => (
+          {floatingStats.map((stat) => (
             <div
               key={stat.label}
-              className="auth-floating-stat"
               style={{
-                animationDelay: `${i * 0.8}s`,
-                animationDuration: `${5 + i * 0.5}s`,
+                background: '#FFFFFF',
+                border: '1.5px solid #F9C0D8',
+                borderRadius: '16px',
+                padding: '14px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                boxShadow: '0 4px 20px rgba(233, 30, 140, 0.06)'
               }}
             >
               <span style={{ fontSize: '1.5rem' }}>{stat.icon}</span>
               <div>
-                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#1A1A2E', lineHeight: 1.2 }}>
                   {stat.value}
                 </p>
-                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                <p style={{ fontSize: '0.72rem', color: '#8888AA', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
                   {stat.label}
                 </p>
               </div>
@@ -139,7 +156,7 @@ export default function AuthLeftPanel() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {/* Avatar stack */}
           <div style={{ display: 'flex' }}>
-            {['#7C3AED', '#06B6D4', '#10B981', '#F59E0B', '#A78BFA'].map((color, i) => (
+            {['#E91E8C', '#FF6B9D', '#F59E0B', '#10B981', '#E91E8C'].map((color, i) => (
               <div
                 key={i}
                 style={{
@@ -147,7 +164,7 @@ export default function AuthLeftPanel() {
                   height: '28px',
                   borderRadius: '50%',
                   background: color,
-                  border: '2px solid var(--bg-deep)',
+                  border: '2px solid #FFFFFF',
                   marginLeft: i === 0 ? 0 : '-8px',
                   position: 'relative',
                   zIndex: 5 - i,
@@ -155,8 +172,8 @@ export default function AuthLeftPanel() {
               />
             ))}
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
-            Join <strong style={{ color: 'var(--text-primary)' }}>10,000+</strong> learners building their knowledge loop
+          <p style={{ color: '#4A4A6A', fontSize: '0.82rem' }}>
+            Join <strong style={{ color: '#1A1A2E' }}>10,000+</strong> learners building their knowledge loop
           </p>
         </div>
       </div>
