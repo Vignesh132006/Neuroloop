@@ -14,9 +14,6 @@ export default function LoadingPage() {
   return (
     <div className="loading-container">
       <style>{`
-  return (
-    <div className="loading-container">
-      <style>{`
         .loading-container {
           background-color: #FFF0F5;
           color: #1A1A2E;
@@ -180,6 +177,5 @@ export default function LoadingPage() {
       {/* Version Text */}
       <span className="version-text">NeuroLoop v4.0</span>
     </div>
-  )
   )
 }
