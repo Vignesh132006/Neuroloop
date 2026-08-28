@@ -148,7 +148,7 @@ export default function LoadingPage() {
           </defs>
           <rect x="8" y="8" width="44" height="44" rx="14"
             fill="#FCE4F0" stroke="url(#logoGrad)" strokeWidth="2.5" />
-          <path d="M18 42 L18 18 L30 36 L42 18 L42 42"
+          <path d="M18 42 L18 18 L42 42 L42 18"
             fill="none" stroke="url(#logoGrad)" strokeWidth="3"
             strokeLinecap="round" strokeLinejoin="round" />
         </svg>

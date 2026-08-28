@@ -15,16 +15,6 @@ const getStrength = (pwd) => {
 const strengthColors = ['#EF4444', '#F59E0B', '#3B82F6', '#10B981']
 const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong']
 
-const dots = [
-  {top:'15%',left:'20%',size:4,delay:'0s',dur:'3s'},
-  {top:'25%',left:'75%',size:3,delay:'0.5s',dur:'4s'},
-  {top:'60%',left:'15%',size:5,delay:'1s',dur:'3.5s'},
-  {top:'70%',left:'80%',size:3,delay:'1.5s',dur:'5s'},
-  {top:'40%',left:'60%',size:4,delay:'0.8s',dur:'4.2s'},
-  {top:'85%',left:'35%',size:3,delay:'2s',dur:'3.8s'},
-  {top:'10%',left:'50%',size:4,delay:'0.3s',dur:'4.5s'},
-  {top:'50%',left:'88%',size:3,delay:'1.2s',dur:'3.2s'},
-]
 
 const quotes = [
   {q:'Learning is not attained by chance. It must be sought with ardor and attended with diligence.',a:'Abigail Adams'},
@@ -45,14 +35,20 @@ const particles = Array.from({ length: 30 }, (_, i) => ({
   opacity: Math.random() * 0.4 + 0.1,
 }));
 
-// Neural network nodes — 8 nodes with connections
+// Neural network nodes — 8 balanced perimeter nodes encircling center logo
 const nodes = [
-  { x: 20, y: 20 }, { x: 45, y: 12 }, { x: 70, y: 25 },
-  { x: 15, y: 50 }, { x: 50, y: 50 }, { x: 80, y: 45 },
-  { x: 30, y: 78 }, { x: 65, y: 75 },
+  { x: 200, y: 180 },
+  { x: 500, y: 120 },
+  { x: 800, y: 180 },
+  { x: 880, y: 500 },
+  { x: 800, y: 820 },
+  { x: 500, y: 880 },
+  { x: 200, y: 820 },
+  { x: 120, y: 500 },
 ];
 const connections = [
-  [0,1],[1,2],[0,3],[1,4],[2,5],[3,4],[4,5],[3,6],[4,7],[5,7],[6,7],[1,5],[2,4],
+  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0],
+  [0, 2], [1, 3], [3, 5], [4, 6], [5, 7], [7, 1]
 ];
 
 // Eye open SVG icon:
@@ -81,7 +77,7 @@ function isValidEmail(email) {
 
   // Check for common typos in popular domains
   const domain = email.split('@')[1]?.toLowerCase()
-  const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com']
+
   const typoMap = {
     'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com',
     'gmail.co': 'gmail.com', 'gmail.cm': 'gmail.com', 'gmail.om': 'gmail.com',
@@ -137,11 +133,9 @@ export default function Login() {
 
   // Task 1 new states
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isLoaded, setIsLoaded] = useState(false);
 
   // Task 2 new states
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Task 3 new states
   const [forgotStep, setForgotStep] = useState(null);
@@ -161,7 +155,6 @@ export default function Login() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    setTimeout(() => setIsLoaded(true), 100);
     const handleMouse = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
@@ -334,466 +327,652 @@ export default function Login() {
   }
 
   return (
-    <div style={{minHeight:'100vh',display:'flex',background:'var(--bg)'}}>
+    <div className="login-page-root">
       <style>{`
-        :root {
-          --green: #10b981;
-        }
-
-        .lp-left{
-          flex:1.2;position:relative;overflow:hidden;
-          background:var(--bg);
-          display:flex;flex-direction:column;
-          border-right:1px solid var(--bd);
-        }
-        @media (max-width: 900px) {
-          .lp-left { display: none; }
-               .login-page{
-          display:flex;min-height:100vh;
-          background:#FFF0F5;color:#1A1A2E;
-          font-family:'Inter',sans-serif;overflow:hidden;
+        .login-page-root {
+          min-height: 100vh;
+          width: 100%;
+          display: flex;
+          background: #FFF0F5;
+          color: #1A1A2E;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          overflow-x: hidden;
         }
 
         /* Left visual panel */
-        .lp-left{
-          flex:1;position:relative;
-          display:flex;flex-direction:column;
-          align-items:center;justify-content:center;
-          padding:60px 40px;
-          background:linear-gradient(135deg,#FFF0F5 0%,#FCE4F0 100%);
-          border-right:1px solid #F9C0D8;
-          overflow:hidden;
-        }
-        @media (max-width: 900px) {
-          .lp-left { display: none; }
+        .lp-left {
+          flex: 1.2;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 40px;
+          background: linear-gradient(135deg, #FFE0EE 0%, #FFCCE0 50%, #FFB3D1 100%);
+          border-right: 1px solid #F9C0D8;
+          overflow: hidden;
         }
 
-        .lp-right{
-          width:480px;flex-shrink:0;
-          display:flex;align-items:center;justify-content:center;
-          padding:40px;background:#FFFFFF;
-          border-left:1px solid #F9C0D8;
+        @media (max-width: 768px) {
+          .lp-left {
+            display: none !important;
+          }
         }
-        @media (max-width: 900px) {
-          .lp-right { width: 100%; border-left: none; }
+
+        /* Right form container */
+        .lp-right {
+          flex: 1;
+          min-width: 440px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 40px 24px;
+          background: linear-gradient(160deg, #FFFFFF 0%, #FFF0F5 60%, #FCE4F0 100%);
+          border-left: 1px solid #F9C0D8;
+          box-shadow: -10px 0 30px rgba(233, 30, 140, 0.03);
+        }
+
+        @media (max-width: 768px) {
+          .lp-right {
+            min-width: 100%;
+            width: 100%;
+            padding: 32px 20px;
+            background: #FFF0F5;
+            border-left: none;
+          }
         }
 
         .mobile-logo {
           display: none;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
           .mobile-logo {
             display: flex !important;
           }
         }
-        .lp-form-wrap{width:100%;max-width:360px;}
 
-        .lp-form-title{
-          font-family:'Playfair Display',Georgia,serif;
-          font-size:1.8rem;color:#1A1A2E;
-          font-weight:700;margin-bottom:4px;
-        }
-        .lp-form-sub{color:#4A4A6A;font-size:0.88rem;margin-bottom:24px;}
-
-        .lp-tabs{
-          display:flex;
-          background:#FFF0F5;
-          border:1.5px solid #F9C0D8;
-          border-radius:50px;padding:4px;margin-bottom:24px;
-        }
-        .lp-tab{
-          flex:1;padding:10px;border-radius:50px;
-          border:none;font-size:0.85rem;font-weight:600;
-          color:#8888AA;background:transparent;transition:all 0.25s;
-          cursor:pointer;
-        }
-        .lp-tab.active{
-          background:linear-gradient(135deg,#E91E8C,#FF6B9D);
-          color:#ffffff;
-          box-shadow:0 4px 14px rgba(233,30,140,0.25);
+        .lp-form-wrap {
+          width: 100%;
+          max-width: 380px;
+          margin: 0 auto;
         }
 
-        .lp-field{margin-bottom:16px;}
-        .lp-lbl{
-          display:block;font-size:0.75rem;font-weight:600;
-          color:#4A4A6A;letter-spacing:0.08em;
-          text-transform:uppercase;margin-bottom:8px;
+        .lp-form-title {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 32px;
+          color: #1A1A2E;
+          font-weight: 700;
+          margin-bottom: 6px;
+          letter-spacing: -0.01em;
         }
-        .lp-inp{
-          width:100%;padding:12px 16px;
-          background:#FFFFFF;
-          border:1.5px solid #F9C0D8;
-          border-radius:12px;color:#1A1A2E;font-size:0.9rem;
-          transition:all 0.2s;
-        }
-        .lp-inp:focus{
-          border-color:#E91E8C;
-          box-shadow:0 0 0 3px rgba(233,30,140,0.12);
-          background:#FFFFFF;
-          outline:none;
-        }
-        .lp-inp::placeholder{color:#8888AA;}
-
-        .lp-btn{
-          width:100%;padding:13px;border-radius:50px;border:none;
-          background:linear-gradient(135deg,#E91E8C,#FF6B9D);color:#ffffff;
-          font-size:0.92rem;font-weight:600;
-          letter-spacing:0.02em;
-          box-shadow:0 4px 18px rgba(233,30,140,0.25);
-          margin-top:4px;transition:all 0.25s ease;
-          cursor:pointer;
-        }
-        .lp-btn:hover{
-          background:linear-gradient(135deg,#FF6B9D,#E91E8C);
-          transform:translateY(-2px);
-          box-shadow:0 8px 26px rgba(233,30,140,0.4);
+        .lp-form-sub {
+          color: #8888AA;
+          font-size: 14px;
+          margin-bottom: 28px;
+          line-height: 1.4;
         }
 
-        .lp-divider{
-          display:flex;align-items:center;gap:12px;
-          margin:18px 0;color:#8888AA;font-size:0.75rem;
+        /* Tab buttons */
+        .lp-tabs {
+          display: flex;
+          background: #FCE4F0;
+          border-radius: 50px;
+          padding: 4px;
+          margin-bottom: 24px;
         }
-        .lp-divider::before,.lp-divider::after{
-          content:'';flex:1;height:1px;
-          background:#F9C0D8;
+        .lp-tab {
+          flex: 1;
+          padding: 10px 16px;
+          border-radius: 50px;
+          border: none;
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: #8888AA;
+          background: transparent;
+          transition: all 0.25s ease;
+          cursor: pointer;
+          text-align: center;
         }
-
-        .lp-google{
-          width:100%;padding:12px;border-radius:50px;
-          background:#FFFFFF;
-          border:1.5px solid #F9C0D8;
-          color:#1A1A2E;font-size:0.88rem;font-weight:600;
-          display:flex;align-items:center;justify-content:center;gap:10px;
-          transition:all 0.2s;
-          cursor:pointer;
-          text-decoration:none;
-        }
-        .lp-google:hover{
-          background:#FCE4F0;
-          border-color:#E91E8C;
-        }
-
-        /* Spotlight */
-        .lp-spotlight{
-          position:absolute;
-          width:600px;height:600px;
-          border-radius:50%;
-          pointer-events:none;
-          background:radial-gradient(circle,rgba(233,30,140,0.08) 0%,transparent 65%);
-          transform:translate(-50%,-50%);
-          transition:left 0.8s cubic-bezier(0.22,1,0.36,1),
-                      top 0.8s cubic-bezier(0.22,1,0.36,1);
-          z-index:1;
+        .lp-tab.active {
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          color: #ffffff;
+          border-radius: 50px;
+          box-shadow: 0 4px 14px rgba(233, 30, 140, 0.25);
         }
 
-        /* Animated grid */
-        .lp-grid{
-          position:absolute;inset:0;z-index:0;
+        /* Input fields */
+        .lp-field {
+          margin-bottom: 18px;
+        }
+        .lp-lbl {
+          display: block;
+          font-size: 11px;
+          font-weight: 600;
+          color: #8888AA;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          margin-bottom: 6px;
+        }
+        .lp-inp {
+          width: 100%;
+          padding: 12px 16px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 12px;
+          color: #1A1A2E;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+          outline: none;
+        }
+        .lp-inp:focus {
+          border-color: #E91E8C;
+          box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.08);
+          background: #FFFFFF;
+        }
+        .lp-inp::placeholder {
+          color: #AAAACC;
+        }
+
+        .lp-pwd-wrap {
+          position: relative;
+          width: 100%;
+        }
+        .lp-pwd-wrap .lp-inp {
+          padding-right: 44px;
+        }
+        .lp-pwd-toggle {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          color: #8888AA;
+          cursor: pointer;
+          padding: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.2s;
+          border-radius: 6px;
+        }
+        .lp-pwd-toggle:hover {
+          color: #E91E8C;
+        }
+
+        /* Action Buttons */
+        .lp-btn {
+          width: 100%;
+          padding: 14px;
+          border-radius: 50px;
+          border: none;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          color: #ffffff;
+          font-size: 15px;
+          font-weight: 500;
+          letter-spacing: 0.02em;
+          box-shadow: 0 4px 18px rgba(233, 30, 140, 0.25);
+          margin-top: 6px;
+          transition: all 0.25s ease;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        .lp-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          transform: translateY(-1px);
+          box-shadow: 0 8px 24px rgba(233, 30, 140, 0.35);
+        }
+        .lp-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        /* Divider & Google Auth */
+        .lp-divider {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin: 20px 0;
+          color: #C0C0C0;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        .lp-divider::before, .lp-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #F9C0D8;
+        }
+
+        .lp-google {
+          width: 100%;
+          padding: 12px;
+          border-radius: 50px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          color: #1A1A2E;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          transition: all 0.2s ease;
+          cursor: pointer;
+          text-decoration: none;
+          box-sizing: border-box;
+        }
+        .lp-google:hover {
+          background: #FFF0F5;
+          border-color: #E91E8C;
+          box-shadow: 0 4px 12px rgba(233, 30, 140, 0.1);
+        }
+
+        /* Left visual background animations */
+        .lp-spotlight {
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          border-radius: 50%;
+          pointer-events: none;
+          background: radial-gradient(circle, rgba(233,30,140,0.15) 0%, transparent 70%);
+          transform: translate(-50%, -50%);
+          transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+          z-index: 1;
+        }
+
+        .lp-grid {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
           background-image:
-            linear-gradient(rgba(233,30,140,0.04) 1px,transparent 1px),
-            linear-gradient(90deg,rgba(233,30,140,0.04) 1px,transparent 1px);
-          background-size:48px 48px;
-          animation:gridDrift 30s linear infinite;
+            linear-gradient(rgba(233,30,140,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(233,30,140,0.06) 1px, transparent 1px);
+          background-size: 40px 40px;
+          animation: gridDrift 25s linear infinite;
         }
-        @keyframes gridDrift{
-          0%{background-position:0 0;}
-          100%{background-position:48px 48px;}
-        }
-
-        /* Floating particles */
-        .lp-particle{
-          position:absolute;border-radius:50%;
-          background:#E91E8C;
-          pointer-events:none;
-          animation:particleDrift linear infinite;
+        @keyframes gridDrift {
+          0% { background-position: 0 0; }
+          100% { background-position: 40px 40px; }
         }
 
-        /* Neural network SVG */
-        .lp-neural{
-          position:absolute;inset:0;z-index:1;
-          pointer-events:none;
+        .lp-particle {
+          position: absolute;
+          border-radius: 50%;
+          background: #E91E8C;
+          pointer-events: none;
+          animation: particleFloat 6s ease-in-out infinite alternate;
         }
-        .neural-line{
-          stroke:rgba(233,30,140,0.2);
-          stroke-width:1.2;
-          animation:neuralPulse ease-in-out infinite alternate;
+        @keyframes particleFloat {
+          0% { transform: translateY(0) scale(1); opacity: 0.2; }
+          100% { transform: translateY(-24px) scale(1.4); opacity: 0.7; }
         }
-        @keyframes neuralPulse{
-          from{stroke-opacity:0.1;stroke-width:1;}
-          to{stroke-opacity:0.35;stroke-width:1.5;}
+
+        /* Prevent Chrome light-blue autofill background override */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+          -webkit-text-fill-color: #1A1A2E !important;
+          transition: background-color 5000s ease-in-out 0s;
         }
-        .neural-node{
-          fill:#E91E8C;
-          animation:nodePulse ease-in-out infinite alternate;
+
+        /* Corner accent brackets */
+        .lp-corner {
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          border-color: rgba(233, 30, 140, 0.4);
+          border-style: solid;
+          pointer-events: none;
+          z-index: 3;
         }
-        @keyframes nodePulse{
-          from{r:3.5;opacity:0.4;}
-          to{r:5.5;opacity:0.8;}
+        .lp-corner-tl { top: 24px; left: 24px; border-width: 2px 0 0 2px; }
+        .lp-corner-tr { top: 24px; right: 24px; border-width: 2px 2px 0 0; }
+        .lp-corner-bl { bottom: 24px; left: 24px; border-width: 0 0 2px 2px; }
+        .lp-corner-br { bottom: 24px; right: 24px; border-width: 0 2px 2px 0; }
+
+        /* Top-left brand badge */
+        .lp-top-badge {
+          position: absolute;
+          top: 24px;
+          left: 28px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          z-index: 4;
         }
-        .neural-node-glow{
-          fill:none;stroke:#FF6B9D;
-          animation:nodeGlow ease-in-out infinite alternate;
+        .lp-top-badge-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 3px 10px rgba(233, 30, 140, 0.25);
         }
-        @keyframes nodeGlow{
-          from{r:6;stroke-opacity:0.2;}
-          to{r:11;stroke-opacity:0.5;}
+        .lp-top-badge-name {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1A1A2E;
+        }
+        .lp-top-badge-name span {
+          color: #E91E8C;
+        }
+
+        .lp-neural {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+          pointer-events: none;
+        }
+        .neural-line {
+          stroke: rgba(233, 30, 140, 0.22);
+          stroke-width: 2px;
+          stroke-dasharray: 8 6;
+          animation: dashMove 25s linear infinite;
+        }
+        @keyframes dashMove {
+          from { stroke-dashoffset: 200; }
+          to { stroke-dashoffset: 0; }
+        }
+
+        .neural-node-glow {
+          fill: rgba(233, 30, 140, 0.08);
+          stroke: rgba(233, 30, 140, 0.25);
+          stroke-width: 1.5px;
+          animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+        .neural-node {
+          fill: #E91E8C;
+          filter: drop-shadow(0 2px 8px rgba(233, 30, 140, 0.4));
+        }
+
+        @keyframes pulseGlow {
+          0% { r: 18px; opacity: 0.4; }
+          100% { r: 28px; opacity: 0.9; }
         }
 
         /* Rotating rings */
-        .lp-ring{
-          position:absolute;border-radius:50%;
-          top:50%;left:50%;
-          transform:translate(-50%,-50%);
-          border:1px solid;
-          pointer-events:none;z-index:1;
-          animation:ringSpin linear infinite;
+        .lp-ring {
+          position: absolute;
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border: 1px dashed;
+          pointer-events: none;
+          z-index: 1;
+          animation: ringSpin linear infinite;
         }
-        .lp-ring-1{
-          width:280px;height:280px;
-          border-color:rgba(233,30,140,0.15);
-          animation-duration:20s;
+        @keyframes ringSpin {
+          from { transform: translate(-50%, -50%) rotate(0deg); }
+          to { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        .lp-ring-2{
-          width:440px;height:440px;
-          border-color:rgba(233,30,140,0.1);
-          animation-duration:30s;
-          animation-direction:reverse;
+        .lp-ring-1 {
+          width: 240px; height: 240px;
+          border-color: rgba(233,30,140,0.18);
+          animation-duration: 25s;
         }
-        .lp-ring-3{
-          width:600px;height:600px;
-          border-color:rgba(233,30,140,0.08);
-          animation-duration:42s;
+        .lp-ring-2 {
+          width: 400px; height: 400px;
+          border-color: rgba(233,30,140,0.12);
+          animation-duration: 35s;
+          animation-direction: reverse;
         }
-        .lp-ring-4{
-          width:760px;height:760px;
-          border-color:rgba(233,30,140,0.05);
-          animation-duration:55s;
-          animation-direction:reverse;
-        }
-
-        /* Pulsing center orb */
-        .lp-center-orb{
-          position:absolute;top:50%;left:50%;
-          transform:translate(-50%,-50%);
-          z-index:2;display:flex;flex-direction:column;
-          align-items:center;gap:14px;
-        }
-        .lp-orb-core{
-          width:80px;height:80px;border-radius:22px;
-          background:linear-gradient(135deg,#E91E8C,#FF6B9D);
-          display:flex;align-items:center;justify-content:center;
-          box-shadow:0 8px 30px rgba(233,30,140,0.3);
-          animation:coreBreath 3s ease-in-out infinite;
+        .lp-ring-3 {
+          width: 560px; height: 560px;
+          border-color: rgba(233,30,140,0.07);
+          animation-duration: 48s;
         }
 
-        .lp-brand-word{
-          font-family:'Playfair Display',Georgia,serif;
-          font-size:1.8rem;color:#1A1A2E;
-          text-align:center;letter-spacing:-0.01em;
-          font-weight:700;
+        .lp-center-orb {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 3;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          text-align: center;
         }
-        .lp-brand-word span{color:#E91E8C;}
-
-        .lp-brand-sub{
-          font-size:0.75rem;color:#4A4A6A;font-weight:600;
-          text-transform:uppercase;letter-spacing:0.14em;
-          text-align:center;
+        .lp-orb-core {
+          width: 88px;
+          height: 88px;
+          border-radius: 26px;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 12px 36px rgba(233, 30, 140, 0.4);
+          animation: coreBreath 3.5s ease-in-out infinite alternate;
         }
-
-        /* Bottom quote */
-        .lp-bottom-quote{
-          position:absolute;bottom:32px;left:0;right:0;
-          padding:0 48px;z-index:4;text-align:center;
-        }
-        .lp-q-line{
-          width:24px;height:1.5px;background:#E91E8C;
-          margin:0 auto 12px;opacity:0.6;
-        }
-        .lp-q-text{
-          font-family:'Playfair Display',serif;
-          font-size:0.95rem;color:#4A4A6A;
-          font-style:italic;line-height:1.6;margin-bottom:6px;
-          transition:opacity 0.4s ease;
-        }
-        .lp-q-auth{
-          font-size:0.7rem;color:#E91E8C;
-          font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+        @keyframes coreBreath {
+          from { transform: scale(1); box-shadow: 0 12px 36px rgba(233,30,140,0.35); }
+          to { transform: scale(1.08); box-shadow: 0 18px 48px rgba(233,30,140,0.55); }
         }
 
-        .lp-pwd-toggle{
-          position:absolute;right:14px;top:50%;
-          transform:translateY(-50%);
-          background:none;border:none;
-          color:#8888AA;
-          cursor:pointer;padding:4px;
-          display:flex;align-items:center;justify-content:center;
-          transition:color 0.2s;
+        .lp-brand-word {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 2.2rem;
+          color: #1A1A2E;
+          text-align: center;
+          letter-spacing: -0.01em;
+          font-weight: 700;
+          line-height: 1;
         }
-        .lp-pwd-toggle:hover{color:#E91E8C;}old);}
+        .lp-brand-word span { color: #E91E8C; }
 
-        /* Inline Forgot Password Panel styles */
-        .fp-wrap{
-          margin-top:4px;
-          border:1px solid rgba(255,59,48,0.2);
-          border-radius:12px;
-          background:rgba(255,59,48,0.03);
-          overflow:hidden;
-          animation:fpExpand 0.35s cubic-bezier(0.22,1,0.36,1);
-        }
-        @keyframes fpExpand{
-          from{opacity:0;transform:translateY(-8px);}
-          to{opacity:1;transform:translateY(0);}
+        .lp-brand-sub {
+          font-size: 11px;
+          color: #8888AA;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.18em;
+          text-align: center;
         }
 
-        .fp-header{
-          display:flex;align-items:center;
-          justify-content:space-between;
-          padding:12px 16px;
-          border-bottom:1px solid rgba(255,59,48,0.12);
+        .lp-bottom-quote {
+          position: absolute;
+          bottom: 24px;
+          left: 0;
+          right: 0;
+          padding: 0 36px;
+          z-index: 4;
+          text-align: center;
         }
-        .fp-title{
-          font-size:0.8rem;font-weight:600;
-          color:var(--gold);display:flex;
-          align-items:center;gap:7px;
+        .lp-q-line {
+          width: 28px;
+          height: 2px;
+          background: #E91E8C;
+          margin: 0 auto 12px;
+          opacity: 0.7;
+          border-radius: 2px;
         }
-        .fp-close{
-          background:none;border:none;
-          color:rgba(255,255,255,0.3);
-          cursor:pointer;font-size:1rem;
-          padding:2px 6px;border-radius:4px;
-          transition:color 0.2s;line-height:1;
+        .lp-q-text {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 13px;
+          color: #4A4A6A;
+          font-style: italic;
+          line-height: 1.5;
+          margin-bottom: 6px;
+          transition: opacity 0.4s ease;
         }
-        .fp-close:hover{color:rgba(255,255,255,0.7);}
-
-        .fp-body{padding:16px;}
-
-        .fp-step-indicator{
-          display:flex;align-items:center;gap:6px;
-          margin-bottom:14px;
-        }
-        .fp-step-dot{
-          width:6px;height:6px;border-radius:50%;
-          background:rgba(255,255,255,0.15);
-          transition:all 0.3s ease;
-        }
-        .fp-step-dot.done{background:var(--green);box-shadow:0 0 6px var(--green);}
-        .fp-step-dot.active{background:var(--gold);box-shadow:0 0 6px var(--gold);
-                            transform:scale(1.3);}
-        .fp-step-line{flex:1;height:1px;background:rgba(255,255,255,0.08);}
-
-        .fp-label{
-          font-size:0.68rem;font-weight:600;
-          color:rgba(255,255,255,0.4);
-          text-transform:uppercase;letter-spacing:0.1em;
-          margin-bottom:7px;display:block;
-        }
-        .fp-inp{
-          width:100%;padding:10px 14px;
-          background:rgba(255,255,255,0.04);
-          border:1px solid rgba(255,255,255,0.08);
-          border-radius:9px;color:var(--t1);
-          font-size:0.88rem;transition:all 0.2s;
-          margin-bottom:10px;
-        }
-        .fp-inp:focus{
-          border-color:rgba(255,59,48,0.5);
-          box-shadow:0 0 0 3px rgba(255,59,48,0.1);
-          background:rgba(255,59,48,0.03);
-          outline:none;
-        }
-        .fp-inp-pwd-wrap{position:relative;margin-bottom:10px;}
-        .fp-inp-pwd-wrap .fp-inp{padding-right:40px;margin-bottom:0;}
-        .fp-pwd-eye{
-          position:absolute;right:12px;top:50%;
-          transform:translateY(-50%);
-          background:none;border:none;
-          color:rgba(255,255,255,0.3);cursor:pointer;
-          display:flex;align-items:center;
-          transition:color 0.2s;
-        }
-        .fp-pwd-eye:hover{color:var(--gold);}
-
-        .fp-btn{
-          width:100%;padding:10px;border-radius:9px;
-          border:none;background:var(--gold);
-          color:#0a0a0a;font-size:0.85rem;font-weight:700;
-          transition:all 0.2s;
-          box-shadow:0 3px 12px rgba(255,59,48,0.3);
-        }
-        .fp-btn:hover:not(:disabled){
-          background:var(--goldl);
-          transform:translateY(-1px);
-          box-shadow:0 6px 18px rgba(255,59,48,0.4);
-        }
-        .fp-btn:disabled{opacity:0.6;cursor:not-allowed;}
-
-        .fp-error{
-          font-size:0.75rem;color:#fca5a5;
-          margin-bottom:10px;padding:7px 10px;
-          background:rgba(239,68,68,0.08);
-          border-radius:7px;border-left:2px solid var(--red);
-          animation:fpExpand 0.2s ease;
-        }
-        .fp-success{
-          font-size:0.82rem;color:var(--green);
-          text-align:center;padding:12px;
-          background:rgba(16,185,129,0.08);
-          border-radius:9px;border:1px solid rgba(16,185,129,0.2);
-          animation:fpExpand 0.3s ease;
-        }
-        .fp-notice{
-          font-size:0.78rem;color:#a09880;
-          margin-bottom:12px;padding:8px 12px;
-          background:rgba(255,59,48,0.08);
-          border-radius:8px;border-left:3px solid var(--gold);
-          animation:fpExpand 0.25s ease;
-          line-height:1.4;
+        .lp-q-auth {
+          font-size: 0.72rem;
+          color: #E91E8C;
+          font-weight: 500;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
         }
 
-        .fp-otp-grid{
-          display:flex;gap:8px;margin-bottom:10px;
+        /* Inline Forgot Password Drawer */
+        .fp-wrap {
+          margin-top: 10px;
+          margin-bottom: 16px;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 14px;
+          background: #FFF0F5;
+          overflow: hidden;
+          animation: fpExpand 0.3s ease;
         }
-        .fp-otp-inp{
-          flex:1;padding:12px 6px;
-          background:rgba(255,255,255,0.04);
-          border:1px solid rgba(255,255,255,0.08);
-          border-radius:9px;color:var(--t1);
-          font-size:1.1rem;font-weight:700;
-          text-align:center;letter-spacing:0.1em;
-          transition:all 0.2s;
+        @keyframes fpExpand {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .fp-otp-inp:focus{
-          border-color:rgba(255,59,48,0.5);
-          box-shadow:0 0 0 3px rgba(255,59,48,0.1);
-          outline:none;
-          background:rgba(255,59,48,0.04);
+        .fp-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 16px;
+          background: #FFFFFF;
+          border-bottom: 1px solid #F9C0D8;
         }
-
-        .fp-timer{
-          font-size:0.72rem;color:rgba(255,255,255,0.3);
-          text-align:center;margin-bottom:10px;
+        .fp-title {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #E91E8C;
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
-        .fp-timer strong{color:var(--gold);}
-
-        .fp-resend{
-          background:none;border:none;
-          color:var(--gold);font-size:0.75rem;
-          cursor:pointer;text-decoration:underline;
-          transition:opacity 0.2s;
+        .fp-close {
+          background: none;
+          border: none;
+          color: #8888AA;
+          cursor: pointer;
+          font-size: 1.2rem;
+          line-height: 1;
+          padding: 2px 6px;
+          border-radius: 4px;
         }
-        .fp-resend:disabled{color:rgba(255,255,255,0.2);
-          text-decoration:none;cursor:not-allowed;}
-
-        .fp-trigger{
-          display:block;
-          background:none;border:none;
-          color:rgba(255,255,255,0.3);
-          font-size:0.75rem;cursor:pointer;
-          text-align:right;width:100%;
-          margin-top:6px;margin-bottom:2px;
-          transition:color 0.2s;
+        .fp-close:hover { color: #E91E8C; }
+        .fp-body { padding: 16px; }
+        .fp-step-indicator {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 14px;
         }
-        .fp-trigger:hover{color:var(--gold);}
+        .fp-step-dot {
+          width: 8px; height: 8px;
+          border-radius: 50%;
+          background: #E2D0DC;
+          transition: all 0.3s ease;
+        }
+        .fp-step-dot.done { background: #10B981; }
+        .fp-step-dot.active { background: #E91E8C; transform: scale(1.25); }
+        .fp-step-line { flex: 1; height: 2px; background: #F9C0D8; }
+        .fp-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #4A4A6A;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          margin-bottom: 6px;
+          display: block;
+        }
+        .fp-inp {
+          width: 100%;
+          padding: 10px 14px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 10px;
+          color: #1A1A2E;
+          font-size: 0.9rem;
+          margin-bottom: 12px;
+          outline: none;
+          box-sizing: border-box;
+        }
+        .fp-inp:focus { border-color: #E91E8C; }
+        .fp-btn {
+          width: 100%;
+          padding: 11px;
+          border-radius: 50px;
+          border: none;
+          background: linear-gradient(135deg, #E91E8C, #FF6B9D);
+          color: #ffffff;
+          font-size: 0.88rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .fp-btn:hover:not(:disabled) { opacity: 0.95; transform: translateY(-1px); }
+        .fp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .fp-error {
+          font-size: 0.8rem;
+          color: #DC2626;
+          margin-bottom: 10px;
+          padding: 8px 12px;
+          background: #FEE2E2;
+          border-radius: 8px;
+          border-left: 3px solid #DC2626;
+        }
+        .fp-success {
+          font-size: 0.85rem;
+          color: #059669;
+          text-align: center;
+          padding: 12px;
+          background: #D1FAE5;
+          border-radius: 10px;
+          border: 1px solid #A7F3D0;
+        }
+        .fp-notice {
+          font-size: 0.8rem;
+          color: #7C2D12;
+          margin-bottom: 12px;
+          padding: 8px 12px;
+          background: #FFEDD5;
+          border-radius: 8px;
+          border-left: 3px solid #F97316;
+          line-height: 1.4;
+        }
+        .fp-otp-inp {
+          width: 100%;
+          padding: 12px 6px;
+          background: #FFFFFF;
+          border: 1.5px solid #F9C0D8;
+          border-radius: 10px;
+          color: #1A1A2E;
+          font-size: 1.2rem;
+          font-weight: 700;
+          text-align: center;
+          letter-spacing: 0.2em;
+          margin-bottom: 12px;
+          outline: none;
+          box-sizing: border-box;
+        }
+        .fp-otp-inp:focus { border-color: #E91E8C; }
+        .fp-timer { font-size: 0.78rem; color: #666688; text-align: center; margin-bottom: 10px; }
+        .fp-timer strong { color: #E91E8C; }
+        .fp-resend { background: none; border: none; color: #E91E8C; font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
+        .fp-trigger {
+          display: block;
+          background: none;
+          border: none;
+          color: #E91E8C;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          text-align: right;
+          width: 100%;
+          margin-top: 6px;
+          margin-bottom: 14px;
+          transition: opacity 0.2s;
+        }
+        .fp-trigger:hover { opacity: 0.8; text-decoration: underline; }
       `}</style>
 
       {/* LEFT — Animated Visual Panel */}
@@ -802,13 +981,7 @@ export default function Login() {
         <div className="lp-grid"/>
 
         {/* Mouse-following spotlight */}
-        <div className="lp-spotlight" style={{
-          left: mousePos.x,
-          top: mousePos.y,
-        }}/>
-
-        {/* Scan line */}
-        <div className="lp-scan"/>
+        <div className="lp-spotlight" style={{ left: mousePos.x, top: mousePos.y }}/>
 
         {/* Corner accents */}
         <div className="lp-corner lp-corner-tl"/>
@@ -816,23 +989,35 @@ export default function Login() {
         <div className="lp-corner lp-corner-bl"/>
         <div className="lp-corner lp-corner-br"/>
 
+        {/* Top brand badge */}
+        <div className="lp-top-badge">
+          <div className="lp-top-badge-icon">
+            <svg width="18" height="18" viewBox="0 0 60 60">
+              <rect x="8" y="8" width="44" height="44" rx="14"
+                fill="none" stroke="#FFFFFF" strokeWidth="3.5" />
+              <path d="M18 42 L18 18 L42 42 L42 18"
+                fill="none" stroke="#FFFFFF" strokeWidth="4"
+                strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className="lp-top-badge-name">Neuro<span>Loop</span></div>
+        </div>
+
         {/* Neural network SVG */}
-        <svg className="lp-neural" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg className="lp-neural" viewBox="0 0 1000 1000" preserveAspectRatio="none">
           {connections.map(([a,b],i) => (
             <line
               key={i}
               className="neural-line"
               x1={nodes[a].x} y1={nodes[a].y}
               x2={nodes[b].x} y2={nodes[b].y}
-              style={{animationDuration:`${2+i*0.3}s`, animationDelay:`${i*0.2}s`}}
             />
           ))}
           {nodes.map((node,i) => (
             <g key={i}>
-              <circle className="neural-node-glow" cx={node.x} cy={node.y}
-                style={{animationDuration:`${1.5+i*0.25}s`,animationDelay:`${i*0.15}s`}}/>
-              <circle className="neural-node" cx={node.x} cy={node.y}
-                style={{animationDuration:`${1.5+i*0.25}s`,animationDelay:`${i*0.15}s`}}/>
+              <circle className="neural-node-glow" cx={node.x} cy={node.y} r="24" style={{ animationDelay: `${i * 0.4}s` }} />
+              <circle className="neural-node" cx={node.x} cy={node.y} r="8" />
+              <circle cx={node.x} cy={node.y} r="3" fill="#FFFFFF" />
             </g>
           ))}
         </svg>
@@ -842,10 +1027,9 @@ export default function Login() {
           <div key={p.id} className="lp-particle" style={{
             left:`${p.x}%`, top:`${p.y}%`,
             width:p.size, height:p.size,
-            '--op': p.opacity,
             opacity: p.opacity,
-            animationDuration:`${p.duration}s`,
-            animationDelay:`${p.delay}s`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`
           }}/>
         ))}
 
@@ -853,35 +1037,16 @@ export default function Login() {
         <div className="lp-ring lp-ring-1"/>
         <div className="lp-ring lp-ring-2"/>
         <div className="lp-ring lp-ring-3"/>
-        <div className="lp-ring lp-ring-4"/>
-        <div className="lp-ring-dot"/>
-        <div className="lp-ring-dot-2"/>
-
-        {/* Top brand */}
-        <div className="lp-top-badge">
-          <div className="lp-top-badge-icon">
-            <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="8" r="3" fill="#ffffff"/>
-              <circle cx="28" cy="24" r="3" fill="#ffffff"/>
-              <circle cx="8" cy="24" r="3" fill="#ffffff"/>
-              <line x1="18" y1="11" x2="26" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="18" y1="11" x2="10" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </div>
-          <div className="lp-top-badge-name">Neuro<span>Loop</span></div>
-        </div>
 
         {/* Center logo orb */}
         <div className="lp-center-orb">
           <div className="lp-orb-core">
-            <svg width="40" height="40" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="8" r="3.5" fill="#ffffff"/>
-              <circle cx="28" cy="24" r="3.5" fill="#ffffff"/>
-              <circle cx="8" cy="24" r="3.5" fill="#ffffff"/>
-              <line x1="18" y1="11.5" x2="26" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="18" y1="11.5" x2="10" y2="22" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+            <svg width="44" height="44" viewBox="0 0 60 60">
+              <rect x="8" y="8" width="44" height="44" rx="14"
+                fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="3" />
+              <path d="M18 42 L18 18 L42 42 L42 18"
+                fill="none" stroke="#FFFFFF" strokeWidth="4"
+                strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <div className="lp-brand-word">Neuro<span>Loop</span></div>
@@ -892,7 +1057,7 @@ export default function Login() {
         <div className="lp-bottom-quote">
           <div className="lp-q-line"/>
           <div className="lp-q-text" style={{opacity: quoteVisible ? 1 : 0}}>
-            {quotes[quoteIndex].q}
+            "{quotes[quoteIndex].q}"
           </div>
           <div className="lp-q-auth">— {quotes[quoteIndex].a}</div>
         </div>
@@ -909,28 +1074,27 @@ export default function Login() {
             />
           ) : (
             <>
-              {/* Mobile logo (hidden on desktop where left panel shows) */}
-              <div style={{ marginBottom: '1.5rem', justifyContent: 'center' }} className="mobile-logo">
+              {/* Mobile logo (hidden on desktop) */}
+              <div style={{ marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center' }} className="mobile-logo">
                 <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
                   <div style={{
-                    width:32,height:32,borderRadius:8,
-                    background:'linear-gradient(135deg,var(--gold),var(--goldl))',
+                    width:38,height:38,borderRadius:12,
+                    background:'linear-gradient(135deg,#E91E8C,#FF6B9D)',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    boxShadow:'0 4px 10px var(--goldg)',
+                    boxShadow:'0 4px 14px rgba(233,30,140,0.3)',
                   }}>
-                    <svg width="16" height="16" viewBox="0 0 36 36" fill="none">
-                      <circle cx="18" cy="8" r="3" fill="#ffffff"/>
-                      <circle cx="28" cy="24" r="3" fill="#ffffff"/>
-                      <circle cx="8" cy="24" r="3" fill="#ffffff"/>
-                      <line x1="18" y1="11" x2="26" y2="22" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="18" y1="11" x2="10" y2="22" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
-                      <line x1="10" y1="24" x2="26" y2="24" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
+                    <svg width="20" height="20" viewBox="0 0 60 60">
+                      <rect x="8" y="8" width="44" height="44" rx="14"
+                        fill="none" stroke="#FFFFFF" strokeWidth="3.5" />
+                      <path d="M18 42 L18 18 L42 42 L42 18"
+                        fill="none" stroke="#FFFFFF" strokeWidth="4"
+                        strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <span style={{
-                    fontFamily:"'DM Serif Display',serif",
-                    fontSize:'1.1rem',color:'var(--t1)',
-                  }}>Neuro<span style={{color:'var(--gold)'}}>Loop</span></span>
+                    fontFamily:"'Playfair Display', Georgia, serif",
+                    fontSize:'1.3rem',color:'#1A1A2E',fontWeight:700
+                  }}>Neuro<span style={{color:'#E91E8C'}}>Loop</span></span>
                 </div>
               </div>
 
@@ -948,8 +1112,17 @@ export default function Login() {
 
               {/* Error alert */}
               {error && (
-                <div className="alert alert-error" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5' }}>
-                  {error}
+                <div style={{
+                  marginBottom: '1.25rem',
+                  fontSize: '0.85rem',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  background: '#FEE2E2',
+                  border: '1px solid #FCA5A5',
+                  color: '#991B1B',
+                  fontWeight: 500,
+                }}>
+                  ⚠️ {error}
                 </div>
               )}
 
@@ -992,7 +1165,7 @@ export default function Login() {
                     </div>
                   </div>
 
-                  {/* Forgot trigger — shows only when forgotStep is null */}
+                  {/* Forgot trigger */}
                   {isLogin && forgotStep === null && (
                     <button
                       type="button"
@@ -1087,7 +1260,6 @@ export default function Login() {
                               onChange={e => setForgotOtp(e.target.value.replace(/\D/g,''))}
                               onKeyDown={e => e.key === 'Enter' && handleForgotVerifyOtp()}
                               autoFocus
-                              style={{width:'100%',marginBottom:10}}
                             />
                             {otpTimer > 0 ? (
                               <div className="fp-timer">
@@ -1118,7 +1290,7 @@ export default function Login() {
                         {forgotStep === 'reset' && !forgotSuccess && (
                           <>
                             <label className="fp-label" htmlFor="forgot-new-password">New password</label>
-                            <div className="fp-inp-pwd-wrap">
+                            <div className="lp-pwd-wrap" style={{marginBottom:10}}>
                               <input
                                 id="forgot-new-password"
                                 className="fp-inp"
@@ -1131,23 +1303,10 @@ export default function Login() {
                               />
                               <button
                                 type="button"
-                                className="fp-pwd-eye"
+                                className="lp-pwd-toggle"
                                 onClick={() => setShowNewPassword(v => !v)}
                               >
-                                {showNewPassword ? (
-                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                  </svg>
-                                ) : (
-                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                       stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-                                    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-                                    <line x1="1" y1="1" x2="23" y2="23"/>
-                                  </svg>
-                                )}
+                                {showNewPassword ? <EyeOpen/> : <EyeClosed/>}
                               </button>
                             </div>
                             {/* Password strength bar */}
@@ -1165,13 +1324,13 @@ export default function Login() {
                                     return (
                                       <div key={i} style={{
                                         flex:1,height:3,borderRadius:99,
-                                        background: i <= strength ? colors[strength-1] : 'rgba(255,255,255,0.08)',
+                                        background: i <= strength ? colors[strength-1] : '#E2D0DC',
                                         transition:'all 0.3s ease',
                                       }}/>
                                     );
                                   })}
                                 </div>
-                                <div style={{fontSize:'0.68rem',color:'rgba(255,255,255,0.3)'}}>
+                                <div style={{fontSize:'0.68rem',color:'#666688'}}>
                                   {[
                                     newPassword.length >= 8,
                                     /[A-Z]/.test(newPassword),
@@ -1198,13 +1357,13 @@ export default function Login() {
                   )}
 
                   {/* Remember me */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: 'var(--t2)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: '#4A4A6A', fontWeight: 500 }}>
                       <input
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        style={{ width: '14px', height: '14px', accentColor: 'var(--gold)' }}
+                        style={{ width: '15px', height: '15px', accentColor: '#E91E8C', cursor: 'pointer' }}
                       />
                       Remember me
                     </label>
@@ -1215,14 +1374,6 @@ export default function Login() {
                     className="lp-btn"
                     type="submit"
                     disabled={loading}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      background: loading ? 'rgba(255,59,48,0.6)' : 'var(--gold)',
-                      cursor: loading ? 'not-allowed' : 'pointer'
-                    }}
                   >
                     {loading ? (
                       <>
@@ -1240,34 +1391,11 @@ export default function Login() {
                     )}
                   </button>
 
-                  <div style={{ margin: '16px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
-                    <span style={{ color: 'var(--t2)', fontSize: '12px' }}>or</span>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
-                  </div>
+                  <div className="lp-divider">or</div>
 
                   <a
                     href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google?frontend_origin=${window.location.origin}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '10px',
-                      width: '100%',
-                      padding: '11px 20px',
-                      background: 'var(--s1)',
-                      border: '1px solid var(--bd)',
-                      borderRadius: '10px',
-                      color: 'var(--t1)',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      textDecoration: 'none',
-                      cursor: 'pointer',
-                      boxSizing: 'border-box',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--s2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'var(--s1)'}
+                    className="lp-google"
                   >
                     <svg width="18" height="18" viewBox="0 0 48 48">
                       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
@@ -1293,16 +1421,13 @@ export default function Login() {
                       autoComplete="name"
                     />
                   </div>
-                  <div style={{ marginBottom: '14px' }}>
-                    <label htmlFor="signup-email" style={{
-                      display: 'block', fontSize: '12px', fontWeight: '500',
-                      textTransform: 'uppercase', letterSpacing: '0.06em',
-                      color: 'var(--text-secondary)', marginBottom: '6px'
-                    }}>Email address</label>
-
+                  
+                  <div className="lp-field">
+                    <label className="lp-lbl" htmlFor="signup-email">Email address</label>
                     <div style={{ position: 'relative' }}>
                       <input
                         id="signup-email"
+                        className="lp-inp"
                         type="email"
                         value={signupEmail}
                         onChange={(e) => {
@@ -1319,19 +1444,15 @@ export default function Login() {
                         }}
                         placeholder="name@gmail.com"
                         style={{
-                          width: '100%', padding: '11px 40px 11px 14px',
-                          background: 'var(--bg-glass, rgba(255,255,255,0.04))',
-                          border: `1px solid ${emailError && emailTouched ? 'rgba(239,68,68,0.5)' : signupEmail && !emailError && emailTouched ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                          borderRadius: '10px', color: 'var(--text-primary)',
-                          fontSize: '14px', outline: 'none', boxSizing: 'border-box',
-                          transition: 'border-color 0.2s'
+                          paddingRight: emailTouched && signupEmail ? '40px' : '16px',
+                          borderColor: emailError && emailTouched ? '#EF4444' : signupEmail && !emailError && emailTouched ? '#10B981' : undefined
                         }}
                       />
                       {/* Validation icon */}
                       {emailTouched && signupEmail && (
                         <div style={{
-                          position: 'absolute', right: '12px', top: '50%',
-                          transform: 'translateY(-50%)', fontSize: '16px'
+                          position: 'absolute', right: '14px', top: '50%',
+                          transform: 'translateY(-50%)', fontSize: '14px'
                         }}>
                           {emailError ? '❌' : '✅'}
                         </div>
@@ -1343,19 +1464,20 @@ export default function Login() {
                       <div style={{
                         display: 'flex', alignItems: 'center', gap: '6px',
                         marginTop: '6px', padding: '6px 10px',
-                        background: 'rgba(239,68,68,0.08)',
-                        border: '1px solid rgba(239,68,68,0.2)',
-                        borderRadius: '6px'
+                        background: '#FEE2E2',
+                        border: '1px solid #FCA5A5',
+                        borderRadius: '8px'
                       }}>
-                        <span style={{ fontSize: '12px', color: '#fca5a5' }}>⚠️ {emailError}</span>
+                        <span style={{ fontSize: '0.78rem', color: '#991B1B', fontWeight: 500 }}>⚠️ {emailError}</span>
                       </div>
                     )}
                     {emailTouched && !emailError && signupEmail && (
-                      <div style={{ marginTop: '6px' }}>
-                        <span style={{ fontSize: '12px', color: '#6ee7b7' }}>✓ Valid email address</span>
+                      <div style={{ marginTop: '4px' }}>
+                        <span style={{ fontSize: '0.78rem', color: '#059669', fontWeight: 600 }}>✓ Valid email address</span>
                       </div>
                     )}
                   </div>
+
                   <div className="lp-field">
                     <label className="lp-lbl" htmlFor="signup-password">Password</label>
                     <div className="lp-pwd-wrap">
@@ -1382,7 +1504,7 @@ export default function Login() {
 
                   {/* Password strength meter */}
                   {signupPassword.length > 0 && (
-                    <div style={{ marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                    <div style={{ marginTop: '-0.25rem', marginBottom: '1rem' }}>
                       <div className="strength-meter" style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
                         {[0, 1, 2, 3].map((i) => (
                           <div
@@ -1392,16 +1514,16 @@ export default function Login() {
                               height: '4px',
                               flex: 1,
                               borderRadius: '2px',
-                              background: i < pwdStrength ? strengthColors[pwdStrength - 1] : 'rgba(255,255,255,0.08)',
+                              background: i < pwdStrength ? '#E91E8C' : '#E2D0DC',
                               transition: 'background 0.3s ease'
                             }}
                           />
                         ))}
                       </div>
                       <p style={{
-                        fontSize: '0.72rem',
+                        fontSize: '0.75rem',
                         marginTop: '4px',
-                        color: pwdStrength > 0 ? strengthColors[pwdStrength - 1] : '#a09880',
+                        color: pwdStrength > 0 ? '#E91E8C' : '#8888AA',
                         fontWeight: 600,
                       }}>
                         {pwdStrength > 0 ? strengthLabels[pwdStrength - 1] : 'Enter a password'}
@@ -1426,14 +1548,6 @@ export default function Login() {
                     className="lp-btn"
                     type="submit"
                     disabled={loading}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      background: loading ? 'rgba(255,59,48,0.6)' : 'var(--gold)',
-                      cursor: loading ? 'not-allowed' : 'pointer'
-                    }}
                   >
                     {loading ? (
                       <>
@@ -1451,34 +1565,11 @@ export default function Login() {
                     )}
                   </button>
 
-                  <div style={{ margin: '16px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
-                    <span style={{ color: 'var(--t2)', fontSize: '12px' }}>or</span>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--bd)' }} />
-                  </div>
+                  <div className="lp-divider">or</div>
 
                   <a
                     href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google?frontend_origin=${window.location.origin}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '10px',
-                      width: '100%',
-                      padding: '11px 20px',
-                      background: 'var(--s1)',
-                      border: '1px solid var(--bd)',
-                      borderRadius: '10px',
-                      color: 'var(--t1)',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      textDecoration: 'none',
-                      cursor: 'pointer',
-                      boxSizing: 'border-box',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--s2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'var(--s1)'}
+                    className="lp-google"
                   >
                     <svg width="18" height="18" viewBox="0 0 48 48">
                       <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
@@ -1490,20 +1581,10 @@ export default function Login() {
                   </a>
                 </form>
               )}
-
             </>
           )}
-
-
         </div>
       </div>
-
-      {/* Mobile logo override style */}
-      <style>{`
-        @media (max-width: 900px) {
-          .mobile-logo { display: flex !important; }
-        }
-      `}</style>
     </div>
   )
 }
