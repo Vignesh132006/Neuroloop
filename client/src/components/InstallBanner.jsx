@@ -7,6 +7,11 @@ export default function InstallBanner() {
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
+    // Do not show install banner on landing/login/auth pages
+    if (['/', '/login', '/signup', '/loading', '/auth/google/success'].includes(window.location.pathname)) {
+      return
+    }
+
     // Check if already installed or running in standalone mode
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
